@@ -9,10 +9,10 @@ book:
   date: "May 2026"
   repo-url: https://github.com/altustd/origami-optimization-ebook
   chapters:
-    - index.qmd
     - preface.qmd
     - part: "Part I: The Geometry of Folds"
       chapters:
+        - index.qmd
         - 02-geometry.qmd
         - 03-miura-ori.qmd
     - part: "Part II: Optimization Methods"

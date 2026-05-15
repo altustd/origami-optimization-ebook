@@ -198,12 +198,6 @@ window.Quarto = {
     <ul class="list-unstyled mt-1">
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./index.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Why Fold?</span></span></a>
-  </div>
-</li>
-        <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
   <a href="./preface.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Preface</span></a>
   </div>
@@ -217,6 +211,12 @@ window.Quarto = {
           </a> 
       </div>
       <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Why Fold?</span></span></a>
+  </div>
+</li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./02-geometry.html" class="sidebar-item-text sidebar-link">
@@ -355,7 +355,7 @@ window.Quarto = {
 <p>This is a constrained nonlinear program:</p>
 <p><span id="eq-energy-opt"><span class="math display">\[\min_{\boldsymbol{\phi}} \quad E_\text{total}(\boldsymbol{\phi}) \quad \text{subject to} \quad g_j(\boldsymbol{\phi}) = 0 \quad j = 1, \ldots, M \tag{5.3}\]</span></span></p>
 <p>where the <span class="math inline">\(g_j\)</span> are the Kawasaki constraints (or more generally, the geometric closure conditions at each vertex).</p>
-<div id="b4354a27" class="cell" data-execution_count="1">
+<div id="8396292b" class="cell" data-execution_count="1">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
@@ -376,7 +376,7 @@ window.Quarto = {
 <h2 data-number="5.2" class="anchored" data-anchor-id="example-four-crease-vertex-under-load"><span class="header-section-number">5.2</span> Example: Four-Crease Vertex Under Load</h2>
 <p>Consider a single four-crease vertex (the Miura-ori unit vertex) with sector angles <span class="math inline">\(\alpha\)</span> and <span class="math inline">\(\pi - \alpha\)</span>. The vertex has four fold angles <span class="math inline">\(\phi_1, \phi_2, \phi_3, \phi_4\)</span> subject to the Kawasaki closure condition.</p>
 <p>We will minimize the elastic energy over the feasible set — the manifold of fold-angle vectors satisfying Kawasaki — and trace how the equilibrium configuration depends on the stiffness distribution.</p>
-<div id="cf14a09e" class="cell" data-execution_count="2">
+<div id="cb1249cc" class="cell" data-execution_count="2">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> kawasaki_residual(phi, alpha):</span>
@@ -476,7 +476,7 @@ window.Quarto = {
 <section id="comparing-optimizers" class="level2" data-number="5.3">
 <h2 data-number="5.3" class="anchored" data-anchor-id="comparing-optimizers"><span class="header-section-number">5.3</span> Comparing Optimizers</h2>
 <p>The energy minimization problem <a href="#eq-energy-opt" class="quarto-xref">Equation&nbsp;<span>5.3</span></a> is smooth and has analytic gradients. Different optimizers make different trade-offs between convergence speed, memory, and constraint-handling capability.</p>
-<div id="ec411575" class="cell" data-execution_count="3">
+<div id="4e1a5977" class="cell" data-execution_count="3">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> time</span>
@@ -567,8 +567,8 @@ window.Quarto = {
 <span id="cb3-86"><a href="#cb3-86" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
-<pre><code>SLSQP       converged=True  φ*=[ 81.92116192 120.49366499]°  E*=2.876609  t=3.52ms
-L-BFGS-B    converged=True  φ*=[68.75493513 34.37746742]°  E*=0.000000  t=0.44ms</code></pre>
+<pre><code>SLSQP       converged=True  φ*=[ 81.92116192 120.49366499]°  E*=2.876609  t=3.21ms
+L-BFGS-B    converged=True  φ*=[68.75493513 34.37746742]°  E*=0.000000  t=1.16ms</code></pre>
 </div>
 <div class="cell-output cell-output-display">
 <div>
@@ -582,7 +582,7 @@ L-BFGS-B    converged=True  φ*=[68.75493513 34.37746742]°  E*=0.000000  t=0.44
 <section id="non-uniform-stiffness-and-multiple-equilibria" class="level2" data-number="5.4">
 <h2 data-number="5.4" class="anchored" data-anchor-id="non-uniform-stiffness-and-multiple-equilibria"><span class="header-section-number">5.4</span> Non-Uniform Stiffness and Multiple Equilibria</h2>
 <p>Real origami structures often have creases with different stiffnesses — due to material variation, different crease depths, or deliberate design. When stiffness is non-uniform, the energy landscape can develop multiple local minima.</p>
-<div id="304416d4" class="cell" data-execution_count="4">
+<div id="1f73e64f" class="cell" data-execution_count="4">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Sweep stiffness ratio k2/k1 and track equilibrium</span></span>

@@ -88,7 +88,7 @@ div.csl-indent {
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
 <link href="./03-miura-ori.html" rel="next">
-<link href="./preface.html" rel="prev">
+<link href="./index.html" rel="prev">
 <script src="site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
@@ -168,7 +168,7 @@ window.Quarto = {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./02-geometry.html">Part I: The Geometry of Folds</a></li><li class="breadcrumb-item"><a href="./02-geometry.html"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Geometry of a Crease</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./index.html">Part I: The Geometry of Folds</a></li><li class="breadcrumb-item"><a href="./02-geometry.html"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Geometry of a Crease</span></a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -198,12 +198,6 @@ window.Quarto = {
     <ul class="list-unstyled mt-1">
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./index.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Why Fold?</span></span></a>
-  </div>
-</li>
-        <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
   <a href="./preface.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Preface</span></a>
   </div>
@@ -217,6 +211,12 @@ window.Quarto = {
           </a> 
       </div>
       <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Why Fold?</span></span></a>
+  </div>
+</li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./02-geometry.html" class="sidebar-item-text sidebar-link active">
@@ -308,7 +308,7 @@ window.Quarto = {
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
-<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./02-geometry.html">Part I: The Geometry of Folds</a></li><li class="breadcrumb-item"><a href="./02-geometry.html"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Geometry of a Crease</span></a></li></ol></nav>
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./index.html">Part I: The Geometry of Folds</a></li><li class="breadcrumb-item"><a href="./02-geometry.html"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Geometry of a Crease</span></a></li></ol></nav>
 <div class="quarto-title">
 <div class="quarto-title-block"><div><h1 class="title"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Geometry of a Crease</span></h1><button type="button" class="btn code-tools-button dropdown-toggle" id="quarto-code-tools-menu" data-bs-toggle="dropdown" aria-expanded="false"><i class="bi"></i> Code</button><ul class="dropdown-menu dropdown-menu-end" aria-labelelledby="quarto-code-tools-menu"><li><a id="quarto-show-all-code" class="dropdown-item" href="javascript:void(0)" role="button">Show All Code</a></li><li><a id="quarto-hide-all-code" class="dropdown-item" href="javascript:void(0)" role="button">Hide All Code</a></li><li><hr class="dropdown-divider"></li><li><a id="quarto-view-source" class="dropdown-item" href="javascript:void(0)" role="button">View Source</a></li></ul></div></div>
 </div>
@@ -360,7 +360,7 @@ window.Quarto = {
 <p><span id="eq-rodrigues"><span class="math display">\[R(\hat{e}, \phi) = I \cos\phi + (1 - \cos\phi)\hat{e}\hat{e}^T + \sin\phi\, [\hat{e}]_\times \tag{2.3}\]</span></span></p>
 <p>where <span class="math inline">\([\hat{e}]_\times\)</span> is the skew-symmetric cross-product matrix:</p>
 <p><span id="eq-skew"><span class="math display">\[[\hat{e}]_\times = \begin{pmatrix} 0 &amp; -e_z &amp; e_y \\ e_z &amp; 0 &amp; -e_x \\ -e_y &amp; e_x &amp; 0 \end{pmatrix} \tag{2.4}\]</span></span></p>
-<div id="c15d85fe" class="cell" data-execution_count="1">
+<div id="fa0384e6" class="cell" data-execution_count="1">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
@@ -440,7 +440,7 @@ window.Quarto = {
 <p>In words: the alternating sector angles must each sum to <span class="math inline">\(\pi\)</span>. For a 4-crease vertex, this means:</p>
 <p><span id="eq-kawasaki-4"><span class="math display">\[\alpha_1 + \alpha_3 = \alpha_2 + \alpha_4 = \pi \tag{2.7}\]</span></span></p>
 <p>This is Kawasaki’s theorem <span class="citation" data-cites="kawasaki1989relation">(<a href="references.html#ref-kawasaki1989relation" role="doc-biblioref">Kawasaki 1989</a>)</span>, and it is both necessary and sufficient for flat-foldability (in the local, single-vertex sense).</p>
-<div id="4e91a059" class="cell" data-execution_count="2">
+<div id="c9c6153e" class="cell" data-execution_count="2">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> check_kawasaki(sector_angles):</span>
@@ -474,7 +474,7 @@ Odd sum:  2.0944  (π = 3.1416)
 Even sum: 4.1888  (π = 3.1416)</code></pre>
 </div>
 </div>
-<div id="d851b04e" class="cell" data-execution_count="3">
+<div id="f3d1cc06" class="cell" data-execution_count="3">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Visualize: which combinations of (α1, α2) satisfy Kawasaki for a 4-crease vertex?</span></span>
@@ -517,7 +517,7 @@ Even sum: 4.1888  (π = 3.1416)</code></pre>
 <p>Kawasaki tells us about the angles. Maekawa’s theorem tells us about the fold directions: at any flat-foldable vertex, the number of mountain folds <span class="math inline">\(M\)</span> and valley folds <span class="math inline">\(V\)</span> must satisfy:</p>
 <p><span id="eq-maekawa"><span class="math display">\[|M - V| = 2 \tag{2.8}\]</span></span></p>
 <p>For a 4-crease vertex, this means either <span class="math inline">\(M=3, V=1\)</span> or <span class="math inline">\(M=1, V=3\)</span>. You cannot have <span class="math inline">\(M=2, V=2\)</span> at a flat-foldable vertex.</p>
-<div id="cb2d46de" class="cell" data-execution_count="4">
+<div id="ae27bb0f" class="cell" data-execution_count="4">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> check_maekawa(fold_types):</span>
@@ -551,7 +551,7 @@ M=1, V=3      →  Maekawa satisfied: True</code></pre>
 </section>
 <section id="a-complete-vertex-checker" class="level2" data-number="2.6">
 <h2 data-number="2.6" class="anchored" data-anchor-id="a-complete-vertex-checker"><span class="header-section-number">2.6</span> A Complete Vertex Checker</h2>
-<div id="0a22bf4f" class="cell" data-execution_count="5">
+<div id="c2815dc8" class="cell" data-execution_count="5">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> is_flat_foldable_vertex(sector_angles, fold_types):</span>
@@ -1084,8 +1084,8 @@ Kawasaki, Toshikazu. 1989. <span>“On the Relation Between Mountain-Creases and
   </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="./preface.html" class="pagination-link" aria-label="Preface">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Preface</span>
+      <a href="./index.html" class="pagination-link" aria-label="Why Fold?">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Why Fold?</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
