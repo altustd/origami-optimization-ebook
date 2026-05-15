@@ -1,0 +1,629 @@
+[
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "The Mathematics of Folding",
+    "section": "",
+    "text": "1 Why Fold?\nThere is a medical device called a self-expanding stent that is threaded through an artery in collapsed form, guided to a blockage, and then released — at which point it springs open to its full diameter and holds the vessel wall apart. The collapsed form fits through a catheter 2mm wide. The deployed form spans 30mm. The ratio is not achieved by brute force; it is achieved by geometry. The stent is a folded structure, and the fold pattern determines both how small it gets and how reliably it opens.\nThis is origami. Not the paper cranes of grade school, but the serious application of fold geometry to problems where the stakes are a patient’s aorta, a satellite’s power supply, or a telescope lens larger than a building.",
+    "crumbs": [
+      "<span class='chapter-number'>1</span>  <span class='chapter-title'>Why Fold?</span>"
+    ]
+  },
+  {
+    "objectID": "index.html#a-brief-history-of-useful-folding",
+    "href": "index.html#a-brief-history-of-useful-folding",
+    "title": "The Mathematics of Folding",
+    "section": "1.1 A Brief History of Useful Folding",
+    "text": "1.1 A Brief History of Useful Folding\nThe engineering use of origami principles has a surprisingly short formal history, given how ancient the art is. The mathematical study of paper folding began in earnest in the 1970s, with David Huffman’s 1976 paper on curvature and creases (Huffman 1976) and Koryo Miura’s work on deployable space structures. The connection to computational optimization came later still — Lang’s 1996 algorithm for automated origami design (Lang 1996) was the first to state the problem explicitly as a constrained program.\nWhat caused the delay? Partly the usual disciplinary walls between mathematics, engineering, and art. Partly the absence of adequate computational tools. But mostly, perhaps, the fact that paper is cheap and the intuition for folding develops faster by hand than by analysis. It took the space program — where paper is unavailable and the cost of a failed deployment is a destroyed satellite — to force the geometry into equations.\nThe Miura-ori solar array on the ISAS Space Flyer Unit (1995) is the canonical example (Miura 1985). Eight square meters of solar panel, folded into a cylinder 500mm in diameter. The key property: the entire structure has exactly one mechanical degree of freedom. Pull one point and everything moves. Release it and everything locks. The geometry enforces this — it is not an accident of the mechanism, it is a consequence of the fold pattern.\nSince then, origami-inspired engineering has appeared in:\n\nAerospace: solar arrays, telescope sunshields (the James Webb Space Telescope’s sunshield uses a variant of the Miura fold), deployable antennae\nMedicine: stents, heart valves, surgical instruments, drug delivery capsules\nArchitecture: folded plate structures, adaptive facades, flat-pack furniture that assembles without fasteners\nRobotics: soft robots that change shape by selectively activating folds, grippers, crawlers",
+    "crumbs": [
+      "<span class='chapter-number'>1</span>  <span class='chapter-title'>Why Fold?</span>"
+    ]
+  },
+  {
+    "objectID": "index.html#the-optimization-problem-inside-every-fold",
+    "href": "index.html#the-optimization-problem-inside-every-fold",
+    "title": "The Mathematics of Folding",
+    "section": "1.2 The Optimization Problem Inside Every Fold",
+    "text": "1.2 The Optimization Problem Inside Every Fold\nConsider the simplest possible origami: a single straight crease across a rectangular sheet. The crease divides the sheet into two panels. Folding along the crease means rotating one panel relative to the other by a fold angle \\(\\phi\\), measured from the flat state (\\(\\phi = 0\\)) to fully folded (\\(\\phi = \\pi\\)).\nNothing interesting yet. Now add a second crease, intersecting the first at a vertex. The two fold angles are no longer independent — they are coupled by a constraint: the sheet is made of paper, and paper does not stretch. The angles must satisfy a geometric relationship determined by the vertex geometry.\nAdd more vertices, and the constraints proliferate. A crease pattern with \\(V\\) interior vertices has \\(2V\\) fold-angle unknowns (two creases at each vertex, roughly) and \\(V\\) geometric constraints plus boundary conditions. The system is generically under-constrained — there are many valid configurations — but some patterns are so highly constrained that only one configuration is possible: the flat state and the folded state, connected by a single continuous path with one degree of freedom.\nFinding crease patterns with specific mechanical properties — one DOF, target compaction ratio, target deployed shape — is an optimization problem. The rest of this book works out the details.",
+    "crumbs": [
+      "<span class='chapter-number'>1</span>  <span class='chapter-title'>Why Fold?</span>"
+    ]
+  },
+  {
+    "objectID": "index.html#what-we-will-build",
+    "href": "index.html#what-we-will-build",
+    "title": "The Mathematics of Folding",
+    "section": "1.3 What We Will Build",
+    "text": "1.3 What We Will Build\nThe book divides into two parts.\nPart I covers the geometry. Chapter 2 establishes the mathematical language: rotation matrices at fold lines, the flat-foldability conditions (Kawasaki’s theorem, Maekawa’s theorem), and how to check whether a given vertex satisfies them. Chapter 3 analyzes the Miura-ori in detail — its parameterization, its single degree of freedom, and why it achieves the compaction ratios that make it useful.\nPart II covers the optimization. Chapter 4 treats origami base design as a circle-packing problem and implements Lang’s algorithm using scipy. Chapter 5 minimizes elastic fold energy to find equilibrium shapes of partially-folded structures. Chapter 6 solves the inverse problem: given a target deployed geometry, find the crease parameters that achieve it.\nThroughout, the emphasis is on the connection between the geometric picture and the numerical algorithm. A fold angle constraint is also a nonlinear equality constraint in a program. A compaction ratio is also an objective function. The vocabulary of origami and the vocabulary of optimization are, in the end, the same vocabulary.",
+    "crumbs": [
+      "<span class='chapter-number'>1</span>  <span class='chapter-title'>Why Fold?</span>"
+    ]
+  },
+  {
+    "objectID": "index.html#summary",
+    "href": "index.html#summary",
+    "title": "The Mathematics of Folding",
+    "section": "1.4 Summary",
+    "text": "1.4 Summary\n\nOrigami engineering solves real problems: deployable solar panels, self-expanding stents, flat-pack structures.\nEvery valid crease pattern is a feasible point in a constrained geometric space.\nFinding crease patterns with desired properties is an optimization problem.\nThe rest of this book develops the geometric and numerical tools to solve it.",
+    "crumbs": [
+      "<span class='chapter-number'>1</span>  <span class='chapter-title'>Why Fold?</span>"
+    ]
+  },
+  {
+    "objectID": "index.html#further-reading",
+    "href": "index.html#further-reading",
+    "title": "The Mathematics of Folding",
+    "section": "1.5 Further Reading",
+    "text": "1.5 Further Reading\nThe best single-volume introduction to the mathematics of origami is Demaine and O’Rourke (2007). For the engineering applications, Lang (2011) covers origami design from a practitioner’s perspective. The original Miura solar array paper (Miura 1985) is short and worth reading in full.",
+    "crumbs": [
+      "<span class='chapter-number'>1</span>  <span class='chapter-title'>Why Fold?</span>"
+    ]
+  },
+  {
+    "objectID": "index.html#exercises",
+    "href": "index.html#exercises",
+    "title": "The Mathematics of Folding",
+    "section": "1.6 Exercises",
+    "text": "1.6 Exercises\n\nIdentify the fold. Find one example of an origami-inspired engineering application not mentioned in this chapter. Identify what property of the fold makes it useful (compaction ratio, single DOF, specific deployed shape, etc.).\nCount degrees of freedom. A flat sheet with \\(n\\) parallel creases all running the same direction has how many mechanical degrees of freedom? What changes if the creases are not parallel?\nThe fold angle. Define a fold angle \\(\\phi\\) for a single crease such that \\(\\phi = 0\\) means flat and \\(\\phi = \\pi\\) means fully folded (the two panels touch). Write an expression for the perpendicular distance between the two far edges of a sheet of width \\(W\\) as a function of \\(\\phi\\) and the crease position \\(x_0\\).\nConstraint counting. A vertex where four creases meet has four fold angles. How many scalar constraints does flat-foldability impose at that vertex? Is the vertex generically rigid (zero DOF), mobile (one or more DOF), or does it depend on the geometry?\n\n\n\n\n\n\n\nDemaine, Erik D, and Joseph O’Rourke. 2007. Geometric Folding Algorithms: Linkages, Origami, Polyhedra. Cambridge University Press.\n\n\nHuffman, David A. 1976. “Curvature and Creases: A Primer on Paper.” IEEE Transactions on Computers 25 (10): 1010–19.\n\n\nLang, Robert J. 1996. “A Computational Algorithm for Origami Design.” Proceedings of the Twelfth Annual Symposium on Computational Geometry, 98–105.\n\n\nLang, Robert J. 2011. Origami Design Secrets: Mathematical Methods for an Ancient Art. 2nd ed. CRC Press.\n\n\nMiura, Koryo. 1985. “Method of Packaging and Deployment of Large Membranes in Space.” The Institute of Space and Astronautical Science Report 618: 1–9.",
+    "crumbs": [
+      "<span class='chapter-number'>1</span>  <span class='chapter-title'>Why Fold?</span>"
+    ]
+  },
+  {
+    "objectID": "preface.html",
+    "href": "preface.html",
+    "title": "Preface",
+    "section": "",
+    "text": "What this book is about\nThis book began with a photograph.\nIt showed a solar panel array folded into a cylinder small enough to fit inside a rocket nosecone, and the caption explained that the entire 8-square-meter panel had been collapsed by a single degree of freedom — one pull on one mechanism caused every crease to fold simultaneously, every panel to stack neatly against its neighbor, with a geometry so beautifully constrained that the only way it could fold was the way the designer intended. The origami pattern had been computed. The fold was optimal.\nThat photograph was taken aboard the ISAS Space Flyer Unit in 1995, and the fold pattern was the Miura-ori, invented by astrophysicist Koryo Miura in the 1970s as a solution to a very specific engineering problem: how do you package a large flat surface inside a small cylinder and deploy it reliably in zero gravity, with no hinges, no motors, and no chance of a second attempt?\nMiura’s answer — a parallelogram tessellation that collapses along two axes simultaneously — turned out to be one of the most elegant intersections of geometry and engineering in the twentieth century. And it is, at its core, a solution to an optimization problem.\nThe argument of this book is that origami and numerical optimization are the same subject wearing different clothes. A valid flat-foldable crease pattern is a feasible point in a constrained geometric space. Designing an origami base is a circle-packing problem. Finding the equilibrium shape of a partially-folded structure is an energy minimization. And recovering the crease pattern that produces a desired deployed shape — the inverse problem — is a nonlinear program.\nWe develop all of these ideas from scratch, with Python code at every step.",
+    "crumbs": [
+      "Preface"
+    ]
+  },
+  {
+    "objectID": "preface.html#who-this-book-is-for",
+    "href": "preface.html#who-this-book-is-for",
+    "title": "Preface",
+    "section": "Who this book is for",
+    "text": "Who this book is for\nEngineers and scientists who are comfortable with linear algebra and calculus, and who have written some Python but may not have used scipy.optimize seriously. No prior origami knowledge is assumed. No prior optimization theory is required beyond the intuition that minimizing a function means finding its lowest point.\nEach chapter ends with exercises that range from “verify this by hand” to “implement this extension.” The exercises are the book. Reading without working them is like reading a recipe without cooking.",
+    "crumbs": [
+      "Preface"
+    ]
+  },
+  {
+    "objectID": "preface.html#a-note-on-the-code",
+    "href": "preface.html#a-note-on-the-code",
+    "title": "Preface",
+    "section": "A note on the code",
+    "text": "A note on the code\nAll code runs inside the pixi environment defined in pixi.toml. To reproduce any result:\npixi install\npixi run kernel     # register the Jupyter kernel\npixi run render     # render HTML\npixi run preview    # live preview\nThe only dependencies are numpy, scipy, and matplotlib — all available from conda-forge with native ARM64 builds on Apple Silicon.",
+    "crumbs": [
+      "Preface"
+    ]
+  },
+  {
+    "objectID": "02-geometry.html",
+    "href": "02-geometry.html",
+    "title": "2  Geometry of a Crease",
+    "section": "",
+    "text": "2.1 The Fold Angle\nA piece of paper has three properties that make it mathematically interesting: it is flat, it is inextensible, and it can be folded. Flatness means the rest configuration is a plane. Inextensibility means distances between points on the surface are preserved during folding — the paper does not stretch. Foldability means that along a crease line, one panel can rotate relative to another by an arbitrary angle.\nThese three properties together severely constrain what shapes a folded sheet can take. Almost all of the content of this book follows from working out those constraints carefully.\nConsider a single straight crease running across a sheet. The crease divides the sheet into two planar panels, which we call the left panel and the right panel (or panel 1 and panel 2). Define the fold angle \\(\\phi\\) as the dihedral angle between the two panels, measured such that:\n\\[\\phi = 0 \\quad \\text{(flat, unfolded)} \\tag{2.1}\\]\n\\[\\phi = \\pi \\quad \\text{(fully folded, panels touching)} \\tag{2.2}\\]\nThe sign of \\(\\phi\\) distinguishes mountain folds (panel 2 folds up relative to panel 1, \\(\\phi &gt; 0\\)) from valley folds (\\(\\phi &lt; 0\\)). For a single crease, this sign convention is arbitrary — we can always flip the sheet — but once we have a vertex where multiple creases meet, the relative signs matter.",
+    "crumbs": [
+      "Part I: The Geometry of Folds",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Geometry of a Crease</span>"
+    ]
+  },
+  {
+    "objectID": "02-geometry.html#rotation-matrices-at-fold-lines",
+    "href": "02-geometry.html#rotation-matrices-at-fold-lines",
+    "title": "2  Geometry of a Crease",
+    "section": "2.2 Rotation Matrices at Fold Lines",
+    "text": "2.2 Rotation Matrices at Fold Lines\nLet the crease lie along the unit vector \\(\\hat{e}\\). If panel 1 is fixed in space, then panel 2 is obtained by rotating panel 1 about \\(\\hat{e}\\) by angle \\(\\phi\\). The rotation is given by the Rodrigues formula:\n\\[R(\\hat{e}, \\phi) = I \\cos\\phi + (1 - \\cos\\phi)\\hat{e}\\hat{e}^T + \\sin\\phi\\, [\\hat{e}]_\\times \\tag{2.3}\\]\nwhere \\([\\hat{e}]_\\times\\) is the skew-symmetric cross-product matrix:\n\\[[\\hat{e}]_\\times = \\begin{pmatrix} 0 & -e_z & e_y \\\\ e_z & 0 & -e_x \\\\ -e_y & e_x & 0 \\end{pmatrix} \\tag{2.4}\\]\n\n\nCode\nimport numpy as np\nimport matplotlib.pyplot as plt\nfrom mpl_toolkits.mplot3d import Axes3D\nfrom mpl_toolkits.mplot3d.art3d import Poly3DCollection\n\ndef rotation_matrix(axis, angle):\n    \"\"\"Rodrigues rotation matrix: rotate by angle about axis.\"\"\"\n    e = np.asarray(axis, dtype=float)\n    e = e / np.linalg.norm(e)\n    c, s = np.cos(angle), np.sin(angle)\n    skew = np.array([\n        [ 0,    -e[2],  e[1]],\n        [ e[2],  0,    -e[0]],\n        [-e[1],  e[0],  0   ]\n    ])\n    return c * np.eye(3) + (1 - c) * np.outer(e, e) + s * skew\n\n\ndef fold_panel(panel_vertices, crease_point, crease_axis, angle):\n    \"\"\"Rotate panel_vertices about a crease line by angle.\"\"\"\n    verts = np.asarray(panel_vertices, dtype=float)\n    R = rotation_matrix(crease_axis, angle)\n    # Translate so crease_point is origin, rotate, translate back\n    return (R @ (verts - crease_point).T).T + crease_point\n\n\n# Demo: fold a single-crease sheet\nfig = plt.figure(figsize=(10, 4))\n\nfold_angles = [0, np.pi / 4, np.pi / 2, 3 * np.pi / 4]\npanel1 = np.array([[0, 0, 0], [1, 0, 0], [1, 1, 0], [0, 1, 0]])\npanel2_flat = np.array([[0, 0, 0], [-1, 0, 0], [-1, 1, 0], [0, 1, 0]])\n\nfor i, phi in enumerate(fold_angles):\n    ax = fig.add_subplot(1, 4, i + 1, projection='3d')\n    crease_axis = np.array([0, 1, 0])\n    crease_point = np.array([0, 0, 0])\n    panel2 = fold_panel(panel2_flat, crease_point, crease_axis, -phi)\n\n    for verts, color in [(panel1, 'steelblue'), (panel2, 'coral')]:\n        poly = Poly3DCollection([verts], alpha=0.6, facecolor=color, edgecolor='k', linewidth=0.5)\n        ax.add_collection3d(poly)\n\n    ax.set_xlim(-1.2, 1.2)\n    ax.set_ylim(-0.2, 1.2)\n    ax.set_zlim(-1.2, 0.2)\n    ax.set_title(f'φ = {phi:.2f}', fontsize=9)\n    ax.set_axis_off()\n\nplt.suptitle('Single-crease fold at increasing fold angles', y=1.02)\nplt.tight_layout()\nplt.show()",
+    "crumbs": [
+      "Part I: The Geometry of Folds",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Geometry of a Crease</span>"
+    ]
+  },
+  {
+    "objectID": "02-geometry.html#vertices-and-multi-crease-constraints",
+    "href": "02-geometry.html#vertices-and-multi-crease-constraints",
+    "title": "2  Geometry of a Crease",
+    "section": "2.3 Vertices and Multi-Crease Constraints",
+    "text": "2.3 Vertices and Multi-Crease Constraints\nThe interesting geometry begins at a vertex — a point where two or more creases meet. At a vertex with \\(n\\) creases, there are \\(n\\) fold angles \\(\\phi_1, \\ldots, \\phi_n\\) and \\(n\\) sector angles \\(\\alpha_1, \\ldots, \\alpha_n\\), where \\(\\alpha_i\\) is the angle between crease \\(i\\) and crease \\(i+1\\) measured in the flat (unfolded) sheet.\nThe sector angles satisfy:\n\\[\\sum_{i=1}^{n} \\alpha_i = 2\\pi \\tag{2.5}\\]\nbecause they partition the full angle around the vertex.\nFor the sheet to be foldable (no tearing, no self-intersection at the vertex), the composition of rotations around the vertex must close — the last panel must connect back to the first. This closure condition is the source of all the flat-foldability constraints.",
+    "crumbs": [
+      "Part I: The Geometry of Folds",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Geometry of a Crease</span>"
+    ]
+  },
+  {
+    "objectID": "02-geometry.html#kawasakis-theorem",
+    "href": "02-geometry.html#kawasakis-theorem",
+    "title": "2  Geometry of a Crease",
+    "section": "2.4 Kawasaki’s Theorem",
+    "text": "2.4 Kawasaki’s Theorem\nFor a vertex with \\(2k\\) creases (flat-foldable vertices always have an even number of creases), flat-foldability requires:\n\\[\\sum_{i=1}^{k} \\alpha_{2i-1} = \\sum_{i=1}^{k} \\alpha_{2i} = \\pi \\tag{2.6}\\]\nIn words: the alternating sector angles must each sum to \\(\\pi\\). For a 4-crease vertex, this means:\n\\[\\alpha_1 + \\alpha_3 = \\alpha_2 + \\alpha_4 = \\pi \\tag{2.7}\\]\nThis is Kawasaki’s theorem (Kawasaki 1989), and it is both necessary and sufficient for flat-foldability (in the local, single-vertex sense).\n\n\nCode\ndef check_kawasaki(sector_angles):\n    \"\"\"\n    Check Kawasaki's theorem for a vertex.\n    sector_angles: list of angles in radians, alternating around the vertex.\n    Returns (satisfied, odd_sum, even_sum).\n    \"\"\"\n    alphas = np.asarray(sector_angles)\n    n = len(alphas)\n    if n % 2 != 0:\n        return False, None, None\n    odd_sum  = np.sum(alphas[0::2])   # indices 0, 2, 4, ...\n    even_sum = np.sum(alphas[1::2])   # indices 1, 3, 5, ...\n    satisfied = np.isclose(odd_sum, np.pi) and np.isclose(even_sum, np.pi)\n    return satisfied, odd_sum, even_sum\n\n\n# Example: standard 4-crease vertex\nalphas = [np.pi/3, 2*np.pi/3, np.pi/3, 2*np.pi/3]\nok, s1, s2 = check_kawasaki(alphas)\nprint(f\"Sector angles: {[f'{a:.3f}' for a in alphas]}\")\nprint(f\"Kawasaki satisfied: {ok}\")\nprint(f\"Odd sum:  {s1:.4f}  (π = {np.pi:.4f})\")\nprint(f\"Even sum: {s2:.4f}  (π = {np.pi:.4f})\")\n\n\nSector angles: ['1.047', '2.094', '1.047', '2.094']\nKawasaki satisfied: False\nOdd sum:  2.0944  (π = 3.1416)\nEven sum: 4.1888  (π = 3.1416)\n\n\n\n\nCode\n# Visualize: which combinations of (α1, α2) satisfy Kawasaki for a 4-crease vertex?\n# Given α1 + α3 = π  →  α3 = π - α1\n# Given α2 + α4 = π  →  α4 = π - α2\n# Constraint: α1 + α2 + α3 + α4 = 2π  →  always satisfied for any α1, α2.\n# So for a 4-crease vertex, any (α1, α2) with α1, α2 ∈ (0, π) works.\n\nalpha1_vals = np.linspace(0.1, np.pi - 0.1, 200)\nalpha2_vals = np.linspace(0.1, np.pi - 0.1, 200)\nA1, A2 = np.meshgrid(alpha1_vals, alpha2_vals)\n\n# Compaction ratio proxy: total variation in fold space\n# For illustration, just show the feasible region\nfig, ax = plt.subplots(figsize=(5, 4))\nax.fill_between(alpha1_vals, 0.1, np.pi - 0.1, alpha=0.15, color='steelblue',\n                label='Kawasaki feasible region')\nax.set_xlabel('α₁ (rad)')\nax.set_ylabel('α₂ (rad)')\nax.set_title('4-crease vertex: Kawasaki feasible region')\nax.set_xlim(0, np.pi)\nax.set_ylim(0, np.pi)\nax.axvline(np.pi / 2, color='gray', linestyle='--', linewidth=0.8, label='α₁ = π/2')\nax.axhline(np.pi / 2, color='gray', linestyle=':', linewidth=0.8, label='α₂ = π/2')\nax.legend(fontsize=8)\nplt.tight_layout()\nplt.show()",
+    "crumbs": [
+      "Part I: The Geometry of Folds",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Geometry of a Crease</span>"
+    ]
+  },
+  {
+    "objectID": "02-geometry.html#maekawas-theorem",
+    "href": "02-geometry.html#maekawas-theorem",
+    "title": "2  Geometry of a Crease",
+    "section": "2.5 Maekawa’s Theorem",
+    "text": "2.5 Maekawa’s Theorem\nKawasaki tells us about the angles. Maekawa’s theorem tells us about the fold directions: at any flat-foldable vertex, the number of mountain folds \\(M\\) and valley folds \\(V\\) must satisfy:\n\\[|M - V| = 2 \\tag{2.8}\\]\nFor a 4-crease vertex, this means either \\(M=3, V=1\\) or \\(M=1, V=3\\). You cannot have \\(M=2, V=2\\) at a flat-foldable vertex.\n\n\nCode\ndef check_maekawa(fold_types):\n    \"\"\"\n    Check Maekawa's theorem.\n    fold_types: list of +1 (mountain) or -1 (valley).\n    Returns (satisfied, M, V).\n    \"\"\"\n    types = np.asarray(fold_types)\n    M = np.sum(types == 1)\n    V = np.sum(types == -1)\n    satisfied = abs(M - V) == 2\n    return satisfied, int(M), int(V)\n\n\ncases = [\n    ([1,  1,  1, -1], \"M=3, V=1\"),\n    ([1, -1,  1, -1], \"M=2, V=2\"),\n    ([-1, -1, -1, 1], \"M=1, V=3\"),\n]\nfor types, label in cases:\n    ok, M, V = check_maekawa(types)\n    print(f\"{label:12s}  →  Maekawa satisfied: {ok}\")\n\n\nM=3, V=1      →  Maekawa satisfied: True\nM=2, V=2      →  Maekawa satisfied: False\nM=1, V=3      →  Maekawa satisfied: True",
+    "crumbs": [
+      "Part I: The Geometry of Folds",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Geometry of a Crease</span>"
+    ]
+  },
+  {
+    "objectID": "02-geometry.html#a-complete-vertex-checker",
+    "href": "02-geometry.html#a-complete-vertex-checker",
+    "title": "2  Geometry of a Crease",
+    "section": "2.6 A Complete Vertex Checker",
+    "text": "2.6 A Complete Vertex Checker\n\n\nCode\ndef is_flat_foldable_vertex(sector_angles, fold_types):\n    \"\"\"\n    Check both Kawasaki and Maekawa for a single vertex.\n    sector_angles: alternating sector angles in radians\n    fold_types: +1 mountain, -1 valley, one per crease\n    \"\"\"\n    kaw_ok, s1, s2 = check_kawasaki(sector_angles)\n    mae_ok, M, V   = check_maekawa(fold_types)\n    return {\n        'kawasaki': kaw_ok,\n        'maekawa':  mae_ok,\n        'flat_foldable': kaw_ok and mae_ok,\n        'odd_angle_sum':  s1,\n        'even_angle_sum': s2,\n        'mountains': M,\n        'valleys':   V,\n    }\n\n\n# Standard Miura-ori vertex\nalphas = [np.pi/4, 3*np.pi/4, np.pi/4, 3*np.pi/4]\nfolds  = [1, -1, 1, -1]   # M, V, M, V\nresult = is_flat_foldable_vertex(alphas, folds)\nfor k, v in result.items():\n    print(f\"  {k}: {v}\")\n\n\n  kawasaki: False\n  maekawa: False\n  flat_foldable: False\n  odd_angle_sum: 1.5707963267948966\n  even_angle_sum: 4.71238898038469\n  mountains: 2\n  valleys: 2",
+    "crumbs": [
+      "Part I: The Geometry of Folds",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Geometry of a Crease</span>"
+    ]
+  },
+  {
+    "objectID": "02-geometry.html#summary",
+    "href": "02-geometry.html#summary",
+    "title": "2  Geometry of a Crease",
+    "section": "2.7 Summary",
+    "text": "2.7 Summary\n\nA fold is a rotation about a crease line, parameterized by fold angle \\(\\phi \\in [0, \\pi]\\).\nRodrigues’ formula gives the rotation matrix for any axis and angle.\nAt a multi-crease vertex, flat-foldability requires Kawasaki’s theorem (alternating sector angles sum to \\(\\pi\\)) and Maekawa’s theorem (\\(|M - V| = 2\\)).\nBoth conditions can be checked numerically with simple array operations.",
+    "crumbs": [
+      "Part I: The Geometry of Folds",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Geometry of a Crease</span>"
+    ]
+  },
+  {
+    "objectID": "02-geometry.html#further-reading",
+    "href": "02-geometry.html#further-reading",
+    "title": "2  Geometry of a Crease",
+    "section": "2.8 Further Reading",
+    "text": "2.8 Further Reading\nDemaine and O’Rourke (2007) provides rigorous proofs of Kawasaki’s and Maekawa’s theorems (Chapters 11–12). Huffman (1976) is the original paper connecting curvature to crease geometry and is surprisingly readable.",
+    "crumbs": [
+      "Part I: The Geometry of Folds",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Geometry of a Crease</span>"
+    ]
+  },
+  {
+    "objectID": "02-geometry.html#exercises",
+    "href": "02-geometry.html#exercises",
+    "title": "2  Geometry of a Crease",
+    "section": "2.9 Exercises",
+    "text": "2.9 Exercises\n\nRodrigues by hand. For a crease along \\(\\hat{e} = \\hat{y} = (0,1,0)\\) and fold angle \\(\\phi = \\pi/2\\), write out \\(R(\\hat{e}, \\phi)\\) using Equation 2.3. Apply it to the vector \\((1, 0, 0)\\) and verify the result makes geometric sense.\nThree-crease vertex. Can a vertex with exactly three creases be flat-foldable? Use Kawasaki’s theorem to argue why or why not.\nKawasaki violation. Write a Python function that, given a set of sector angles that violate Kawasaki’s theorem, returns the minimum perturbation to any single sector angle that restores the condition. (Hint: the answer is the difference between the actual alternating sums and \\(\\pi\\), distributed optimally.)\nMaekawa patterns. For a 6-crease vertex, list all \\((M, V)\\) combinations that satisfy Maekawa’s theorem. How many mountain/valley assignment patterns are there for each valid \\((M, V)\\) pair?\nClosure check. Implement a function that, given sector angles and fold angles for a 4-crease vertex, multiplies the four rotation matrices in sequence and checks whether the product is the identity. Test it on the Miura-ori vertex from the code block above for \\(\\phi = \\pi/4\\).\n\n\n\n\n\n\n\nDemaine, Erik D, and Joseph O’Rourke. 2007. Geometric Folding Algorithms: Linkages, Origami, Polyhedra. Cambridge University Press.\n\n\nHuffman, David A. 1976. “Curvature and Creases: A Primer on Paper.” IEEE Transactions on Computers 25 (10): 1010–19.\n\n\nKawasaki, Toshikazu. 1989. “On the Relation Between Mountain-Creases and Valley-Creases of a Flat Origami.” Proceedings of the First International Meeting of Origami Science and Technology, 229–37.",
+    "crumbs": [
+      "Part I: The Geometry of Folds",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Geometry of a Crease</span>"
+    ]
+  },
+  {
+    "objectID": "03-miura-ori.html",
+    "href": "03-miura-ori.html",
+    "title": "3  The Miura-ori",
+    "section": "",
+    "text": "3.1 The Unit Cell\nIn 1970, Koryo Miura was working on a problem that would have seemed absurd to most engineers: how to fold a sheet of paper so that it could be packed into a compact form and then unfolded with a single, smooth motion — no sequential steps, no user assistance, no stuck panels. The application was solar panels on satellites, where the deployment mechanism is one of the most failure-prone components, and where a failed deployment means a dead spacecraft.\nHis solution was a crease pattern so simple that it can be drawn with a ruler in five minutes, yet so constrained that the entire structure moves as a single rigid mechanism. It is now called the Miura-ori, and it has become the canonical example of origami engineering.\nThe Miura-ori is a periodic tessellation. The fundamental unit is a parallelogram-shaped panel, replicated across a rectangular grid and connected at shared creases. The geometry of the unit cell is controlled by two parameters:\nCode\nimport numpy as np\nimport matplotlib.pyplot as plt\nfrom matplotlib.patches import Polygon\nfrom matplotlib.collections import PatchCollection\n\ndef miura_unit_cell(alpha, gamma, a=1.0, b=1.0):\n    \"\"\"\n    Compute the 3D vertex positions of one Miura-ori unit cell.\n    alpha: sector angle (radians)\n    gamma: fold angle (radians), 0=collapsed, pi/2=flat\n    a, b: panel dimensions\n    Returns: dict of vertex positions\n    \"\"\"\n    # From Schenk & Guest (2013): exact kinematic model\n    # Panel half-dimensions\n    sa, ca = np.sin(alpha), np.cos(alpha)\n    sg, cg = np.sin(gamma), np.cos(gamma)\n\n    # In-plane projection of crease lengths\n    l  = a * np.sqrt(1 - (ca * sg)**2)   # projected crease length\n\n    # Vertex 0 at origin\n    V = {}\n    V[0] = np.array([0.0, 0.0, 0.0])\n    V[1] = np.array([a,   0.0, 0.0])\n\n    # Fold direction vector\n    d = np.array([ca * sg, sa, ca * cg]) / np.sqrt(1 - (ca * sg)**2 + (ca * cg)**2 - 1 + 1)\n    # Simplified: use the closed-form from Wei et al. (2013)\n    denom = np.sqrt(sa**2 + (ca * cg)**2)\n    V[2] = V[1] + b * np.array([-ca * sg, sa * cg / denom * np.sqrt(sa**2 + (ca*cg)**2),\n                                  sa * sg / denom * np.sqrt(sa**2 + (ca*cg)**2)])\n    V[3] = V[0] + (V[2] - V[1])\n    return V\n\n\ndef miura_dimensions(alpha, gamma, m=4, n=4):\n    \"\"\"\n    Compute overall dimensions of m×n Miura-ori tessellation.\n    Returns (width, height, thickness).\n    \"\"\"\n    sa, ca = np.sin(alpha), np.cos(alpha)\n    sg, cg = np.sin(gamma), np.cos(gamma)\n\n    # Closed-form from Schenk & Guest (2013), Eq. 5-7\n    # (normalized by panel dimension a=b=1)\n    W = 2 * m * np.sqrt(1 - (ca * sg)**2)          # width along x\n    L = n * 2 * sa * cg / np.sqrt(sa**2 + (ca*cg)**2) if gamma &gt; 0 else 2 * n * sa  # length along y\n    T = 2 * ca * sg * sa / np.sqrt(sa**2 + (ca*cg)**2) if gamma &gt; 0 else 0  # thickness\n    return W, L, T\n\n\n# Plot: deployed dimensions vs fold angle for several α values\ngammas = np.linspace(0.01, np.pi / 2, 200)\nalphas_deg = [30, 45, 60, 75]\n\nfig, axes = plt.subplots(1, 3, figsize=(12, 4))\nlabels = ['Width W', 'Length L', 'Thickness T']\n\nfor alpha_deg in alphas_deg:\n    alpha = np.radians(alpha_deg)\n    dims = np.array([miura_dimensions(alpha, g) for g in gammas])\n    for j in range(3):\n        axes[j].plot(np.degrees(gammas), dims[:, j], label=f'α={alpha_deg}°')\n\nfor j, ax in enumerate(axes):\n    ax.set_xlabel('Fold angle γ (°)')\n    ax.set_ylabel(labels[j] + ' / panel size')\n    ax.set_title(labels[j])\n    ax.legend(fontsize=7)\n    ax.grid(True, linewidth=0.5, alpha=0.5)\n\nplt.suptitle('Miura-ori: deployed dimensions vs fold angle', y=1.02)\nplt.tight_layout()\nplt.show()",
+    "crumbs": [
+      "Part I: The Geometry of Folds",
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>The Miura-ori</span>"
+    ]
+  },
+  {
+    "objectID": "03-miura-ori.html#the-unit-cell",
+    "href": "03-miura-ori.html#the-unit-cell",
+    "title": "3  The Miura-ori",
+    "section": "",
+    "text": "Sector angle \\(\\alpha \\in (0°, 90°)\\): the acute angle between adjacent crease lines at each vertex. When \\(\\alpha = 90°\\), the pattern degenerates to a simple accordion fold.\nFold angle \\(\\gamma \\in [0°, 90°]\\): the angle between the panel and the horizontal, measuring how far the structure has been folded. \\(\\gamma = 0°\\) is fully folded (collapsed); \\(\\gamma = 90°\\) is flat (deployed).",
+    "crumbs": [
+      "Part I: The Geometry of Folds",
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>The Miura-ori</span>"
+    ]
+  },
+  {
+    "objectID": "03-miura-ori.html#one-degree-of-freedom",
+    "href": "03-miura-ori.html#one-degree-of-freedom",
+    "title": "3  The Miura-ori",
+    "section": "3.2 One Degree of Freedom",
+    "text": "3.2 One Degree of Freedom\nThe Miura-ori’s most remarkable property is that the entire tessellation has exactly one mechanical degree of freedom. Specify \\(\\gamma\\) and every fold angle in the structure is determined.\nThis follows from the flat-foldability constraints. Each interior vertex of the Miura-ori satisfies Kawasaki’s theorem with sector angles \\(\\alpha\\) and \\(\\pi - \\alpha\\), and Maekawa’s theorem with alternating M-V-M-V assignments. The constraints are so tightly coupled that choosing one fold angle propagates constraints uniquely to every other fold angle.\nWe can verify this numerically: build the constraint system and check its rank.\n\n\nCode\ndef miura_fold_angles(alpha, gamma):\n    \"\"\"\n    For a Miura-ori vertex with sector angle alpha, compute the fold angle\n    of each crease given the primary fold angle gamma.\n    Returns all four fold angles [phi1, phi2, phi3, phi4].\n    \"\"\"\n    # From kinematic analysis: two distinct fold angles alternate\n    # phi_major = gamma (the primary fold)\n    # phi_minor from Kawasaki closure at each vertex\n    sa, ca = np.sin(alpha), np.cos(alpha)\n    sg, cg = np.sin(gamma), np.cos(gamma)\n\n    # Minor fold angle from closure condition (derived from Schenk & Guest)\n    cos_phi_minor = (ca**2 * sg**2 - sa**2) / (ca**2 * sg**2 + sa**2)\n    phi_minor = np.arccos(np.clip(cos_phi_minor, -1, 1))\n\n    return gamma, phi_minor, gamma, phi_minor\n\n\nalpha = np.radians(60)\ngammas_test = np.linspace(0.05, np.pi / 2, 8)\n\nprint(f\"{'γ (°)':&gt;8} {'φ_major (°)':&gt;12} {'φ_minor (°)':&gt;12}\")\nprint(\"-\" * 36)\nfor g in gammas_test:\n    phi1, phi2, _, _ = miura_fold_angles(alpha, g)\n    print(f\"{np.degrees(g):8.1f} {np.degrees(phi1):12.3f} {np.degrees(phi2):12.3f}\")\n\n\n   γ (°)  φ_major (°)  φ_minor (°)\n------------------------------------\n     2.9        2.865      176.694\n    15.3       15.313      162.662\n    27.8       27.761      149.897\n    40.2       40.208      139.117\n    52.7       52.656      130.690\n    65.1       65.104      124.718\n    77.6       77.552      121.173\n    90.0       90.000      120.000",
+    "crumbs": [
+      "Part I: The Geometry of Folds",
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>The Miura-ori</span>"
+    ]
+  },
+  {
+    "objectID": "03-miura-ori.html#compaction-ratio",
+    "href": "03-miura-ori.html#compaction-ratio",
+    "title": "3  The Miura-ori",
+    "section": "3.3 Compaction Ratio",
+    "text": "3.3 Compaction Ratio\nThe compaction ratio \\(\\rho\\) is the ratio of the collapsed footprint to the deployed footprint. For the Miura-ori, this is purely a function of \\(\\alpha\\):\n\\[\\rho(\\alpha) = \\frac{W(\\gamma=0)}{W(\\gamma=\\pi/2)} = \\sin\\alpha \\tag{3.1}\\]\nA smaller \\(\\alpha\\) gives a better compaction ratio — the structure collapses to a smaller fraction of its deployed size. But smaller \\(\\alpha\\) also means the crease pattern is more acute, which can create manufacturing difficulties and higher elastic strain in real materials.\n\n\nCode\n# Compaction ratio vs alpha\nalphas = np.linspace(5, 85, 300)\nrho = np.sin(np.radians(alphas))\n\nfig, ax = plt.subplots(figsize=(6, 4))\nax.plot(alphas, rho, color='steelblue', linewidth=2)\nax.fill_between(alphas, 0, rho, alpha=0.1, color='steelblue')\nax.set_xlabel('Sector angle α (°)')\nax.set_ylabel('Compaction ratio ρ = sin α')\nax.set_title('Miura-ori compaction ratio vs sector angle')\nax.set_xlim(0, 90)\nax.set_ylim(0, 1)\nax.axhline(0.5, color='coral', linestyle='--', linewidth=1, label='ρ = 0.5')\nax.axvline(30, color='coral', linestyle=':', linewidth=1, label='α = 30°')\nax.legend()\nax.grid(True, linewidth=0.5, alpha=0.5)\nplt.tight_layout()\nplt.show()",
+    "crumbs": [
+      "Part I: The Geometry of Folds",
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>The Miura-ori</span>"
+    ]
+  },
+  {
+    "objectID": "03-miura-ori.html#optimizing-α-for-a-target-compaction-ratio",
+    "href": "03-miura-ori.html#optimizing-α-for-a-target-compaction-ratio",
+    "title": "3  The Miura-ori",
+    "section": "3.4 Optimizing α for a Target Compaction Ratio",
+    "text": "3.4 Optimizing α for a Target Compaction Ratio\nSuppose we need a solar panel array that folds to at most 40% of its deployed width — a compaction ratio \\(\\rho \\leq 0.40\\) — but we want to maximize the sector angle \\(\\alpha\\) (to ease manufacturing). This is a simple 1D constrained optimization:\n\\[\\max_{\\alpha} \\quad \\alpha \\quad \\text{subject to} \\quad \\sin\\alpha \\leq 0.40, \\quad \\alpha &gt; 0 \\tag{3.2}\\]\nThe analytic solution is \\(\\alpha^* = \\arcsin(0.40)\\), but we solve it numerically to establish the pattern we will use in more complex problems later.\n\n\nCode\nfrom scipy.optimize import minimize_scalar, minimize\n\n# Objective: maximize alpha → minimize negative alpha\n# Constraint: sin(alpha) &lt;= 0.40\n\nrho_target = 0.40\n\nresult = minimize_scalar(\n    lambda alpha: -alpha,                        # maximize alpha\n    bounds=(0.01, np.pi / 2),\n    method='bounded',\n    options={'xatol': 1e-8}\n)\n\n# But bounded scalar minimize ignores constraints. Use minimize with constraint.\ndef objective(alpha):\n    return -alpha[0]   # maximize alpha\n\nconstraint = {'type': 'ineq', 'fun': lambda a: rho_target - np.sin(a[0])}\nbounds_opt = [(0.01, np.pi / 2 - 0.01)]\n\nsol = minimize(objective, x0=[0.3], method='SLSQP',\n               bounds=bounds_opt, constraints=constraint,\n               options={'ftol': 1e-10})\n\nalpha_opt = sol.x[0]\nprint(f\"Target compaction ratio:  ρ ≤ {rho_target}\")\nprint(f\"Optimal sector angle:     α* = {np.degrees(alpha_opt):.4f}°\")\nprint(f\"Achieved compaction:      ρ  = {np.sin(alpha_opt):.6f}\")\nprint(f\"Analytic solution:        α* = {np.degrees(np.arcsin(rho_target)):.4f}°\")\n\n\nTarget compaction ratio:  ρ ≤ 0.4\nOptimal sector angle:     α* = 23.5782°\nAchieved compaction:      ρ  = 0.400000\nAnalytic solution:        α* = 23.5782°",
+    "crumbs": [
+      "Part I: The Geometry of Folds",
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>The Miura-ori</span>"
+    ]
+  },
+  {
+    "objectID": "03-miura-ori.html#summary",
+    "href": "03-miura-ori.html#summary",
+    "title": "3  The Miura-ori",
+    "section": "3.5 Summary",
+    "text": "3.5 Summary\n\nThe Miura-ori unit cell is parameterized by sector angle \\(\\alpha\\) and fold angle \\(\\gamma\\).\nThe structure has exactly one mechanical degree of freedom: specifying \\(\\gamma\\) determines every fold angle.\nCompaction ratio \\(\\rho = \\sin\\alpha\\) depends only on \\(\\alpha\\), not on fold angle.\nOptimizing \\(\\alpha\\) for a target compaction ratio is a simple constrained scalar problem — a preview of the methods in Part II.",
+    "crumbs": [
+      "Part I: The Geometry of Folds",
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>The Miura-ori</span>"
+    ]
+  },
+  {
+    "objectID": "03-miura-ori.html#further-reading",
+    "href": "03-miura-ori.html#further-reading",
+    "title": "3  The Miura-ori",
+    "section": "3.6 Further Reading",
+    "text": "3.6 Further Reading\nSchenk and Guest (2013) derives the complete kinematics of the Miura-ori and its negative Poisson’s ratio behavior. Wei et al. (2013) analyzes the geometric mechanics of general pleated origami tessellations.",
+    "crumbs": [
+      "Part I: The Geometry of Folds",
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>The Miura-ori</span>"
+    ]
+  },
+  {
+    "objectID": "03-miura-ori.html#exercises",
+    "href": "03-miura-ori.html#exercises",
+    "title": "3  The Miura-ori",
+    "section": "3.7 Exercises",
+    "text": "3.7 Exercises\n\nPoisson’s ratio. The Miura-ori has a negative Poisson’s ratio: when you pull it in the \\(x\\)-direction, it also expands in the \\(y\\)-direction. Using the width and length formulas from miura_dimensions, compute the effective in-plane Poisson’s ratio \\(\\nu = -(\\partial L / \\partial W)(W/L)\\) as a function of \\(\\alpha\\) at \\(\\gamma = \\pi/4\\). Plot \\(\\nu(\\alpha)\\) for \\(\\alpha \\in (5°, 85°)\\).\nThickness vs compaction. For a physical solar panel array with panel thickness \\(t\\) (which adds to the collapsed thickness), the actual compaction ratio changes. Modify miura_dimensions to include panel thickness and replot the compaction ratio vs \\(\\alpha\\) for \\(t = 0, 0.01, 0.02\\) (normalized units).\nTwo-objective optimization. Set up a two-objective optimization problem: minimize compaction ratio and minimize peak fold strain (approximated as \\(\\propto 1/\\alpha\\)). Generate 50 Pareto-optimal points by sweeping over a scalarized objective \\(w \\cdot \\rho + (1-w)/\\alpha\\) for \\(w \\in [0, 1]\\). Plot the Pareto front.\nVerify one DOF. Write a function that takes an \\(m \\times n\\) Miura-ori with sector angle \\(\\alpha\\) and constructs the full system of Kawasaki constraints as a matrix equation. Compute the rank and verify that the nullspace dimension equals 1 (one DOF) for any \\(\\alpha \\neq 0°, 90°\\).\nDeployment force. If each crease has an elastic restoring moment \\(\\tau = k(\\phi - \\phi_0)\\) (a torsional spring), write an expression for the total elastic energy of an \\(m \\times n\\) Miura-ori as a function of \\(\\gamma\\). Find the fold angle \\(\\gamma^*\\) at which the deployment force (energy gradient) is maximum.\n\n\n\n\n\n\n\nSchenk, Mark, and Simon D Guest. 2013. “Geometry of Miura-Folded Metamaterials.” Proceedings of the National Academy of Sciences 110 (9): 3276–81.\n\n\nWei, ZY, ZV Guo, L Dudte, HY Liang, and L Mahadevan. 2013. “Geometric Mechanics of Periodic Pleated Origami.” Physical Review Letters 110 (21): 215501.",
+    "crumbs": [
+      "Part I: The Geometry of Folds",
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>The Miura-ori</span>"
+    ]
+  },
+  {
+    "objectID": "04-circle-packing.html",
+    "href": "04-circle-packing.html",
+    "title": "4  Circle Packing and Origami Base Design",
+    "section": "",
+    "text": "4.1 Origami Bases and Tree Structures\nRobert Lang is a physicist turned professional origami artist, and the algorithm he published in 1996 (Lang 1996) is one of the more beautiful pieces of applied mathematics to come out of the origami world. The insight is this: the problem of designing an origami base — a folded form with the right number and proportion of flaps to become a finished model — is exactly the problem of packing circles into a square without overlap.\nTo see why requires a detour through the theory of origami bases.\nAn origami base is a flat-foldable configuration from which a finished model is folded. Most complex origami models — insects, human figures, animals — begin from a base that has already been folded. The base has flaps: points or regions that will become the legs, wings, antennae, or other appendages of the finished model.\nThe structure of a base can be represented as a tree graph: a graph with no cycles where each edge represents a flap and each node is either a joint (where flaps meet) or a terminal (the tip of a flap). The edges have lengths proportional to the desired flap lengths.\nLang’s insight: for a uniaxial base (a base where all flaps fold out of a single plane), there is a one-to-one correspondence between:\nThe correspondence works as follows. Each terminal node of the tree corresponds to a circle. The radius of the circle is proportional to the path length from that terminal node to any other terminal node through the tree (specifically, it is the “reach” of that flap — how far it can extend while leaving room for all other flaps).\nA valid base exists if and only if the corresponding circles can be packed into the square without overlap. The crease pattern is then recovered from the circle arrangement by geometric construction.",
+    "crumbs": [
+      "Part II: Optimization Methods",
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Circle Packing and Origami Base Design</span>"
+    ]
+  },
+  {
+    "objectID": "04-circle-packing.html#origami-bases-and-tree-structures",
+    "href": "04-circle-packing.html#origami-bases-and-tree-structures",
+    "title": "4  Circle Packing and Origami Base Design",
+    "section": "",
+    "text": "A valid base crease pattern on a square sheet\nA packing of circles into that square",
+    "crumbs": [
+      "Part II: Optimization Methods",
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Circle Packing and Origami Base Design</span>"
+    ]
+  },
+  {
+    "objectID": "04-circle-packing.html#formulating-the-optimization-problem",
+    "href": "04-circle-packing.html#formulating-the-optimization-problem",
+    "title": "4  Circle Packing and Origami Base Design",
+    "section": "4.2 Formulating the Optimization Problem",
+    "text": "4.2 Formulating the Optimization Problem\nLet the square sheet have side length 1. Let there be \\(n\\) terminal nodes with circles of radii \\(r_1, \\ldots, r_n\\) centered at positions \\((x_1, y_1), \\ldots, (x_n, y_n)\\).\nThe goal is to find positions and a common scale factor \\(s\\) such that the scaled circles pack without overlap. Specifically:\nMaximize the scale factor \\(s\\) (larger scale = more efficient use of the paper)\nSubject to:\nNon-overlap: For all pairs \\(i \\neq j\\), \\[\\sqrt{(x_i - x_j)^2 + (y_i - y_j)^2} \\geq s(r_i + r_j) \\tag{4.1}\\]\nInside square: For all \\(i\\), \\[s r_i \\leq x_i \\leq 1 - s r_i \\tag{4.2}\\] \\[s r_i \\leq y_i \\leq 1 - s r_i \\tag{4.3}\\]\nPositivity: \\(s &gt; 0\\)\nThe decision variables are \\(\\{x_i, y_i\\}_{i=1}^n\\) and \\(s\\). The problem is a nonlinear program with quadratic constraints.\n\n\nCode\nimport numpy as np\nfrom scipy.optimize import minimize, NonlinearConstraint, Bounds\nimport matplotlib.pyplot as plt\nimport matplotlib.patches as mpatches\n\ndef unpack(z, n):\n    \"\"\"Unpack decision vector z into (x, y, s).\"\"\"\n    x = z[:n]\n    y = z[n:2*n]\n    s = z[2*n]\n    return x, y, s\n\ndef pack(x, y, s):\n    \"\"\"Pack (x, y, s) into decision vector.\"\"\"\n    return np.concatenate([x, y, [s]])\n\n\ndef circle_pack_objective(z, n):\n    \"\"\"Minimize negative scale factor (= maximize s).\"\"\"\n    _, _, s = unpack(z, n)\n    return -s\n\n\ndef circle_pack_constraints(z, n, radii):\n    \"\"\"\n    Returns a vector of constraint values, each ≥ 0 when satisfied.\n    Non-overlap: dist(i,j) - s*(r_i + r_j) &gt;= 0\n    Inside: x_i - s*r_i &gt;= 0,  1 - x_i - s*r_i &gt;= 0  (similarly for y)\n    \"\"\"\n    x, y, s = unpack(z, n)\n    r = np.asarray(radii)\n    cons = []\n\n    # Non-overlap constraints\n    for i in range(n):\n        for j in range(i + 1, n):\n            dist = np.sqrt((x[i] - x[j])**2 + (y[i] - y[j])**2)\n            cons.append(dist - s * (r[i] + r[j]))\n\n    # Inside square\n    for i in range(n):\n        cons.append(x[i] - s * r[i])          # x_i &gt;= s*r_i\n        cons.append(1 - x[i] - s * r[i])      # x_i &lt;= 1 - s*r_i\n        cons.append(y[i] - s * r[i])\n        cons.append(1 - y[i] - s * r[i])\n\n    return np.array(cons)\n\n\ndef solve_circle_packing(radii, n_restarts=10, seed=42):\n    \"\"\"\n    Solve the circle-packing problem for given relative radii.\n    Returns best (x, y, s, success).\n    \"\"\"\n    rng = np.random.default_rng(seed)\n    n = len(radii)\n    best_s = -np.inf\n    best_sol = None\n\n    for trial in range(n_restarts):\n        # Random initial positions\n        x0 = rng.uniform(0.1, 0.9, n)\n        y0 = rng.uniform(0.1, 0.9, n)\n        s0 = 0.2\n        z0 = pack(x0, y0, s0)\n\n        # Bounds: coordinates in [0,1], s in (0, 1]\n        lb = np.concatenate([np.zeros(2*n), [0.01]])\n        ub = np.concatenate([np.ones(2*n),  [1.0]])\n\n        cons = {'type': 'ineq',\n                'fun': lambda z: circle_pack_constraints(z, n, radii)}\n\n        result = minimize(\n            circle_pack_objective, z0,\n            args=(n,),\n            method='SLSQP',\n            bounds=Bounds(lb, ub),\n            constraints=cons,\n            options={'ftol': 1e-9, 'maxiter': 1000}\n        )\n\n        if result.success or result.fun &lt; -best_s:\n            x, y, s = unpack(result.x, n)\n            if s &gt; best_s:\n                best_s = s\n                best_sol = (x.copy(), y.copy(), s, result.success)\n\n    return best_sol",
+    "crumbs": [
+      "Part II: Optimization Methods",
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Circle Packing and Origami Base Design</span>"
+    ]
+  },
+  {
+    "objectID": "04-circle-packing.html#example-bird-base-tree",
+    "href": "04-circle-packing.html#example-bird-base-tree",
+    "title": "4  Circle Packing and Origami Base Design",
+    "section": "4.3 Example: Bird Base Tree",
+    "text": "4.3 Example: Bird Base Tree\nThe classic bird base underlies thousands of origami models. Its tree has four terminal nodes (two wings, head, tail) connected through a central joint. We assign relative radii based on desired flap proportions.\n\n\nCode\n# Bird base: 4 flaps\n# Tree: central node connected to 4 terminals\n# Relative path lengths (radii) for equal-length flaps\nradii_bird = [1.0, 1.0, 1.0, 1.0]   # all flaps equal length\n\nx, y, s, ok = solve_circle_packing(radii_bird, n_restarts=20)\n\nprint(f\"Solver converged: {ok}\")\nprint(f\"Scale factor s = {s:.4f}\")\nprint(f\"Circle centers:\")\nfor i, (xi, yi) in enumerate(zip(x, y)):\n    print(f\"  Circle {i+1}: ({xi:.3f}, {yi:.3f})  radius = {s * radii_bird[i]:.3f}\")\n\n\ndef plot_circle_packing(x, y, s, radii, title=\"Circle packing\"):\n    fig, ax = plt.subplots(figsize=(5, 5))\n    ax.set_xlim(-0.05, 1.05)\n    ax.set_ylim(-0.05, 1.05)\n    ax.set_aspect('equal')\n    ax.add_patch(mpatches.Rectangle((0, 0), 1, 1, fill=False,\n                                     edgecolor='black', linewidth=2))\n    colors = plt.cm.Set2(np.linspace(0, 1, len(radii)))\n    for i, (xi, yi, ri) in enumerate(zip(x, y, radii)):\n        circle = mpatches.Circle((xi, yi), s * ri, color=colors[i],\n                                   alpha=0.5, linewidth=1.5, edgecolor='k')\n        ax.add_patch(circle)\n        ax.text(xi, yi, f'r={ri:.1f}', ha='center', va='center', fontsize=8)\n    ax.set_title(f'{title}\\ns = {s:.4f}', fontsize=10)\n    ax.set_xlabel('x')\n    ax.set_ylabel('y')\n    ax.grid(True, linewidth=0.3, alpha=0.4)\n    plt.tight_layout()\n    plt.show()\n\n\nplot_circle_packing(x, y, s, radii_bird, \"Bird base: 4 equal flaps\")\n\n\nSolver converged: True\nScale factor s = 0.2500\nCircle centers:\n  Circle 1: (0.750, 0.250)  radius = 0.250\n  Circle 2: (0.250, 0.250)  radius = 0.250\n  Circle 3: (0.250, 0.750)  radius = 0.250\n  Circle 4: (0.750, 0.750)  radius = 0.250",
+    "crumbs": [
+      "Part II: Optimization Methods",
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Circle Packing and Origami Base Design</span>"
+    ]
+  },
+  {
+    "objectID": "04-circle-packing.html#unequal-flaps-insect-base",
+    "href": "04-circle-packing.html#unequal-flaps-insect-base",
+    "title": "4  Circle Packing and Origami Base Design",
+    "section": "4.4 Unequal Flaps: Insect Base",
+    "text": "4.4 Unequal Flaps: Insect Base\nAn insect model needs long legs and shorter body parts. We assign unequal radii:\n\n\nCode\n# Insect: 6 flaps — 3 pairs of legs + head + abdomen + 2 wings\nradii_insect = [2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 1.0, 1.0]\n\nx, y, s, ok = solve_circle_packing(radii_insect, n_restarts=30, seed=7)\nprint(f\"Solver converged: {ok},  scale = {s:.4f}\")\nplot_circle_packing(x, y, s, radii_insect, \"Insect base: 6 legs + 2 body parts\")\n\n\nSolver converged: True,  scale = 0.0938",
+    "crumbs": [
+      "Part II: Optimization Methods",
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Circle Packing and Origami Base Design</span>"
+    ]
+  },
+  {
+    "objectID": "04-circle-packing.html#packing-efficiency",
+    "href": "04-circle-packing.html#packing-efficiency",
+    "title": "4  Circle Packing and Origami Base Design",
+    "section": "4.5 Packing Efficiency",
+    "text": "4.5 Packing Efficiency\nThe packing efficiency \\(\\eta\\) is the fraction of the square’s area covered by circles:\n\\[\\eta = s^2 \\pi \\sum_{i=1}^n r_i^2 \\tag{4.4}\\]\n\n\nCode\ndef packing_efficiency(s, radii):\n    return s**2 * np.pi * sum(r**2 for r in radii)\n\nfor name, r, sol in [\n    (\"Bird base\", radii_bird, solve_circle_packing(radii_bird, n_restarts=20)),\n    (\"Insect base\", radii_insect, solve_circle_packing(radii_insect, n_restarts=30, seed=7)),\n]:\n    _, _, s_sol, _ = sol\n    eta = packing_efficiency(s_sol, r)\n    print(f\"{name:15s}  s={s_sol:.4f}  η={eta:.4f} ({100*eta:.1f}%)\")\n\n\nBird base        s=0.2500  η=0.7854 (78.5%)\nInsect base      s=0.0938  η=0.7193 (71.9%)",
+    "crumbs": [
+      "Part II: Optimization Methods",
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Circle Packing and Origami Base Design</span>"
+    ]
+  },
+  {
+    "objectID": "04-circle-packing.html#summary",
+    "href": "04-circle-packing.html#summary",
+    "title": "4  Circle Packing and Origami Base Design",
+    "section": "4.6 Summary",
+    "text": "4.6 Summary\n\nAn origami base corresponds to a tree graph; each terminal node maps to a circle.\nValid base design requires packing those circles into the square sheet without overlap.\nThe optimization problem maximizes the scale factor \\(s\\) subject to non-overlap and boundary constraints.\nThe problem is a nonlinear program, solvable with scipy.optimize.minimize (SLSQP).\nMultiple random restarts improve solution quality for problems with many local optima.",
+    "crumbs": [
+      "Part II: Optimization Methods",
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Circle Packing and Origami Base Design</span>"
+    ]
+  },
+  {
+    "objectID": "04-circle-packing.html#further-reading",
+    "href": "04-circle-packing.html#further-reading",
+    "title": "4  Circle Packing and Origami Base Design",
+    "section": "4.7 Further Reading",
+    "text": "4.7 Further Reading\nLang (1996) is the original paper — concise and readable. Lang (2011) (Chapter 12) gives a detailed treatment of the TreeMaker algorithm with worked examples.",
+    "crumbs": [
+      "Part II: Optimization Methods",
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Circle Packing and Origami Base Design</span>"
+    ]
+  },
+  {
+    "objectID": "04-circle-packing.html#exercises",
+    "href": "04-circle-packing.html#exercises",
+    "title": "4  Circle Packing and Origami Base Design",
+    "section": "4.8 Exercises",
+    "text": "4.8 Exercises\n\nVerify non-overlap. After solving, write a function that checks all pairwise distances between circle centers and verifies that no two circles overlap. Report the minimum separation distance.\nThree-flap triangle. Design a base for a tree with three equal-length terminal flaps. Experiment with different initial positions and count how many distinct local optima you find.\nUnequal radii sensitivity. Take the bird base problem and vary one radius from 0.5 to 2.0 while holding the others fixed. Plot the optimal scale factor \\(s^*\\) as a function of the varied radius. What happens as one circle becomes very large?\n5-circle packing. Solve the packing problem for 5 equal circles. The known optimal packing efficiency for 5 equal circles in a square is approximately \\(\\eta \\approx 0.707\\). How close does your optimizer get?\nGradient of the scale factor. Compute the gradient of the objective \\(-s\\) with respect to circle positions \\((x_i, y_i)\\) analytically, and verify it matches the numerical gradient used by SLSQP. (Use scipy.optimize.check_grad.)\n\n\n\n\n\n\n\nLang, Robert J. 1996. “A Computational Algorithm for Origami Design.” Proceedings of the Twelfth Annual Symposium on Computational Geometry, 98–105.\n\n\nLang, Robert J. 2011. Origami Design Secrets: Mathematical Methods for an Ancient Art. 2nd ed. CRC Press.",
+    "crumbs": [
+      "Part II: Optimization Methods",
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Circle Packing and Origami Base Design</span>"
+    ]
+  },
+  {
+    "objectID": "05-energy-minimization.html",
+    "href": "05-energy-minimization.html",
+    "title": "5  Energy Minimization and Equilibrium Folds",
+    "section": "",
+    "text": "5.1 The Elastic Fold Energy Model\nNot every fold pattern has a single, clean, analytically-determined configuration. The Miura-ori folds along a one-parameter path because its geometry enforces it. But most real structures — partially folded panels, curved crease patterns, origami with elastic materials — settle into an equilibrium that balances the external loading against the elastic energy stored in the creases.\nFinding that equilibrium is an energy minimization problem.\nModel each crease as a torsional spring: it has a natural (rest) fold angle \\(\\phi_0\\) and resists deformation with stiffness \\(k\\). The elastic energy stored in crease \\(i\\) when its fold angle is \\(\\phi_i\\) is:\n\\[E_i = \\frac{k_i}{2}(\\phi_i - \\phi_{0,i})^2 \\tag{5.1}\\]\nThe total energy of the structure is:\n\\[E_\\text{total} = \\sum_{i=1}^{N} \\frac{k_i}{2}(\\phi_i - \\phi_{0,i})^2 \\tag{5.2}\\]\nAt equilibrium, \\(E_\\text{total}\\) is minimized subject to the geometric constraints from Chapter 2 — specifically, the Kawasaki closure conditions at each vertex.\nThis is a constrained nonlinear program:\n\\[\\min_{\\boldsymbol{\\phi}} \\quad E_\\text{total}(\\boldsymbol{\\phi}) \\quad \\text{subject to} \\quad g_j(\\boldsymbol{\\phi}) = 0 \\quad j = 1, \\ldots, M \\tag{5.3}\\]\nwhere the \\(g_j\\) are the Kawasaki constraints (or more generally, the geometric closure conditions at each vertex).\nCode\nimport numpy as np\nimport matplotlib.pyplot as plt\nfrom scipy.optimize import minimize\n\ndef total_energy(phi, phi0, k):\n    \"\"\"Total elastic energy of a crease pattern.\"\"\"\n    return 0.5 * np.sum(k * (phi - phi0)**2)\n\ndef energy_gradient(phi, phi0, k):\n    \"\"\"Analytic gradient of total energy.\"\"\"\n    return k * (phi - phi0)",
+    "crumbs": [
+      "Part II: Optimization Methods",
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>Energy Minimization and Equilibrium Folds</span>"
+    ]
+  },
+  {
+    "objectID": "05-energy-minimization.html#example-four-crease-vertex-under-load",
+    "href": "05-energy-minimization.html#example-four-crease-vertex-under-load",
+    "title": "5  Energy Minimization and Equilibrium Folds",
+    "section": "5.2 Example: Four-Crease Vertex Under Load",
+    "text": "5.2 Example: Four-Crease Vertex Under Load\nConsider a single four-crease vertex (the Miura-ori unit vertex) with sector angles \\(\\alpha\\) and \\(\\pi - \\alpha\\). The vertex has four fold angles \\(\\phi_1, \\phi_2, \\phi_3, \\phi_4\\) subject to the Kawasaki closure condition.\nWe will minimize the elastic energy over the feasible set — the manifold of fold-angle vectors satisfying Kawasaki — and trace how the equilibrium configuration depends on the stiffness distribution.\n\n\nCode\ndef kawasaki_residual(phi, alpha):\n    \"\"\"\n    Kawasaki closure condition for a 4-crease Miura vertex.\n    Returns scalar: should be 0 at valid configurations.\n    This is the product-of-rotations closure, linearized near flat.\n    Approximation: use the alternating sum condition for small angles.\n    \"\"\"\n    phi1, phi2, phi3, phi4 = phi\n    ca = np.cos(alpha)\n    sa = np.sin(alpha)\n    # Exact closure from Schenk & Guest (2013): relates phi_major and phi_minor\n    # cos(phi2) = (ca^2 * sin^2(phi1) - sa^2) / (ca^2 * sin^2(phi1) + sa^2)\n    # Residual for phi2 given phi1:\n    sg1 = np.sin(phi1)\n    denom = ca**2 * sg1**2 + sa**2\n    if abs(denom) &lt; 1e-12:\n        return 0.0\n    cos_phi2_required = (ca**2 * sg1**2 - sa**2) / denom\n    cos_phi2_required = np.clip(cos_phi2_required, -1, 1)\n    phi2_required = np.arccos(cos_phi2_required)\n    # Constraint: phi2 - phi2_required = 0; phi3 = phi1; phi4 = phi2\n    return phi2 - phi2_required\n\n\ndef vertex_energy_constrained(alpha, phi0, k, phi_init=None):\n    \"\"\"\n    Minimize elastic energy of a 4-crease vertex subject to Kawasaki closure.\n    Decision variables: [phi1, phi2] — phi3=phi1, phi4=phi2 by symmetry.\n    \"\"\"\n    if phi_init is None:\n        phi_init = np.array([0.5, 0.3])\n\n    def energy_2d(pq):\n        phi1, phi2 = pq\n        phi = np.array([phi1, phi2, phi1, phi2])\n        return total_energy(phi, phi0, k)\n\n    def kawasaki_2d(pq):\n        phi1, phi2 = pq\n        sg1 = np.sin(phi1)\n        ca = np.cos(alpha)\n        sa = np.sin(alpha)\n        denom = ca**2 * sg1**2 + sa**2\n        cos_phi2_req = (ca**2 * sg1**2 - sa**2) / (max(denom, 1e-12))\n        cos_phi2_req = np.clip(cos_phi2_req, -1, 1)\n        return phi2 - np.arccos(cos_phi2_req)\n\n    result = minimize(\n        energy_2d,\n        phi_init,\n        method='SLSQP',\n        bounds=[(0.01, np.pi - 0.01)] * 2,\n        constraints={'type': 'eq', 'fun': kawasaki_2d},\n        options={'ftol': 1e-10, 'maxiter': 500}\n    )\n    phi1_eq, phi2_eq = result.x\n    phi_eq = np.array([phi1_eq, phi2_eq, phi1_eq, phi2_eq])\n    return phi_eq, result.fun, result.success\n\n\n# Study: how does equilibrium change with rest angle phi0?\nalpha = np.radians(45)\nphi0_sweep = np.linspace(0.1, np.pi * 0.9, 20)\nk_uniform = np.ones(4)\n\nphi1_eq_vals, phi2_eq_vals = [], []\nfor phi0_val in phi0_sweep:\n    phi0 = np.full(4, phi0_val)\n    phi_eq, E_eq, _ = vertex_energy_constrained(alpha, phi0, k_uniform,\n                                                  phi_init=[phi0_val * 0.8, phi0_val * 0.5])\n    phi1_eq_vals.append(np.degrees(phi_eq[0]))\n    phi2_eq_vals.append(np.degrees(phi_eq[1]))\n\nfig, ax = plt.subplots(figsize=(7, 4))\nax.plot(np.degrees(phi0_sweep), phi1_eq_vals, 'o-', color='steelblue', label='φ₁ (major fold)', markersize=4)\nax.plot(np.degrees(phi0_sweep), phi2_eq_vals, 's-', color='coral', label='φ₂ (minor fold)', markersize=4)\nax.plot(np.degrees(phi0_sweep), np.degrees(phi0_sweep), 'k--', linewidth=0.8, label='φ₀ (rest angle)')\nax.set_xlabel('Rest angle φ₀ (°)')\nax.set_ylabel('Equilibrium fold angle (°)')\nax.set_title(f'Miura-ori vertex equilibrium (α = 45°, uniform stiffness)')\nax.legend()\nax.grid(True, linewidth=0.5, alpha=0.5)\nplt.tight_layout()\nplt.show()",
+    "crumbs": [
+      "Part II: Optimization Methods",
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>Energy Minimization and Equilibrium Folds</span>"
+    ]
+  },
+  {
+    "objectID": "05-energy-minimization.html#comparing-optimizers",
+    "href": "05-energy-minimization.html#comparing-optimizers",
+    "title": "5  Energy Minimization and Equilibrium Folds",
+    "section": "5.3 Comparing Optimizers",
+    "text": "5.3 Comparing Optimizers\nThe energy minimization problem Equation 5.3 is smooth and has analytic gradients. Different optimizers make different trade-offs between convergence speed, memory, and constraint-handling capability.\n\n\nCode\nimport time\n\ndef run_optimizer(method, phi0, k, alpha, phi_init):\n    \"\"\"\n    Run one optimizer and return (solution, n_iter, wall_time, success).\n    \"\"\"\n    history = {'phi': [], 'E': []}\n\n    def energy_with_log(pq):\n        phi = np.array([pq[0], pq[1], pq[0], pq[1]])\n        E = total_energy(phi, phi0, k)\n        history['phi'].append(pq.copy())\n        history['E'].append(E)\n        return E\n\n    def kawasaki_2d(pq):\n        phi1, phi2 = pq\n        sg1 = np.sin(phi1)\n        ca = np.cos(alpha)\n        sa = np.sin(alpha)\n        denom = ca**2 * sg1**2 + sa**2\n        cos_phi2_req = np.clip((ca**2 * sg1**2 - sa**2) / max(denom, 1e-12), -1, 1)\n        return phi2 - np.arccos(cos_phi2_req)\n\n    kwargs = dict(\n        fun=energy_with_log,\n        x0=phi_init,\n        bounds=[(0.01, np.pi - 0.01)] * 2,\n        options={'maxiter': 2000}\n    )\n\n    if method == 'SLSQP':\n        kwargs['method'] = 'SLSQP'\n        kwargs['constraints'] = {'type': 'eq', 'fun': kawasaki_2d}\n        kwargs['options']['ftol'] = 1e-10\n    elif method == 'L-BFGS-B':\n        kwargs['method'] = 'L-BFGS-B'\n        kwargs['options']['ftol'] = 1e-12\n\n    t0 = time.perf_counter()\n    result = minimize(**kwargs)\n    dt = time.perf_counter() - t0\n\n    return result.x, history['E'], dt, result.success\n\n\nalpha = np.radians(60)\nphi0 = np.array([1.2, 0.6, 1.2, 0.6])\nk = np.array([1.0, 2.0, 1.0, 0.5])\nphi_init = np.array([0.8, 0.4])\n\nfig, axes = plt.subplots(1, 2, figsize=(10, 4))\n\nfor method, color in [('SLSQP', 'steelblue'), ('L-BFGS-B', 'coral')]:\n    sol, E_hist, dt, ok = run_optimizer(method, phi0, k, alpha, phi_init.copy())\n    axes[0].semilogy(E_hist, color=color, label=f'{method} ({len(E_hist)} evals, {dt*1000:.1f}ms)')\n    print(f\"{method:10s}  converged={ok}  φ*={np.degrees(sol)}°  E*={E_hist[-1]:.6f}  t={dt*1e3:.2f}ms\")\n\naxes[0].set_xlabel('Function evaluations')\naxes[0].set_ylabel('Elastic energy E')\naxes[0].set_title('Convergence comparison')\naxes[0].legend(fontsize=8)\naxes[0].grid(True, linewidth=0.5, alpha=0.5)\n\n# Energy landscape for SLSQP solution\nphi1_vals = np.linspace(0.1, np.pi - 0.1, 80)\nE_landscape = []\nfor p1 in phi1_vals:\n    sg1 = np.sin(p1)\n    ca, sa = np.cos(alpha), np.sin(alpha)\n    denom = ca**2 * sg1**2 + sa**2\n    cos_p2 = np.clip((ca**2 * sg1**2 - sa**2) / max(denom, 1e-12), -1, 1)\n    p2 = np.arccos(cos_p2)\n    phi = np.array([p1, p2, p1, p2])\n    E_landscape.append(total_energy(phi, phi0, k))\n\naxes[1].plot(np.degrees(phi1_vals), E_landscape, color='steelblue', linewidth=2)\naxes[1].set_xlabel('Primary fold angle φ₁ (°)')\naxes[1].set_ylabel('Elastic energy E (on Kawasaki manifold)')\naxes[1].set_title('Energy along the constraint manifold')\naxes[1].axvline(np.degrees(sol[0]), color='coral', linestyle='--', label=f'Optimum φ₁*={np.degrees(sol[0]):.1f}°')\naxes[1].legend()\naxes[1].grid(True, linewidth=0.5, alpha=0.5)\n\nplt.tight_layout()\nplt.show()\n\n\nSLSQP       converged=True  φ*=[ 81.92116192 120.49366499]°  E*=2.876609  t=3.16ms\nL-BFGS-B    converged=True  φ*=[68.75493513 34.37746742]°  E*=0.000000  t=1.59ms",
+    "crumbs": [
+      "Part II: Optimization Methods",
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>Energy Minimization and Equilibrium Folds</span>"
+    ]
+  },
+  {
+    "objectID": "05-energy-minimization.html#non-uniform-stiffness-and-multiple-equilibria",
+    "href": "05-energy-minimization.html#non-uniform-stiffness-and-multiple-equilibria",
+    "title": "5  Energy Minimization and Equilibrium Folds",
+    "section": "5.4 Non-Uniform Stiffness and Multiple Equilibria",
+    "text": "5.4 Non-Uniform Stiffness and Multiple Equilibria\nReal origami structures often have creases with different stiffnesses — due to material variation, different crease depths, or deliberate design. When stiffness is non-uniform, the energy landscape can develop multiple local minima.\n\n\nCode\n# Sweep stiffness ratio k2/k1 and track equilibrium\nalpha = np.radians(45)\nphi0 = np.array([1.0, 1.0, 1.0, 1.0])\nk_ratios = np.logspace(-1, 1, 30)\nphi1_eq_list = []\n\nfor ratio in k_ratios:\n    k = np.array([1.0, ratio, 1.0, ratio])\n    phi_eq, _, _ = vertex_energy_constrained(alpha, phi0, k, phi_init=[0.6, 0.5])\n    phi1_eq_list.append(np.degrees(phi_eq[0]))\n\nfig, ax = plt.subplots(figsize=(6, 4))\nax.semilogx(k_ratios, phi1_eq_list, 'o-', color='steelblue', markersize=4)\nax.axhline(np.degrees(phi0[0]), color='gray', linestyle='--', linewidth=0.8, label='Rest angle')\nax.set_xlabel('Stiffness ratio k₂/k₁')\nax.set_ylabel('Equilibrium φ₁* (°)')\nax.set_title('Equilibrium fold angle vs stiffness ratio (α=45°)')\nax.legend()\nax.grid(True, linewidth=0.5, alpha=0.5)\nplt.tight_layout()\nplt.show()",
+    "crumbs": [
+      "Part II: Optimization Methods",
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>Energy Minimization and Equilibrium Folds</span>"
+    ]
+  },
+  {
+    "objectID": "05-energy-minimization.html#summary",
+    "href": "05-energy-minimization.html#summary",
+    "title": "5  Energy Minimization and Equilibrium Folds",
+    "section": "5.5 Summary",
+    "text": "5.5 Summary\n\nElastic fold energy is a sum of torsional spring potentials: \\(E = \\frac{1}{2}\\sum k_i(\\phi_i - \\phi_{0,i})^2\\).\nEquilibrium configurations minimize total energy subject to geometric closure constraints.\nSLSQP handles equality constraints directly; L-BFGS-B is faster for unconstrained problems.\nNon-uniform stiffness shifts the equilibrium and can introduce multiple local minima.\nThe energy landscape along the Kawasaki constraint manifold is typically unimodal for a single vertex.",
+    "crumbs": [
+      "Part II: Optimization Methods",
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>Energy Minimization and Equilibrium Folds</span>"
+    ]
+  },
+  {
+    "objectID": "05-energy-minimization.html#further-reading",
+    "href": "05-energy-minimization.html#further-reading",
+    "title": "5  Energy Minimization and Equilibrium Folds",
+    "section": "5.6 Further Reading",
+    "text": "5.6 Further Reading\nSchenk and Guest (2013) analyzes the elastic behavior of the Miura-ori under in-plane loads. Dudte et al. (2016) uses energy minimization to program curvature into origami tessellations.",
+    "crumbs": [
+      "Part II: Optimization Methods",
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>Energy Minimization and Equilibrium Folds</span>"
+    ]
+  },
+  {
+    "objectID": "05-energy-minimization.html#exercises",
+    "href": "05-energy-minimization.html#exercises",
+    "title": "5  Energy Minimization and Equilibrium Folds",
+    "section": "5.7 Exercises",
+    "text": "5.7 Exercises\n\nAnalytic gradient check. For the 2D energy function over \\((φ_1, φ_2)\\), compute the analytic gradient \\(\\nabla E\\) and verify it against scipy.optimize.check_grad. Report the maximum absolute error.\nNewton’s method. The energy has an analytic Hessian (it is constant — why?). Implement one step of Newton’s method from a given starting point and verify it converges in one iteration for the unconstrained problem.\nMultiple restarts. Generate 100 random starting points for the constrained vertex problem and solve from each. Plot the distribution of converged energy values. Are there multiple local minima, or does SLSQP always find the same solution?\nTemperature analogy. In statistical mechanics, systems sample configurations with probability \\(p \\propto e^{-E/T}\\) at temperature \\(T\\). Write a simple Metropolis sampler that samples fold angles from this distribution on the Kawasaki constraint manifold (project each MCMC step back onto the manifold). Plot the sampled fold angle distribution for \\(T = 0.01, 0.1, 1.0\\).\nStiffness design. Find the stiffness vector \\(\\mathbf{k}\\) (with \\(\\|\\mathbf{k}\\|=1\\)) that places the energy minimum closest to a target fold angle \\(\\phi^* = [\\pi/3, \\pi/4, \\pi/3, \\pi/4]\\). (Hint: this is itself an optimization problem over \\(\\mathbf{k}\\).)\n\n\n\n\n\n\n\nDudte, Levi H, Etienne Vouga, Tomohiro Tachi, and L Mahadevan. 2016. “Programming Curvature Using Origami Tessellations.” Nature Materials 15 (5): 583–88.\n\n\nSchenk, Mark, and Simon D Guest. 2013. “Geometry of Miura-Folded Metamaterials.” Proceedings of the National Academy of Sciences 110 (9): 3276–81.",
+    "crumbs": [
+      "Part II: Optimization Methods",
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>Energy Minimization and Equilibrium Folds</span>"
+    ]
+  },
+  {
+    "objectID": "06-inverse-design.html",
+    "href": "06-inverse-design.html",
+    "title": "6  Inverse Design",
+    "section": "",
+    "text": "6.1 The Inverse Miura-ori Problem\nEverything up to this point has been forward: given a crease pattern, find the deployed shape, the compaction ratio, the equilibrium configuration. Engineers rarely work forward. They start with requirements — a solar panel that deploys to exactly 2m × 0.5m and collapses to 200mm diameter — and work backward to find the crease pattern.\nThis is the inverse problem. It is harder, more interesting, and usually under-determined: many crease patterns may satisfy the same set of requirements.\nFor the Miura-ori with \\(m \\times n\\) unit cells and panel dimensions \\(a \\times b\\) (width × length), the deployed and collapsed dimensions are functions of \\(\\alpha\\), \\(\\gamma\\), \\(m\\), \\(n\\), \\(a\\), \\(b\\).\nFrom Chapter 3, in the fully deployed state (\\(\\gamma = \\pi/2\\)):\n\\[W_\\text{deployed} = 2m \\cdot a \\cos\\alpha \\tag{6.1}\\]\n\\[L_\\text{deployed} = n \\cdot b \\tag{6.2}\\]\nIn the fully collapsed state (\\(\\gamma \\to 0\\)):\n\\[W_\\text{collapsed} = 2m \\cdot a \\sin\\alpha \\cos\\alpha \\tag{6.3}\\]\nThe compaction ratio is \\(\\rho = W_\\text{collapsed}/W_\\text{deployed} = \\sin\\alpha\\).\nInverse problem: Given target \\(W_\\text{deployed}^*\\), \\(L_\\text{deployed}^*\\), and \\(\\rho^* = W_\\text{collapsed}^*/W_\\text{deployed}^*\\), find \\((\\alpha, m, n, a, b)\\).\nFor fixed grid \\(m, n\\), the continuous parameters \\((\\alpha, a, b)\\) are determined by three equations:\n\\[2m \\cdot a \\cos\\alpha = W^* \\quad \\Rightarrow \\quad a = \\frac{W^*}{2m\\cos\\alpha} \\tag{6.4}\\]\n\\[n \\cdot b = L^* \\quad \\Rightarrow \\quad b = \\frac{L^*}{n} \\tag{6.5}\\]\n\\[\\sin\\alpha = \\rho^* \\tag{6.6}\\]\nThe last equation gives \\(\\alpha = \\arcsin(\\rho^*)\\) directly. The system is exactly determined for fixed \\(m, n\\).\nCode\nimport numpy as np\nfrom scipy.optimize import minimize, differential_evolution\nimport matplotlib.pyplot as plt\n\ndef miura_forward(alpha, m, n, a, b, gamma=np.pi/2):\n    \"\"\"Compute deployed and collapsed dimensions for given Miura-ori parameters.\"\"\"\n    sa, ca = np.sin(alpha), np.cos(alpha)\n    sg, cg = np.sin(gamma), np.cos(gamma)\n    W_deployed  = 2 * m * a * ca\n    L_deployed  = n * b\n    W_collapsed = 2 * m * a * sa * ca   # approximate (exact only at γ→0)\n    rho = sa\n    return {'W_dep': W_deployed, 'L_dep': L_deployed,\n            'W_col': W_collapsed, 'rho': rho, 'alpha': alpha, 'a': a, 'b': b}\n\n\ndef solve_miura_inverse_fixed_grid(W_target, L_target, rho_target, m, n):\n    \"\"\"\n    Given target deployed dimensions and compaction ratio,\n    recover (alpha, a, b) analytically for fixed grid m x n.\n    \"\"\"\n    alpha = np.arcsin(rho_target)\n    a = W_target / (2 * m * np.cos(alpha))\n    b = L_target / n\n    result = miura_forward(alpha, m, n, a, b)\n    return alpha, a, b, result\n\n\n# Example: solar panel requirements\nW_target  = 2.0    # m deployed width\nL_target  = 0.5    # m deployed length\nrho_target = 0.15  # collapse to 15% of deployed width\n\nm, n = 6, 4   # 6 columns, 4 rows of unit cells\n\nalpha, a, b, fwd = solve_miura_inverse_fixed_grid(W_target, L_target, rho_target, m, n)\nprint(\"=== Inverse Design Result ===\")\nprint(f\"Target:   W_dep={W_target}m  L_dep={L_target}m  rho={rho_target}\")\nprint(f\"Solution: α = {np.degrees(alpha):.3f}°  a = {a*1000:.2f}mm  b = {b*1000:.2f}mm\")\nprint(f\"Verify:   W_dep={fwd['W_dep']:.4f}m  L_dep={fwd['L_dep']:.4f}m  rho={fwd['rho']:.4f}\")\n\n\n=== Inverse Design Result ===\nTarget:   W_dep=2.0m  L_dep=0.5m  rho=0.15\nSolution: α = 8.627°  a = 168.57mm  b = 125.00mm\nVerify:   W_dep=2.0000m  L_dep=0.5000m  rho=0.1500",
+    "crumbs": [
+      "Part II: Optimization Methods",
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Inverse Design</span>"
+    ]
+  },
+  {
+    "objectID": "06-inverse-design.html#when-the-grid-is-also-a-variable",
+    "href": "06-inverse-design.html#when-the-grid-is-also-a-variable",
+    "title": "6  Inverse Design",
+    "section": "6.2 When the Grid is Also a Variable",
+    "text": "6.2 When the Grid is Also a Variable\nIf we allow \\(m\\) and \\(n\\) to vary (they are integers), the problem becomes a mixed-integer nonlinear program. For small ranges, we can sweep all feasible grid combinations and pick the best.\n\n\nCode\ndef panel_aspect_ratio(alpha, m, n, W_target, L_target):\n    \"\"\"Return aspect ratio a/b for given grid and targets.\"\"\"\n    a = W_target / (2 * m * np.cos(alpha))\n    b = L_target / n\n    return a / b\n\n# Grid sweep: find all (m,n) combinations within panel aspect ratio bounds\nW_target, L_target, rho_target = 2.0, 0.5, 0.15\nalpha_fixed = np.arcsin(rho_target)\nar_min, ar_max = 0.5, 2.0   # acceptable panel aspect ratios\n\nresults = []\nfor m in range(2, 20):\n    for n in range(2, 12):\n        ar = panel_aspect_ratio(alpha_fixed, m, n, W_target, L_target)\n        if ar_min &lt;= ar &lt;= ar_max:\n            a = W_target / (2 * m * np.cos(alpha_fixed))\n            b = L_target / n\n            results.append({'m': m, 'n': n, 'a': a*1000, 'b': b*1000,\n                             'aspect': ar, 'n_panels': m * n})\n\nresults.sort(key=lambda x: abs(x['aspect'] - 1.0))   # prefer square panels\n\nprint(f\"{'m':&gt;4} {'n':&gt;4} {'a(mm)':&gt;8} {'b(mm)':&gt;8} {'aspect':&gt;8} {'panels':&gt;7}\")\nprint(\"-\" * 45)\nfor r in results[:10]:\n    print(f\"{r['m']:&gt;4} {r['n']:&gt;4} {r['a']:&gt;8.2f} {r['b']:&gt;8.2f} {r['aspect']:&gt;8.4f} {r['n_panels']:&gt;7}\")\n\n\n   m    n    a(mm)    b(mm)   aspect  panels\n---------------------------------------------\n   4    2   252.86   250.00   1.0114       8\n   8    4   126.43   125.00   1.0114      32\n  16    8    63.22    62.50   1.0114     128\n   6    3   168.57   166.67   1.0114      18\n  10    5   101.14   100.00   1.0114      50\n  12    6    84.29    83.33   1.0114      72\n  14    7    72.25    71.43   1.0114      98\n  18    9    56.19    55.56   1.0114     162\n  19    9    53.23    55.56   0.9582     171\n  17    8    59.50    62.50   0.9519     136",
+    "crumbs": [
+      "Part II: Optimization Methods",
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Inverse Design</span>"
+    ]
+  },
+  {
+    "objectID": "06-inverse-design.html#multi-objective-inverse-design",
+    "href": "06-inverse-design.html#multi-objective-inverse-design",
+    "title": "6  Inverse Design",
+    "section": "6.3 Multi-Objective Inverse Design",
+    "text": "6.3 Multi-Objective Inverse Design\nReal requirements conflict. You want: 1. Small compaction ratio \\(\\rho\\) (good — collapses well) 2. Near-square panels (good — easier to manufacture and less buckling risk) 3. Few panels (good — lower mass, fewer hinges)\nNo single design satisfies all three simultaneously. The Pareto front shows the trade-off.\n\n\nCode\ndef pareto_sweep(W_target, L_target, m, n):\n    \"\"\"\n    Sweep alpha over feasible range, compute objectives for each.\n    Returns arrays of (rho, aspect_deviation, n_panels).\n    \"\"\"\n    alphas = np.linspace(0.05, np.pi/2 - 0.05, 300)\n    rhos, aspect_devs = [], []\n\n    for alpha in alphas:\n        a = W_target / (2 * m * np.cos(alpha))\n        b = L_target / n\n        ar = a / b\n        rhos.append(np.sin(alpha))\n        aspect_devs.append(abs(ar - 1.0))  # deviation from square\n\n    return np.array(rhos), np.array(aspect_devs)\n\n\nfig, ax = plt.subplots(figsize=(7, 5))\ncolors = plt.cm.viridis(np.linspace(0, 1, 5))\n\nfor i, (m, n) in enumerate([(4,3), (6,4), (8,5), (10,6), (12,8)]):\n    rhos, asp_devs = pareto_sweep(2.0, 0.5, m, n)\n    ax.scatter(rhos, asp_devs, s=4, color=colors[i], label=f'{m}×{n} = {m*n} panels', alpha=0.7)\n\nax.set_xlabel('Compaction ratio ρ (lower = better collapse)')\nax.set_ylabel('Panel aspect ratio deviation |a/b − 1| (lower = more square)')\nax.set_title('Pareto front: compaction vs panel squareness\\n(each curve = one grid choice)')\nax.legend(fontsize=8, markerscale=3)\nax.grid(True, linewidth=0.5, alpha=0.5)\nplt.tight_layout()\nplt.show()",
+    "crumbs": [
+      "Part II: Optimization Methods",
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Inverse Design</span>"
+    ]
+  },
+  {
+    "objectID": "06-inverse-design.html#numerical-inverse-design-with-scipy",
+    "href": "06-inverse-design.html#numerical-inverse-design-with-scipy",
+    "title": "6  Inverse Design",
+    "section": "6.4 Numerical Inverse Design with scipy",
+    "text": "6.4 Numerical Inverse Design with scipy\nWhen the forward model is more complex (non-analytic, simulated), we solve the inverse problem numerically using a nonlinear least-squares formulation.\n\n\nCode\nfrom scipy.optimize import least_squares\n\ndef residuals(params, W_target, L_target, rho_target, m, n):\n    \"\"\"\n    Residuals for inverse design: [W_error, L_error, rho_error].\n    params = [alpha, log_a, log_b]  (log-parameterize to enforce positivity)\n    \"\"\"\n    alpha = params[0]\n    a = np.exp(params[1])\n    b = np.exp(params[2])\n    fwd = miura_forward(alpha, m, n, a, b)\n    return np.array([\n        (fwd['W_dep'] - W_target) / W_target,\n        (fwd['L_dep'] - L_target) / L_target,\n        (fwd['rho']   - rho_target) / rho_target,\n    ])\n\n\n# Solve numerically (should recover same result as analytic solution)\nm, n = 6, 4\nx0 = np.array([0.3, np.log(0.1), np.log(0.05)])  # initial guess\nresult = least_squares(\n    residuals, x0,\n    args=(W_target, L_target, rho_target, m, n),\n    method='lm',\n    ftol=1e-12, xtol=1e-12\n)\n\nalpha_num = result.x[0]\na_num = np.exp(result.x[1])\nb_num = np.exp(result.x[2])\n\nprint(\"=== Numerical Inverse Design ===\")\nprint(f\"α = {np.degrees(alpha_num):.4f}°  (analytic: {np.degrees(alpha):.4f}°)\")\nprint(f\"a = {a_num*1000:.4f}mm  (analytic: {a*1000:.4f}mm)\")\nprint(f\"b = {b_num*1000:.4f}mm  (analytic: {b*1000:.4f}mm)\")\nprint(f\"Residual norm: {np.linalg.norm(result.fun):.2e}\")\n\n\n=== Numerical Inverse Design ===\nα = 8.6269°  (analytic: 8.6269°)\na = 168.5739mm  (analytic: 53.2339mm)\nb = 125.0000mm  (analytic: 45.4545mm)\nResidual norm: 2.48e-16",
+    "crumbs": [
+      "Part II: Optimization Methods",
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Inverse Design</span>"
+    ]
+  },
+  {
+    "objectID": "06-inverse-design.html#ill-posedness-and-regularization",
+    "href": "06-inverse-design.html#ill-posedness-and-regularization",
+    "title": "6  Inverse Design",
+    "section": "6.5 Ill-Posedness and Regularization",
+    "text": "6.5 Ill-Posedness and Regularization\nThe inverse problem is ill-posed when there are fewer constraints than parameters, or when multiple solutions produce nearly the same forward output. A common remedy is Tikhonov regularization: add a penalty term that prefers solutions near a nominal design \\(\\boldsymbol{\\theta}_0\\):\n\\[\\min_{\\boldsymbol{\\theta}} \\quad \\|\\mathbf{r}(\\boldsymbol{\\theta})\\|^2 + \\lambda \\|\\boldsymbol{\\theta} - \\boldsymbol{\\theta}_0\\|^2 \\tag{6.7}\\]\n\n\nCode\ndef regularized_residuals(params, W_target, L_target, rho_target, m, n, theta0, lam):\n    \"\"\"Residuals including Tikhonov regularization.\"\"\"\n    physics = residuals(params, W_target, L_target, rho_target, m, n)\n    reg = np.sqrt(lam) * (params - theta0)\n    return np.concatenate([physics, reg])\n\n\ntheta0 = np.array([np.pi/4, np.log(0.15), np.log(0.06)])  # nominal design\nlambdas = [0.0, 0.01, 0.1, 1.0]\n\nprint(f\"{'λ':&gt;8} {'α (°)':&gt;10} {'a (mm)':&gt;10} {'b (mm)':&gt;10} {'||r||':&gt;12}\")\nprint(\"-\" * 55)\nfor lam in lambdas:\n    res = least_squares(\n        regularized_residuals, theta0.copy(),\n        args=(W_target, L_target, rho_target, m, n, theta0, lam),\n        method='lm', ftol=1e-12\n    )\n    a_r = np.exp(res.x[1])\n    b_r = np.exp(res.x[2])\n    phys_resid = residuals(res.x, W_target, L_target, rho_target, m, n)\n    print(f\"{lam:&gt;8.2f} {np.degrees(res.x[0]):&gt;10.3f} {a_r*1000:&gt;10.3f} {b_r*1000:&gt;10.3f} {np.linalg.norm(phys_resid):&gt;12.2e}\")\n\n\n       λ      α (°)     a (mm)     b (mm)        ||r||\n-------------------------------------------------------\n    0.00      8.627    168.574    125.000     3.14e-16\n    0.01      8.635    168.382    124.085     7.47e-03\n    0.10      8.708    166.801    116.116     7.25e-02\n    1.00      9.436    158.754     76.131     4.06e-01",
+    "crumbs": [
+      "Part II: Optimization Methods",
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Inverse Design</span>"
+    ]
+  },
+  {
+    "objectID": "06-inverse-design.html#summary",
+    "href": "06-inverse-design.html#summary",
+    "title": "6  Inverse Design",
+    "section": "6.6 Summary",
+    "text": "6.6 Summary\n\nThe inverse design problem: given target deployed shape and compaction ratio, recover crease parameters.\nFor fixed grid \\((m, n)\\), the Miura-ori inverse problem has an analytic solution.\nWhen the grid is variable, sweep feasible \\((m, n)\\) pairs and select by secondary criteria (aspect ratio, panel count).\nMultiple objectives conflict — compaction vs. panel squareness — and the Pareto front shows the trade-off space.\nNumerical formulation via least-squares enables inverse design when no analytic solution exists; Tikhonov regularization manages ill-posedness.",
+    "crumbs": [
+      "Part II: Optimization Methods",
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Inverse Design</span>"
+    ]
+  },
+  {
+    "objectID": "06-inverse-design.html#further-reading",
+    "href": "06-inverse-design.html#further-reading",
+    "title": "6  Inverse Design",
+    "section": "6.7 Further Reading",
+    "text": "6.7 Further Reading\nDudte et al. (2016) solves inverse design for curved origami tessellations using gradient-based optimization. Lang (2011) (Chapter 14) discusses the degrees of freedom in base design and how constraints determine feasibility.",
+    "crumbs": [
+      "Part II: Optimization Methods",
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Inverse Design</span>"
+    ]
+  },
+  {
+    "objectID": "06-inverse-design.html#exercises",
+    "href": "06-inverse-design.html#exercises",
+    "title": "6  Inverse Design",
+    "section": "6.8 Exercises",
+    "text": "6.8 Exercises\n\nSensitivity analysis. Using the numerical inverse design setup, compute the Jacobian \\(\\partial \\mathbf{r}/\\partial \\boldsymbol{\\theta}\\) at the solution using least_squares output (it returns jac). What is the condition number? What does this tell you about the inverse problem’s sensitivity to measurement noise in the target dimensions?\nUnderdetermined case. Add a fourth parameter (e.g., vary both \\(a\\) and \\(b\\) independently while also varying \\(\\alpha\\) and the aspect ratio target). The system now has four unknowns and three equations. How many solutions exist? Use differential_evolution to find two distinct solutions.\nNoisy targets. Add Gaussian noise with \\(\\sigma = 0.01\\) to \\(W^*, L^*, \\rho^*\\) and solve the inverse problem 100 times. Plot the distribution of recovered \\(\\alpha\\) values. What is the standard deviation of \\(\\alpha\\) for \\(\\sigma = 0.01\\)?\nPareto-optimal grid selection. For the grid sweep in this chapter, implement a proper Pareto dominance filter that retains only non-dominated \\((m, n)\\) pairs when considering three objectives simultaneously: \\(\\rho\\), aspect deviation, and total panel count. Plot the Pareto front in 3D.\nCurved crease inverse problem. (Advanced) Instead of straight creases, consider a crease pattern where the crease angle \\(\\alpha\\) varies linearly from \\(\\alpha_1\\) at one end to \\(\\alpha_2\\) at the other. The deployed shape is then a curved surface. Formulate the inverse problem of finding \\((\\alpha_1, \\alpha_2)\\) to hit a target curvature, and solve it numerically.\n\n\n\n\n\n\n\nDudte, Levi H, Etienne Vouga, Tomohiro Tachi, and L Mahadevan. 2016. “Programming Curvature Using Origami Tessellations.” Nature Materials 15 (5): 583–88.\n\n\nLang, Robert J. 2011. Origami Design Secrets: Mathematical Methods for an Ancient Art. 2nd ed. CRC Press.",
+    "crumbs": [
+      "Part II: Optimization Methods",
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Inverse Design</span>"
+    ]
+  },
+  {
+    "objectID": "references.html",
+    "href": "references.html",
+    "title": "References",
+    "section": "",
+    "text": "Demaine, Erik D, and Joseph O’Rourke. 2007. Geometric Folding\nAlgorithms: Linkages, Origami, Polyhedra. Cambridge University\nPress.\n\n\nDudte, Levi H, Etienne Vouga, Tomohiro Tachi, and L Mahadevan. 2016.\n“Programming Curvature Using Origami Tessellations.”\nNature Materials 15 (5): 583–88.\n\n\nHuffman, David A. 1976. “Curvature and Creases: A Primer on\nPaper.” IEEE Transactions on Computers 25 (10): 1010–19.\n\n\nKawasaki, Toshikazu. 1989. “On the Relation Between\nMountain-Creases and Valley-Creases of a Flat Origami.”\nProceedings of the First International Meeting of Origami Science\nand Technology, 229–37.\n\n\nLang, Robert J. 1996. “A Computational Algorithm for Origami\nDesign.” Proceedings of the Twelfth Annual Symposium on\nComputational Geometry, 98–105.\n\n\nLang, Robert J. 2011. Origami Design Secrets: Mathematical Methods\nfor an Ancient Art. 2nd ed. CRC Press.\n\n\nMiura, Koryo. 1985. “Method of Packaging and Deployment of Large\nMembranes in Space.” The Institute of Space and Astronautical\nScience Report 618: 1–9.\n\n\nSchenk, Mark, and Simon D Guest. 2013. “Geometry of Miura-Folded\nMetamaterials.” Proceedings of the National Academy of\nSciences 110 (9): 3276–81.\n\n\nWei, ZY, ZV Guo, L Dudte, HY Liang, and L Mahadevan. 2013.\n“Geometric Mechanics of Periodic Pleated Origami.”\nPhysical Review Letters 110 (21): 215501.",
+    "crumbs": [
+      "References"
+    ]
+  },
+  {
+    "objectID": "appendix-a-code.html",
+    "href": "appendix-a-code.html",
+    "title": "Code Reference",
+    "section": "",
+    "text": "Chapter 2 — Geometry\nThis appendix collects all reusable functions defined throughout the book. Every function is importable by copying it into a local module.\nCode\nimport numpy as np\n\ndef rotation_matrix(axis, angle):\n    \"\"\"Rodrigues rotation about axis by angle (radians).\"\"\"\n    e = np.asarray(axis, dtype=float)\n    e = e / np.linalg.norm(e)\n    c, s = np.cos(angle), np.sin(angle)\n    skew = np.array([\n        [ 0,    -e[2],  e[1]],\n        [ e[2],  0,    -e[0]],\n        [-e[1],  e[0],  0   ]\n    ])\n    return c * np.eye(3) + (1 - c) * np.outer(e, e) + s * skew\n\ndef fold_panel(panel_vertices, crease_point, crease_axis, angle):\n    \"\"\"Rotate panel_vertices about crease line by angle.\"\"\"\n    verts = np.asarray(panel_vertices, dtype=float)\n    R = rotation_matrix(crease_axis, angle)\n    return (R @ (verts - crease_point).T).T + crease_point\n\ndef check_kawasaki(sector_angles):\n    \"\"\"Check Kawasaki's theorem. Returns (satisfied, odd_sum, even_sum).\"\"\"\n    alphas = np.asarray(sector_angles)\n    n = len(alphas)\n    if n % 2 != 0:\n        return False, None, None\n    odd_sum  = np.sum(alphas[0::2])\n    even_sum = np.sum(alphas[1::2])\n    return np.isclose(odd_sum, np.pi) and np.isclose(even_sum, np.pi), odd_sum, even_sum\n\ndef check_maekawa(fold_types):\n    \"\"\"Check Maekawa's theorem. Returns (satisfied, M, V).\"\"\"\n    types = np.asarray(fold_types)\n    M = np.sum(types ==  1)\n    V = np.sum(types == -1)\n    return abs(M - V) == 2, int(M), int(V)\n\ndef is_flat_foldable_vertex(sector_angles, fold_types):\n    \"\"\"Full flat-foldability check for one vertex.\"\"\"\n    kaw_ok, s1, s2 = check_kawasaki(sector_angles)\n    mae_ok, M, V   = check_maekawa(fold_types)\n    return {\n        'kawasaki': kaw_ok, 'maekawa': mae_ok,\n        'flat_foldable': kaw_ok and mae_ok,\n        'odd_angle_sum': s1, 'even_angle_sum': s2,\n        'mountains': M, 'valleys': V,\n    }",
+    "crumbs": [
+      "Appendices",
+      "Code Reference"
+    ]
+  },
+  {
+    "objectID": "appendix-a-code.html#chapter-3-miura-ori",
+    "href": "appendix-a-code.html#chapter-3-miura-ori",
+    "title": "Code Reference",
+    "section": "Chapter 3 — Miura-ori",
+    "text": "Chapter 3 — Miura-ori\n\n\nCode\ndef miura_dimensions(alpha, gamma, m=4, n=4):\n    \"\"\"Width, length, thickness of m×n Miura-ori (panel size = 1).\"\"\"\n    sa, ca = np.sin(alpha), np.cos(alpha)\n    sg, cg = np.sin(gamma), np.cos(gamma)\n    W = 2 * m * np.sqrt(1 - (ca * sg)**2)\n    L = (n * 2 * sa * cg / np.sqrt(sa**2 + (ca*cg)**2)\n         if gamma &gt; 0 else 2 * n * sa)\n    T = (2 * ca * sg * sa / np.sqrt(sa**2 + (ca*cg)**2)\n         if gamma &gt; 0 else 0)\n    return W, L, T\n\ndef miura_fold_angles(alpha, gamma):\n    \"\"\"Return (phi_major, phi_minor, phi_major, phi_minor) for given gamma.\"\"\"\n    sa, ca = np.sin(alpha), np.cos(alpha)\n    sg = np.sin(gamma)\n    cos_phi_minor = (ca**2 * sg**2 - sa**2) / (ca**2 * sg**2 + sa**2)\n    phi_minor = np.arccos(np.clip(cos_phi_minor, -1, 1))\n    return gamma, phi_minor, gamma, phi_minor",
+    "crumbs": [
+      "Appendices",
+      "Code Reference"
+    ]
+  },
+  {
+    "objectID": "appendix-a-code.html#chapter-4-circle-packing",
+    "href": "appendix-a-code.html#chapter-4-circle-packing",
+    "title": "Code Reference",
+    "section": "Chapter 4 — Circle Packing",
+    "text": "Chapter 4 — Circle Packing\n\n\nCode\nfrom scipy.optimize import minimize, Bounds\n\ndef solve_circle_packing(radii, n_restarts=10, seed=42):\n    \"\"\"\n    Pack circles with given relative radii into unit square.\n    Returns (x, y, scale, converged).\n    \"\"\"\n    rng = np.random.default_rng(seed)\n    n = len(radii)\n    best_s, best_sol = -np.inf, None\n\n    for _ in range(n_restarts):\n        x0 = np.concatenate([rng.uniform(0.1, 0.9, n),\n                              rng.uniform(0.1, 0.9, n), [0.2]])\n        lb = np.concatenate([np.zeros(2*n), [0.01]])\n        ub = np.concatenate([np.ones(2*n),  [1.0]])\n\n        def obj(z): return -z[2*n]\n\n        def cons(z):\n            x, y, s = z[:n], z[n:2*n], z[2*n]\n            r = np.asarray(radii)\n            c = []\n            for i in range(n):\n                for j in range(i+1, n):\n                    c.append(np.hypot(x[i]-x[j], y[i]-y[j]) - s*(r[i]+r[j]))\n            for i in range(n):\n                c += [x[i]-s*r[i], 1-x[i]-s*r[i],\n                      y[i]-s*r[i], 1-y[i]-s*r[i]]\n            return np.array(c)\n\n        res = minimize(obj, x0, method='SLSQP',\n                       bounds=Bounds(lb, ub),\n                       constraints={'type': 'ineq', 'fun': cons},\n                       options={'ftol': 1e-9, 'maxiter': 1000})\n        s_val = res.x[2*n]\n        if s_val &gt; best_s:\n            best_s = s_val\n            best_sol = (res.x[:n].copy(), res.x[n:2*n].copy(),\n                        s_val, res.success)\n\n    return best_sol",
+    "crumbs": [
+      "Appendices",
+      "Code Reference"
+    ]
+  },
+  {
+    "objectID": "appendix-a-code.html#chapter-5-energy-minimization",
+    "href": "appendix-a-code.html#chapter-5-energy-minimization",
+    "title": "Code Reference",
+    "section": "Chapter 5 — Energy Minimization",
+    "text": "Chapter 5 — Energy Minimization\n\n\nCode\ndef total_energy(phi, phi0, k):\n    \"\"\"Total elastic energy of a crease pattern.\"\"\"\n    return 0.5 * np.sum(k * (phi - phi0)**2)\n\ndef energy_gradient(phi, phi0, k):\n    \"\"\"Analytic gradient of total energy.\"\"\"\n    return k * (phi - phi0)",
+    "crumbs": [
+      "Appendices",
+      "Code Reference"
+    ]
+  },
+  {
+    "objectID": "appendix-a-code.html#chapter-6-inverse-design",
+    "href": "appendix-a-code.html#chapter-6-inverse-design",
+    "title": "Code Reference",
+    "section": "Chapter 6 — Inverse Design",
+    "text": "Chapter 6 — Inverse Design\n\n\nCode\ndef miura_forward(alpha, m, n, a, b, gamma=np.pi/2):\n    \"\"\"Forward model: compute Miura-ori deployed/collapsed dimensions.\"\"\"\n    sa, ca = np.sin(alpha), np.cos(alpha)\n    return {\n        'W_dep':  2*m*a*ca,\n        'L_dep':  n*b,\n        'W_col':  2*m*a*sa*ca,\n        'rho':    sa,\n        'alpha':  alpha, 'a': a, 'b': b\n    }\n\ndef solve_miura_inverse_fixed_grid(W_target, L_target, rho_target, m, n):\n    \"\"\"Analytic inverse design for fixed grid.\"\"\"\n    alpha = np.arcsin(rho_target)\n    a = W_target / (2*m*np.cos(alpha))\n    b = L_target / n\n    return alpha, a, b, miura_forward(alpha, m, n, a, b)",
+    "crumbs": [
+      "Appendices",
+      "Code Reference"
+    ]
+  },
+  {
+    "objectID": "appendix-a-code.html#environment-setup",
+    "href": "appendix-a-code.html#environment-setup",
+    "title": "Code Reference",
+    "section": "Environment Setup",
+    "text": "Environment Setup\npixi install\npixi run kernel     # register Jupyter kernel\npixi run render     # render full ebook to docs/\npixi run preview    # live preview in browser\nDependencies: numpy, scipy, matplotlib — all from conda-forge.",
+    "crumbs": [
+      "Appendices",
+      "Code Reference"
+    ]
+  }
+]

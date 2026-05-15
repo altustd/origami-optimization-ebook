@@ -1,0 +1,240 @@
+# Circle Packing and Origami Base Design
+
+::: {.callout-note}
+## Learning Objectives
+- Understand the correspondence between origami bases and circle-packing problems
+- Formulate Lang's TreeMaker algorithm as a constrained quadratic program
+- Implement a circle-packing solver using `scipy.optimize`
+- Design origami bases for simple tree structures
+:::
+
+Robert Lang is a physicist turned professional origami artist, and the algorithm he published in 1996 [@lang1996mathematical] is one of the more beautiful pieces of applied mathematics to come out of the origami world. The insight is this: the problem of designing an origami base — a folded form with the right number and proportion of flaps to become a finished model — is exactly the problem of packing circles into a square without overlap.
+
+To see why requires a detour through the theory of origami bases.
+
+## Origami Bases and Tree Structures
+
+An origami base is a flat-foldable configuration from which a finished model is folded. Most complex origami models — insects, human figures, animals — begin from a base that has already been folded. The base has *flaps*: points or regions that will become the legs, wings, antennae, or other appendages of the finished model.
+
+The structure of a base can be represented as a *tree graph*: a graph with no cycles where each edge represents a flap and each node is either a joint (where flaps meet) or a terminal (the tip of a flap). The edges have lengths proportional to the desired flap lengths.
+
+Lang's insight: for a uniaxial base (a base where all flaps fold out of a single plane), there is a one-to-one correspondence between:
+
+1. A valid base crease pattern on a square sheet
+2. A packing of circles into that square
+
+The correspondence works as follows. Each *terminal node* of the tree corresponds to a circle. The radius of the circle is proportional to the path length from that terminal node to any other terminal node through the tree (specifically, it is the "reach" of that flap — how far it can extend while leaving room for all other flaps).
+
+A valid base exists if and only if the corresponding circles can be packed into the square without overlap. The crease pattern is then recovered from the circle arrangement by geometric construction.
+
+## Formulating the Optimization Problem
+
+Let the square sheet have side length 1. Let there be $n$ terminal nodes with circles of radii $r_1, \ldots, r_n$ centered at positions $(x_1, y_1), \ldots, (x_n, y_n)$.
+
+The goal is to find positions and a common scale factor $s$ such that the scaled circles pack without overlap. Specifically:
+
+**Maximize** the scale factor $s$ (larger scale = more efficient use of the paper)
+
+**Subject to:**
+
+*Non-overlap:* For all pairs $i \neq j$,
+$$\sqrt{(x_i - x_j)^2 + (y_i - y_j)^2} \geq s(r_i + r_j)$$ {#eq-nonoverlap}
+
+*Inside square:* For all $i$,
+$$s r_i \leq x_i \leq 1 - s r_i$$ {#eq-inside-x}
+$$s r_i \leq y_i \leq 1 - s r_i$$ {#eq-inside-y}
+
+*Positivity:* $s > 0$
+
+The decision variables are $\{x_i, y_i\}_{i=1}^n$ and $s$. The problem is a nonlinear program with quadratic constraints.
+
+```{python}
+import numpy as np
+from scipy.optimize import minimize, NonlinearConstraint, Bounds
+import matplotlib.pyplot as plt
+import matplotlib.patches as mpatches
+
+def unpack(z, n):
+    """Unpack decision vector z into (x, y, s)."""
+    x = z[:n]
+    y = z[n:2*n]
+    s = z[2*n]
+    return x, y, s
+
+def pack(x, y, s):
+    """Pack (x, y, s) into decision vector."""
+    return np.concatenate([x, y, [s]])
+
+
+def circle_pack_objective(z, n):
+    """Minimize negative scale factor (= maximize s)."""
+    _, _, s = unpack(z, n)
+    return -s
+
+
+def circle_pack_constraints(z, n, radii):
+    """
+    Returns a vector of constraint values, each ≥ 0 when satisfied.
+    Non-overlap: dist(i,j) - s*(r_i + r_j) >= 0
+    Inside: x_i - s*r_i >= 0,  1 - x_i - s*r_i >= 0  (similarly for y)
+    """
+    x, y, s = unpack(z, n)
+    r = np.asarray(radii)
+    cons = []
+
+    # Non-overlap constraints
+    for i in range(n):
+        for j in range(i + 1, n):
+            dist = np.sqrt((x[i] - x[j])**2 + (y[i] - y[j])**2)
+            cons.append(dist - s * (r[i] + r[j]))
+
+    # Inside square
+    for i in range(n):
+        cons.append(x[i] - s * r[i])          # x_i >= s*r_i
+        cons.append(1 - x[i] - s * r[i])      # x_i <= 1 - s*r_i
+        cons.append(y[i] - s * r[i])
+        cons.append(1 - y[i] - s * r[i])
+
+    return np.array(cons)
+
+
+def solve_circle_packing(radii, n_restarts=10, seed=42):
+    """
+    Solve the circle-packing problem for given relative radii.
+    Returns best (x, y, s, success).
+    """
+    rng = np.random.default_rng(seed)
+    n = len(radii)
+    best_s = -np.inf
+    best_sol = None
+
+    for trial in range(n_restarts):
+        # Random initial positions
+        x0 = rng.uniform(0.1, 0.9, n)
+        y0 = rng.uniform(0.1, 0.9, n)
+        s0 = 0.2
+        z0 = pack(x0, y0, s0)
+
+        # Bounds: coordinates in [0,1], s in (0, 1]
+        lb = np.concatenate([np.zeros(2*n), [0.01]])
+        ub = np.concatenate([np.ones(2*n),  [1.0]])
+
+        cons = {'type': 'ineq',
+                'fun': lambda z: circle_pack_constraints(z, n, radii)}
+
+        result = minimize(
+            circle_pack_objective, z0,
+            args=(n,),
+            method='SLSQP',
+            bounds=Bounds(lb, ub),
+            constraints=cons,
+            options={'ftol': 1e-9, 'maxiter': 1000}
+        )
+
+        if result.success or result.fun < -best_s:
+            x, y, s = unpack(result.x, n)
+            if s > best_s:
+                best_s = s
+                best_sol = (x.copy(), y.copy(), s, result.success)
+
+    return best_sol
+```
+
+## Example: Bird Base Tree
+
+The classic bird base underlies thousands of origami models. Its tree has four terminal nodes (two wings, head, tail) connected through a central joint. We assign relative radii based on desired flap proportions.
+
+```{python}
+# Bird base: 4 flaps
+# Tree: central node connected to 4 terminals
+# Relative path lengths (radii) for equal-length flaps
+radii_bird = [1.0, 1.0, 1.0, 1.0]   # all flaps equal length
+
+x, y, s, ok = solve_circle_packing(radii_bird, n_restarts=20)
+
+print(f"Solver converged: {ok}")
+print(f"Scale factor s = {s:.4f}")
+print(f"Circle centers:")
+for i, (xi, yi) in enumerate(zip(x, y)):
+    print(f"  Circle {i+1}: ({xi:.3f}, {yi:.3f})  radius = {s * radii_bird[i]:.3f}")
+
+
+def plot_circle_packing(x, y, s, radii, title="Circle packing"):
+    fig, ax = plt.subplots(figsize=(5, 5))
+    ax.set_xlim(-0.05, 1.05)
+    ax.set_ylim(-0.05, 1.05)
+    ax.set_aspect('equal')
+    ax.add_patch(mpatches.Rectangle((0, 0), 1, 1, fill=False,
+                                     edgecolor='black', linewidth=2))
+    colors = plt.cm.Set2(np.linspace(0, 1, len(radii)))
+    for i, (xi, yi, ri) in enumerate(zip(x, y, radii)):
+        circle = mpatches.Circle((xi, yi), s * ri, color=colors[i],
+                                   alpha=0.5, linewidth=1.5, edgecolor='k')
+        ax.add_patch(circle)
+        ax.text(xi, yi, f'r={ri:.1f}', ha='center', va='center', fontsize=8)
+    ax.set_title(f'{title}\ns = {s:.4f}', fontsize=10)
+    ax.set_xlabel('x')
+    ax.set_ylabel('y')
+    ax.grid(True, linewidth=0.3, alpha=0.4)
+    plt.tight_layout()
+    plt.show()
+
+
+plot_circle_packing(x, y, s, radii_bird, "Bird base: 4 equal flaps")
+```
+
+## Unequal Flaps: Insect Base
+
+An insect model needs long legs and shorter body parts. We assign unequal radii:
+
+```{python}
+# Insect: 6 flaps — 3 pairs of legs + head + abdomen + 2 wings
+radii_insect = [2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 1.0, 1.0]
+
+x, y, s, ok = solve_circle_packing(radii_insect, n_restarts=30, seed=7)
+print(f"Solver converged: {ok},  scale = {s:.4f}")
+plot_circle_packing(x, y, s, radii_insect, "Insect base: 6 legs + 2 body parts")
+```
+
+## Packing Efficiency
+
+The packing efficiency $\eta$ is the fraction of the square's area covered by circles:
+
+$$\eta = s^2 \pi \sum_{i=1}^n r_i^2$$ {#eq-efficiency}
+
+```{python}
+def packing_efficiency(s, radii):
+    return s**2 * np.pi * sum(r**2 for r in radii)
+
+for name, r, sol in [
+    ("Bird base", radii_bird, solve_circle_packing(radii_bird, n_restarts=20)),
+    ("Insect base", radii_insect, solve_circle_packing(radii_insect, n_restarts=30, seed=7)),
+]:
+    _, _, s_sol, _ = sol
+    eta = packing_efficiency(s_sol, r)
+    print(f"{name:15s}  s={s_sol:.4f}  η={eta:.4f} ({100*eta:.1f}%)")
+```
+
+## Summary
+
+- An origami base corresponds to a tree graph; each terminal node maps to a circle.
+- Valid base design requires packing those circles into the square sheet without overlap.
+- The optimization problem maximizes the scale factor $s$ subject to non-overlap and boundary constraints.
+- The problem is a nonlinear program, solvable with `scipy.optimize.minimize` (SLSQP).
+- Multiple random restarts improve solution quality for problems with many local optima.
+
+## Further Reading
+
+@lang1996mathematical is the original paper — concise and readable. @lang2011origami (Chapter 12) gives a detailed treatment of the TreeMaker algorithm with worked examples.
+
+## Exercises
+
+1. **Verify non-overlap.** After solving, write a function that checks all pairwise distances between circle centers and verifies that no two circles overlap. Report the minimum separation distance.
+
+2. **Three-flap triangle.** Design a base for a tree with three equal-length terminal flaps. Experiment with different initial positions and count how many distinct local optima you find.
+
+3. **Unequal radii sensitivity.** Take the bird base problem and vary one radius from 0.5 to 2.0 while holding the others fixed. Plot the optimal scale factor $s^*$ as a function of the varied radius. What happens as one circle becomes very large?
+
+4. **5-circle packing.** Solve the packing problem for 5 equal circles. The known optimal packing efficiency for 5 equal circles in a square is approximately $\eta \approx 0.707$. How close does your optimizer get?
+
+5. **Gradient of the scale factor.** Compute the gradient of the objective $-s$ with respect to circle positions $(x_i, y_i)$ analytically, and verify it matches the numerical gradient used by SLSQP. (Use `scipy.optimize.check_grad`.)

@@ -1,0 +1,283 @@
+# Energy Minimization and Equilibrium Folds
+
+::: {.callout-note}
+## Learning Objectives
+- Model elastic fold energy as a sum of torsional spring potentials
+- Formulate the equilibrium-finding problem as unconstrained and constrained minimization
+- Compare gradient descent, L-BFGS-B, and SLSQP on the same problem
+- Interpret convergence behavior and identify ill-conditioning
+:::
+
+Not every fold pattern has a single, clean, analytically-determined configuration. The Miura-ori folds along a one-parameter path because its geometry enforces it. But most real structures — partially folded panels, curved crease patterns, origami with elastic materials — settle into an equilibrium that balances the external loading against the elastic energy stored in the creases.
+
+Finding that equilibrium is an energy minimization problem.
+
+## The Elastic Fold Energy Model
+
+Model each crease as a torsional spring: it has a natural (rest) fold angle $\phi_0$ and resists deformation with stiffness $k$. The elastic energy stored in crease $i$ when its fold angle is $\phi_i$ is:
+
+$$E_i = \frac{k_i}{2}(\phi_i - \phi_{0,i})^2$$ {#eq-spring-energy}
+
+The total energy of the structure is:
+
+$$E_\text{total} = \sum_{i=1}^{N} \frac{k_i}{2}(\phi_i - \phi_{0,i})^2$$ {#eq-total-energy}
+
+At equilibrium, $E_\text{total}$ is minimized subject to the geometric constraints from Chapter 2 — specifically, the Kawasaki closure conditions at each vertex.
+
+This is a constrained nonlinear program:
+
+$$\min_{\boldsymbol{\phi}} \quad E_\text{total}(\boldsymbol{\phi}) \quad \text{subject to} \quad g_j(\boldsymbol{\phi}) = 0 \quad j = 1, \ldots, M$$ {#eq-energy-opt}
+
+where the $g_j$ are the Kawasaki constraints (or more generally, the geometric closure conditions at each vertex).
+
+```{python}
+import numpy as np
+import matplotlib.pyplot as plt
+from scipy.optimize import minimize
+
+def total_energy(phi, phi0, k):
+    """Total elastic energy of a crease pattern."""
+    return 0.5 * np.sum(k * (phi - phi0)**2)
+
+def energy_gradient(phi, phi0, k):
+    """Analytic gradient of total energy."""
+    return k * (phi - phi0)
+```
+
+## Example: Four-Crease Vertex Under Load
+
+Consider a single four-crease vertex (the Miura-ori unit vertex) with sector angles $\alpha$ and $\pi - \alpha$. The vertex has four fold angles $\phi_1, \phi_2, \phi_3, \phi_4$ subject to the Kawasaki closure condition.
+
+We will minimize the elastic energy over the feasible set — the manifold of fold-angle vectors satisfying Kawasaki — and trace how the equilibrium configuration depends on the stiffness distribution.
+
+```{python}
+def kawasaki_residual(phi, alpha):
+    """
+    Kawasaki closure condition for a 4-crease Miura vertex.
+    Returns scalar: should be 0 at valid configurations.
+    This is the product-of-rotations closure, linearized near flat.
+    Approximation: use the alternating sum condition for small angles.
+    """
+    phi1, phi2, phi3, phi4 = phi
+    ca = np.cos(alpha)
+    sa = np.sin(alpha)
+    # Exact closure from Schenk & Guest (2013): relates phi_major and phi_minor
+    # cos(phi2) = (ca^2 * sin^2(phi1) - sa^2) / (ca^2 * sin^2(phi1) + sa^2)
+    # Residual for phi2 given phi1:
+    sg1 = np.sin(phi1)
+    denom = ca**2 * sg1**2 + sa**2
+    if abs(denom) < 1e-12:
+        return 0.0
+    cos_phi2_required = (ca**2 * sg1**2 - sa**2) / denom
+    cos_phi2_required = np.clip(cos_phi2_required, -1, 1)
+    phi2_required = np.arccos(cos_phi2_required)
+    # Constraint: phi2 - phi2_required = 0; phi3 = phi1; phi4 = phi2
+    return phi2 - phi2_required
+
+
+def vertex_energy_constrained(alpha, phi0, k, phi_init=None):
+    """
+    Minimize elastic energy of a 4-crease vertex subject to Kawasaki closure.
+    Decision variables: [phi1, phi2] — phi3=phi1, phi4=phi2 by symmetry.
+    """
+    if phi_init is None:
+        phi_init = np.array([0.5, 0.3])
+
+    def energy_2d(pq):
+        phi1, phi2 = pq
+        phi = np.array([phi1, phi2, phi1, phi2])
+        return total_energy(phi, phi0, k)
+
+    def kawasaki_2d(pq):
+        phi1, phi2 = pq
+        sg1 = np.sin(phi1)
+        ca = np.cos(alpha)
+        sa = np.sin(alpha)
+        denom = ca**2 * sg1**2 + sa**2
+        cos_phi2_req = (ca**2 * sg1**2 - sa**2) / (max(denom, 1e-12))
+        cos_phi2_req = np.clip(cos_phi2_req, -1, 1)
+        return phi2 - np.arccos(cos_phi2_req)
+
+    result = minimize(
+        energy_2d,
+        phi_init,
+        method='SLSQP',
+        bounds=[(0.01, np.pi - 0.01)] * 2,
+        constraints={'type': 'eq', 'fun': kawasaki_2d},
+        options={'ftol': 1e-10, 'maxiter': 500}
+    )
+    phi1_eq, phi2_eq = result.x
+    phi_eq = np.array([phi1_eq, phi2_eq, phi1_eq, phi2_eq])
+    return phi_eq, result.fun, result.success
+
+
+# Study: how does equilibrium change with rest angle phi0?
+alpha = np.radians(45)
+phi0_sweep = np.linspace(0.1, np.pi * 0.9, 20)
+k_uniform = np.ones(4)
+
+phi1_eq_vals, phi2_eq_vals = [], []
+for phi0_val in phi0_sweep:
+    phi0 = np.full(4, phi0_val)
+    phi_eq, E_eq, _ = vertex_energy_constrained(alpha, phi0, k_uniform,
+                                                  phi_init=[phi0_val * 0.8, phi0_val * 0.5])
+    phi1_eq_vals.append(np.degrees(phi_eq[0]))
+    phi2_eq_vals.append(np.degrees(phi_eq[1]))
+
+fig, ax = plt.subplots(figsize=(7, 4))
+ax.plot(np.degrees(phi0_sweep), phi1_eq_vals, 'o-', color='steelblue', label='φ₁ (major fold)', markersize=4)
+ax.plot(np.degrees(phi0_sweep), phi2_eq_vals, 's-', color='coral', label='φ₂ (minor fold)', markersize=4)
+ax.plot(np.degrees(phi0_sweep), np.degrees(phi0_sweep), 'k--', linewidth=0.8, label='φ₀ (rest angle)')
+ax.set_xlabel('Rest angle φ₀ (°)')
+ax.set_ylabel('Equilibrium fold angle (°)')
+ax.set_title(f'Miura-ori vertex equilibrium (α = 45°, uniform stiffness)')
+ax.legend()
+ax.grid(True, linewidth=0.5, alpha=0.5)
+plt.tight_layout()
+plt.show()
+```
+
+## Comparing Optimizers
+
+The energy minimization problem @eq-energy-opt is smooth and has analytic gradients. Different optimizers make different trade-offs between convergence speed, memory, and constraint-handling capability.
+
+```{python}
+import time
+
+def run_optimizer(method, phi0, k, alpha, phi_init):
+    """
+    Run one optimizer and return (solution, n_iter, wall_time, success).
+    """
+    history = {'phi': [], 'E': []}
+
+    def energy_with_log(pq):
+        phi = np.array([pq[0], pq[1], pq[0], pq[1]])
+        E = total_energy(phi, phi0, k)
+        history['phi'].append(pq.copy())
+        history['E'].append(E)
+        return E
+
+    def kawasaki_2d(pq):
+        phi1, phi2 = pq
+        sg1 = np.sin(phi1)
+        ca = np.cos(alpha)
+        sa = np.sin(alpha)
+        denom = ca**2 * sg1**2 + sa**2
+        cos_phi2_req = np.clip((ca**2 * sg1**2 - sa**2) / max(denom, 1e-12), -1, 1)
+        return phi2 - np.arccos(cos_phi2_req)
+
+    kwargs = dict(
+        fun=energy_with_log,
+        x0=phi_init,
+        bounds=[(0.01, np.pi - 0.01)] * 2,
+        options={'maxiter': 2000}
+    )
+
+    if method == 'SLSQP':
+        kwargs['method'] = 'SLSQP'
+        kwargs['constraints'] = {'type': 'eq', 'fun': kawasaki_2d}
+        kwargs['options']['ftol'] = 1e-10
+    elif method == 'L-BFGS-B':
+        kwargs['method'] = 'L-BFGS-B'
+        kwargs['options']['ftol'] = 1e-12
+
+    t0 = time.perf_counter()
+    result = minimize(**kwargs)
+    dt = time.perf_counter() - t0
+
+    return result.x, history['E'], dt, result.success
+
+
+alpha = np.radians(60)
+phi0 = np.array([1.2, 0.6, 1.2, 0.6])
+k = np.array([1.0, 2.0, 1.0, 0.5])
+phi_init = np.array([0.8, 0.4])
+
+fig, axes = plt.subplots(1, 2, figsize=(10, 4))
+
+for method, color in [('SLSQP', 'steelblue'), ('L-BFGS-B', 'coral')]:
+    sol, E_hist, dt, ok = run_optimizer(method, phi0, k, alpha, phi_init.copy())
+    axes[0].semilogy(E_hist, color=color, label=f'{method} ({len(E_hist)} evals, {dt*1000:.1f}ms)')
+    print(f"{method:10s}  converged={ok}  φ*={np.degrees(sol)}°  E*={E_hist[-1]:.6f}  t={dt*1e3:.2f}ms")
+
+axes[0].set_xlabel('Function evaluations')
+axes[0].set_ylabel('Elastic energy E')
+axes[0].set_title('Convergence comparison')
+axes[0].legend(fontsize=8)
+axes[0].grid(True, linewidth=0.5, alpha=0.5)
+
+# Energy landscape for SLSQP solution
+phi1_vals = np.linspace(0.1, np.pi - 0.1, 80)
+E_landscape = []
+for p1 in phi1_vals:
+    sg1 = np.sin(p1)
+    ca, sa = np.cos(alpha), np.sin(alpha)
+    denom = ca**2 * sg1**2 + sa**2
+    cos_p2 = np.clip((ca**2 * sg1**2 - sa**2) / max(denom, 1e-12), -1, 1)
+    p2 = np.arccos(cos_p2)
+    phi = np.array([p1, p2, p1, p2])
+    E_landscape.append(total_energy(phi, phi0, k))
+
+axes[1].plot(np.degrees(phi1_vals), E_landscape, color='steelblue', linewidth=2)
+axes[1].set_xlabel('Primary fold angle φ₁ (°)')
+axes[1].set_ylabel('Elastic energy E (on Kawasaki manifold)')
+axes[1].set_title('Energy along the constraint manifold')
+axes[1].axvline(np.degrees(sol[0]), color='coral', linestyle='--', label=f'Optimum φ₁*={np.degrees(sol[0]):.1f}°')
+axes[1].legend()
+axes[1].grid(True, linewidth=0.5, alpha=0.5)
+
+plt.tight_layout()
+plt.show()
+```
+
+## Non-Uniform Stiffness and Multiple Equilibria
+
+Real origami structures often have creases with different stiffnesses — due to material variation, different crease depths, or deliberate design. When stiffness is non-uniform, the energy landscape can develop multiple local minima.
+
+```{python}
+# Sweep stiffness ratio k2/k1 and track equilibrium
+alpha = np.radians(45)
+phi0 = np.array([1.0, 1.0, 1.0, 1.0])
+k_ratios = np.logspace(-1, 1, 30)
+phi1_eq_list = []
+
+for ratio in k_ratios:
+    k = np.array([1.0, ratio, 1.0, ratio])
+    phi_eq, _, _ = vertex_energy_constrained(alpha, phi0, k, phi_init=[0.6, 0.5])
+    phi1_eq_list.append(np.degrees(phi_eq[0]))
+
+fig, ax = plt.subplots(figsize=(6, 4))
+ax.semilogx(k_ratios, phi1_eq_list, 'o-', color='steelblue', markersize=4)
+ax.axhline(np.degrees(phi0[0]), color='gray', linestyle='--', linewidth=0.8, label='Rest angle')
+ax.set_xlabel('Stiffness ratio k₂/k₁')
+ax.set_ylabel('Equilibrium φ₁* (°)')
+ax.set_title('Equilibrium fold angle vs stiffness ratio (α=45°)')
+ax.legend()
+ax.grid(True, linewidth=0.5, alpha=0.5)
+plt.tight_layout()
+plt.show()
+```
+
+## Summary
+
+- Elastic fold energy is a sum of torsional spring potentials: $E = \frac{1}{2}\sum k_i(\phi_i - \phi_{0,i})^2$.
+- Equilibrium configurations minimize total energy subject to geometric closure constraints.
+- SLSQP handles equality constraints directly; L-BFGS-B is faster for unconstrained problems.
+- Non-uniform stiffness shifts the equilibrium and can introduce multiple local minima.
+- The energy landscape along the Kawasaki constraint manifold is typically unimodal for a single vertex.
+
+## Further Reading
+
+@schenk2013geometry analyzes the elastic behavior of the Miura-ori under in-plane loads. @dudte2016programming uses energy minimization to program curvature into origami tessellations.
+
+## Exercises
+
+1. **Analytic gradient check.** For the 2D energy function over $(φ_1, φ_2)$, compute the analytic gradient $\nabla E$ and verify it against `scipy.optimize.check_grad`. Report the maximum absolute error.
+
+2. **Newton's method.** The energy has an analytic Hessian (it is constant — why?). Implement one step of Newton's method from a given starting point and verify it converges in one iteration for the unconstrained problem.
+
+3. **Multiple restarts.** Generate 100 random starting points for the constrained vertex problem and solve from each. Plot the distribution of converged energy values. Are there multiple local minima, or does SLSQP always find the same solution?
+
+4. **Temperature analogy.** In statistical mechanics, systems sample configurations with probability $p \propto e^{-E/T}$ at temperature $T$. Write a simple Metropolis sampler that samples fold angles from this distribution on the Kawasaki constraint manifold (project each MCMC step back onto the manifold). Plot the sampled fold angle distribution for $T = 0.01, 0.1, 1.0$.
+
+5. **Stiffness design.** Find the stiffness vector $\mathbf{k}$ (with $\|\mathbf{k}\|=1$) that places the energy minimum closest to a target fold angle $\phi^* = [\pi/3, \pi/4, \pi/3, \pi/4]$. (Hint: this is itself an optimization problem over $\mathbf{k}$.)

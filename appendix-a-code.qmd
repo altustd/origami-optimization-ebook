@@ -1,0 +1,175 @@
+# Code Reference {.unnumbered}
+
+This appendix collects all reusable functions defined throughout the book. Every function is importable by copying it into a local module.
+
+## Chapter 2 — Geometry
+
+```{python}
+#| eval: false
+import numpy as np
+
+def rotation_matrix(axis, angle):
+    """Rodrigues rotation about axis by angle (radians)."""
+    e = np.asarray(axis, dtype=float)
+    e = e / np.linalg.norm(e)
+    c, s = np.cos(angle), np.sin(angle)
+    skew = np.array([
+        [ 0,    -e[2],  e[1]],
+        [ e[2],  0,    -e[0]],
+        [-e[1],  e[0],  0   ]
+    ])
+    return c * np.eye(3) + (1 - c) * np.outer(e, e) + s * skew
+
+def fold_panel(panel_vertices, crease_point, crease_axis, angle):
+    """Rotate panel_vertices about crease line by angle."""
+    verts = np.asarray(panel_vertices, dtype=float)
+    R = rotation_matrix(crease_axis, angle)
+    return (R @ (verts - crease_point).T).T + crease_point
+
+def check_kawasaki(sector_angles):
+    """Check Kawasaki's theorem. Returns (satisfied, odd_sum, even_sum)."""
+    alphas = np.asarray(sector_angles)
+    n = len(alphas)
+    if n % 2 != 0:
+        return False, None, None
+    odd_sum  = np.sum(alphas[0::2])
+    even_sum = np.sum(alphas[1::2])
+    return np.isclose(odd_sum, np.pi) and np.isclose(even_sum, np.pi), odd_sum, even_sum
+
+def check_maekawa(fold_types):
+    """Check Maekawa's theorem. Returns (satisfied, M, V)."""
+    types = np.asarray(fold_types)
+    M = np.sum(types ==  1)
+    V = np.sum(types == -1)
+    return abs(M - V) == 2, int(M), int(V)
+
+def is_flat_foldable_vertex(sector_angles, fold_types):
+    """Full flat-foldability check for one vertex."""
+    kaw_ok, s1, s2 = check_kawasaki(sector_angles)
+    mae_ok, M, V   = check_maekawa(fold_types)
+    return {
+        'kawasaki': kaw_ok, 'maekawa': mae_ok,
+        'flat_foldable': kaw_ok and mae_ok,
+        'odd_angle_sum': s1, 'even_angle_sum': s2,
+        'mountains': M, 'valleys': V,
+    }
+```
+
+## Chapter 3 — Miura-ori
+
+```{python}
+#| eval: false
+def miura_dimensions(alpha, gamma, m=4, n=4):
+    """Width, length, thickness of m×n Miura-ori (panel size = 1)."""
+    sa, ca = np.sin(alpha), np.cos(alpha)
+    sg, cg = np.sin(gamma), np.cos(gamma)
+    W = 2 * m * np.sqrt(1 - (ca * sg)**2)
+    L = (n * 2 * sa * cg / np.sqrt(sa**2 + (ca*cg)**2)
+         if gamma > 0 else 2 * n * sa)
+    T = (2 * ca * sg * sa / np.sqrt(sa**2 + (ca*cg)**2)
+         if gamma > 0 else 0)
+    return W, L, T
+
+def miura_fold_angles(alpha, gamma):
+    """Return (phi_major, phi_minor, phi_major, phi_minor) for given gamma."""
+    sa, ca = np.sin(alpha), np.cos(alpha)
+    sg = np.sin(gamma)
+    cos_phi_minor = (ca**2 * sg**2 - sa**2) / (ca**2 * sg**2 + sa**2)
+    phi_minor = np.arccos(np.clip(cos_phi_minor, -1, 1))
+    return gamma, phi_minor, gamma, phi_minor
+```
+
+## Chapter 4 — Circle Packing
+
+```{python}
+#| eval: false
+from scipy.optimize import minimize, Bounds
+
+def solve_circle_packing(radii, n_restarts=10, seed=42):
+    """
+    Pack circles with given relative radii into unit square.
+    Returns (x, y, scale, converged).
+    """
+    rng = np.random.default_rng(seed)
+    n = len(radii)
+    best_s, best_sol = -np.inf, None
+
+    for _ in range(n_restarts):
+        x0 = np.concatenate([rng.uniform(0.1, 0.9, n),
+                              rng.uniform(0.1, 0.9, n), [0.2]])
+        lb = np.concatenate([np.zeros(2*n), [0.01]])
+        ub = np.concatenate([np.ones(2*n),  [1.0]])
+
+        def obj(z): return -z[2*n]
+
+        def cons(z):
+            x, y, s = z[:n], z[n:2*n], z[2*n]
+            r = np.asarray(radii)
+            c = []
+            for i in range(n):
+                for j in range(i+1, n):
+                    c.append(np.hypot(x[i]-x[j], y[i]-y[j]) - s*(r[i]+r[j]))
+            for i in range(n):
+                c += [x[i]-s*r[i], 1-x[i]-s*r[i],
+                      y[i]-s*r[i], 1-y[i]-s*r[i]]
+            return np.array(c)
+
+        res = minimize(obj, x0, method='SLSQP',
+                       bounds=Bounds(lb, ub),
+                       constraints={'type': 'ineq', 'fun': cons},
+                       options={'ftol': 1e-9, 'maxiter': 1000})
+        s_val = res.x[2*n]
+        if s_val > best_s:
+            best_s = s_val
+            best_sol = (res.x[:n].copy(), res.x[n:2*n].copy(),
+                        s_val, res.success)
+
+    return best_sol
+```
+
+## Chapter 5 — Energy Minimization
+
+```{python}
+#| eval: false
+def total_energy(phi, phi0, k):
+    """Total elastic energy of a crease pattern."""
+    return 0.5 * np.sum(k * (phi - phi0)**2)
+
+def energy_gradient(phi, phi0, k):
+    """Analytic gradient of total energy."""
+    return k * (phi - phi0)
+```
+
+## Chapter 6 — Inverse Design
+
+```{python}
+#| eval: false
+def miura_forward(alpha, m, n, a, b, gamma=np.pi/2):
+    """Forward model: compute Miura-ori deployed/collapsed dimensions."""
+    sa, ca = np.sin(alpha), np.cos(alpha)
+    return {
+        'W_dep':  2*m*a*ca,
+        'L_dep':  n*b,
+        'W_col':  2*m*a*sa*ca,
+        'rho':    sa,
+        'alpha':  alpha, 'a': a, 'b': b
+    }
+
+def solve_miura_inverse_fixed_grid(W_target, L_target, rho_target, m, n):
+    """Analytic inverse design for fixed grid."""
+    alpha = np.arcsin(rho_target)
+    a = W_target / (2*m*np.cos(alpha))
+    b = L_target / n
+    return alpha, a, b, miura_forward(alpha, m, n, a, b)
+```
+
+## Environment Setup
+
+```bash
+pixi install
+pixi run kernel     # register Jupyter kernel
+pixi run render     # render full ebook to docs/
+pixi run preview    # live preview in browser
+```
+
+Dependencies: `numpy`, `scipy`, `matplotlib` — all from conda-forge.

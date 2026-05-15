@@ -1,0 +1,1355 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.9.36">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>2&nbsp; Geometry of a Crease – The Mathematics of Folding</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./03-miura-ori.html" rel="next">
+<link href="./preface.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-845c23b38eaddc0f92fda52bfe77a8c8.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-5ccb035bea26c1e21f80f44cf7c27909.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body class="nav-sidebar floating quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./02-geometry.html">Part I: The Geometry of Folds</a></li><li class="breadcrumb-item"><a href="./02-geometry.html"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Geometry of a Crease</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">The Mathematics of Folding</a> 
+        <div class="sidebar-tools-main">
+    <a href="https://github.com/altustd/origami-optimization-ebook" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
+</div>
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Why Fold?</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./preface.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Preface</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">Part I: The Geometry of Folds</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./02-geometry.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Geometry of a Crease</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./03-miura-ori.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">The Miura-ori</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
+ <span class="menu-text">Part II: Optimization Methods</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./04-circle-packing.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Circle Packing and Origami Base Design</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./05-energy-minimization.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Energy Minimization and Equilibrium Folds</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./06-inverse-design.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Inverse Design</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">References</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true">
+ <span class="menu-text">Appendices</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./appendix-a-code.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Code Reference</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#the-fold-angle" id="toc-the-fold-angle" class="nav-link active" data-scroll-target="#the-fold-angle"><span class="header-section-number">2.1</span> The Fold Angle</a></li>
+  <li><a href="#rotation-matrices-at-fold-lines" id="toc-rotation-matrices-at-fold-lines" class="nav-link" data-scroll-target="#rotation-matrices-at-fold-lines"><span class="header-section-number">2.2</span> Rotation Matrices at Fold Lines</a></li>
+  <li><a href="#vertices-and-multi-crease-constraints" id="toc-vertices-and-multi-crease-constraints" class="nav-link" data-scroll-target="#vertices-and-multi-crease-constraints"><span class="header-section-number">2.3</span> Vertices and Multi-Crease Constraints</a></li>
+  <li><a href="#kawasakis-theorem" id="toc-kawasakis-theorem" class="nav-link" data-scroll-target="#kawasakis-theorem"><span class="header-section-number">2.4</span> Kawasaki’s Theorem</a></li>
+  <li><a href="#maekawas-theorem" id="toc-maekawas-theorem" class="nav-link" data-scroll-target="#maekawas-theorem"><span class="header-section-number">2.5</span> Maekawa’s Theorem</a></li>
+  <li><a href="#a-complete-vertex-checker" id="toc-a-complete-vertex-checker" class="nav-link" data-scroll-target="#a-complete-vertex-checker"><span class="header-section-number">2.6</span> A Complete Vertex Checker</a></li>
+  <li><a href="#summary" id="toc-summary" class="nav-link" data-scroll-target="#summary"><span class="header-section-number">2.7</span> Summary</a></li>
+  <li><a href="#further-reading" id="toc-further-reading" class="nav-link" data-scroll-target="#further-reading"><span class="header-section-number">2.8</span> Further Reading</a></li>
+  <li><a href="#exercises" id="toc-exercises" class="nav-link" data-scroll-target="#exercises"><span class="header-section-number">2.9</span> Exercises</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./02-geometry.html">Part I: The Geometry of Folds</a></li><li class="breadcrumb-item"><a href="./02-geometry.html"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Geometry of a Crease</span></a></li></ol></nav>
+<div class="quarto-title">
+<div class="quarto-title-block"><div><h1 class="title"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Geometry of a Crease</span></h1><button type="button" class="btn code-tools-button dropdown-toggle" id="quarto-code-tools-menu" data-bs-toggle="dropdown" aria-expanded="false"><i class="bi"></i> Code</button><ul class="dropdown-menu dropdown-menu-end" aria-labelelledby="quarto-code-tools-menu"><li><a id="quarto-show-all-code" class="dropdown-item" href="javascript:void(0)" role="button">Show All Code</a></li><li><a id="quarto-hide-all-code" class="dropdown-item" href="javascript:void(0)" role="button">Hide All Code</a></li><li><hr class="dropdown-divider"></li><li><a id="quarto-view-source" class="dropdown-item" href="javascript:void(0)" role="button">View Source</a></li></ul></div></div>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Learning Objectives
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li>Represent a fold as a rotation matrix and compute panel positions after folding</li>
+<li>State and apply Kawasaki’s theorem for flat-foldability at a vertex</li>
+<li>Apply Maekawa’s theorem to count mountain and valley folds</li>
+<li>Write Python functions to check both conditions numerically</li>
+</ul>
+</div>
+</div>
+<p>A piece of paper has three properties that make it mathematically interesting: it is flat, it is inextensible, and it can be folded. Flatness means the rest configuration is a plane. Inextensibility means distances between points on the surface are preserved during folding — the paper does not stretch. Foldability means that along a crease line, one panel can rotate relative to another by an arbitrary angle.</p>
+<p>These three properties together severely constrain what shapes a folded sheet can take. Almost all of the content of this book follows from working out those constraints carefully.</p>
+<section id="the-fold-angle" class="level2" data-number="2.1">
+<h2 data-number="2.1" class="anchored" data-anchor-id="the-fold-angle"><span class="header-section-number">2.1</span> The Fold Angle</h2>
+<p>Consider a single straight crease running across a sheet. The crease divides the sheet into two planar panels, which we call the <em>left panel</em> and the <em>right panel</em> (or panel 1 and panel 2). Define the <em>fold angle</em> <span class="math inline">\(\phi\)</span> as the dihedral angle between the two panels, measured such that:</p>
+<p><span id="eq-phi-flat"><span class="math display">\[\phi = 0 \quad \text{(flat, unfolded)} \tag{2.1}\]</span></span></p>
+<p><span id="eq-phi-folded"><span class="math display">\[\phi = \pi \quad \text{(fully folded, panels touching)} \tag{2.2}\]</span></span></p>
+<p>The sign of <span class="math inline">\(\phi\)</span> distinguishes mountain folds (panel 2 folds <em>up</em> relative to panel 1, <span class="math inline">\(\phi &gt; 0\)</span>) from valley folds (<span class="math inline">\(\phi &lt; 0\)</span>). For a single crease, this sign convention is arbitrary — we can always flip the sheet — but once we have a vertex where multiple creases meet, the relative signs matter.</p>
+</section>
+<section id="rotation-matrices-at-fold-lines" class="level2" data-number="2.2">
+<h2 data-number="2.2" class="anchored" data-anchor-id="rotation-matrices-at-fold-lines"><span class="header-section-number">2.2</span> Rotation Matrices at Fold Lines</h2>
+<p>Let the crease lie along the unit vector <span class="math inline">\(\hat{e}\)</span>. If panel 1 is fixed in space, then panel 2 is obtained by rotating panel 1 about <span class="math inline">\(\hat{e}\)</span> by angle <span class="math inline">\(\phi\)</span>. The rotation is given by the Rodrigues formula:</p>
+<p><span id="eq-rodrigues"><span class="math display">\[R(\hat{e}, \phi) = I \cos\phi + (1 - \cos\phi)\hat{e}\hat{e}^T + \sin\phi\, [\hat{e}]_\times \tag{2.3}\]</span></span></p>
+<p>where <span class="math inline">\([\hat{e}]_\times\)</span> is the skew-symmetric cross-product matrix:</p>
+<p><span id="eq-skew"><span class="math display">\[[\hat{e}]_\times = \begin{pmatrix} 0 &amp; -e_z &amp; e_y \\ e_z &amp; 0 &amp; -e_x \\ -e_y &amp; e_x &amp; 0 \end{pmatrix} \tag{2.4}\]</span></span></p>
+<div id="353db60c" class="cell" data-execution_count="1">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> mpl_toolkits.mplot3d <span class="im">import</span> Axes3D</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> mpl_toolkits.mplot3d.art3d <span class="im">import</span> Poly3DCollection</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> rotation_matrix(axis, angle):</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Rodrigues rotation matrix: rotate by angle about axis."""</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>    e <span class="op">=</span> np.asarray(axis, dtype<span class="op">=</span><span class="bu">float</span>)</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>    e <span class="op">=</span> e <span class="op">/</span> np.linalg.norm(e)</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>    c, s <span class="op">=</span> np.cos(angle), np.sin(angle)</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>    skew <span class="op">=</span> np.array([</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>        [ <span class="dv">0</span>,    <span class="op">-</span>e[<span class="dv">2</span>],  e[<span class="dv">1</span>]],</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>        [ e[<span class="dv">2</span>],  <span class="dv">0</span>,    <span class="op">-</span>e[<span class="dv">0</span>]],</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>        [<span class="op">-</span>e[<span class="dv">1</span>],  e[<span class="dv">0</span>],  <span class="dv">0</span>   ]</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>    ])</span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> c <span class="op">*</span> np.eye(<span class="dv">3</span>) <span class="op">+</span> (<span class="dv">1</span> <span class="op">-</span> c) <span class="op">*</span> np.outer(e, e) <span class="op">+</span> s <span class="op">*</span> skew</span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> fold_panel(panel_vertices, crease_point, crease_axis, angle):</span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Rotate panel_vertices about a crease line by angle."""</span></span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>    verts <span class="op">=</span> np.asarray(panel_vertices, dtype<span class="op">=</span><span class="bu">float</span>)</span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>    R <span class="op">=</span> rotation_matrix(crease_axis, angle)</span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Translate so crease_point is origin, rotate, translate back</span></span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> (R <span class="op">@</span> (verts <span class="op">-</span> crease_point).T).T <span class="op">+</span> crease_point</span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a><span class="co"># Demo: fold a single-crease sheet</span></span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a>fig <span class="op">=</span> plt.figure(figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">4</span>))</span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a>fold_angles <span class="op">=</span> [<span class="dv">0</span>, np.pi <span class="op">/</span> <span class="dv">4</span>, np.pi <span class="op">/</span> <span class="dv">2</span>, <span class="dv">3</span> <span class="op">*</span> np.pi <span class="op">/</span> <span class="dv">4</span>]</span>
+<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a>panel1 <span class="op">=</span> np.array([[<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>], [<span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">0</span>], [<span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">0</span>], [<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">0</span>]])</span>
+<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a>panel2_flat <span class="op">=</span> np.array([[<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>], [<span class="op">-</span><span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">0</span>], [<span class="op">-</span><span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">0</span>], [<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">0</span>]])</span>
+<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-34"><a href="#cb1-34" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i, phi <span class="kw">in</span> <span class="bu">enumerate</span>(fold_angles):</span>
+<span id="cb1-35"><a href="#cb1-35" aria-hidden="true" tabindex="-1"></a>    ax <span class="op">=</span> fig.add_subplot(<span class="dv">1</span>, <span class="dv">4</span>, i <span class="op">+</span> <span class="dv">1</span>, projection<span class="op">=</span><span class="st">'3d'</span>)</span>
+<span id="cb1-36"><a href="#cb1-36" aria-hidden="true" tabindex="-1"></a>    crease_axis <span class="op">=</span> np.array([<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">0</span>])</span>
+<span id="cb1-37"><a href="#cb1-37" aria-hidden="true" tabindex="-1"></a>    crease_point <span class="op">=</span> np.array([<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>])</span>
+<span id="cb1-38"><a href="#cb1-38" aria-hidden="true" tabindex="-1"></a>    panel2 <span class="op">=</span> fold_panel(panel2_flat, crease_point, crease_axis, <span class="op">-</span>phi)</span>
+<span id="cb1-39"><a href="#cb1-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-40"><a href="#cb1-40" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> verts, color <span class="kw">in</span> [(panel1, <span class="st">'steelblue'</span>), (panel2, <span class="st">'coral'</span>)]:</span>
+<span id="cb1-41"><a href="#cb1-41" aria-hidden="true" tabindex="-1"></a>        poly <span class="op">=</span> Poly3DCollection([verts], alpha<span class="op">=</span><span class="fl">0.6</span>, facecolor<span class="op">=</span>color, edgecolor<span class="op">=</span><span class="st">'k'</span>, linewidth<span class="op">=</span><span class="fl">0.5</span>)</span>
+<span id="cb1-42"><a href="#cb1-42" aria-hidden="true" tabindex="-1"></a>        ax.add_collection3d(poly)</span>
+<span id="cb1-43"><a href="#cb1-43" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-44"><a href="#cb1-44" aria-hidden="true" tabindex="-1"></a>    ax.set_xlim(<span class="op">-</span><span class="fl">1.2</span>, <span class="fl">1.2</span>)</span>
+<span id="cb1-45"><a href="#cb1-45" aria-hidden="true" tabindex="-1"></a>    ax.set_ylim(<span class="op">-</span><span class="fl">0.2</span>, <span class="fl">1.2</span>)</span>
+<span id="cb1-46"><a href="#cb1-46" aria-hidden="true" tabindex="-1"></a>    ax.set_zlim(<span class="op">-</span><span class="fl">1.2</span>, <span class="fl">0.2</span>)</span>
+<span id="cb1-47"><a href="#cb1-47" aria-hidden="true" tabindex="-1"></a>    ax.set_title(<span class="ss">f'φ = </span><span class="sc">{</span>phi<span class="sc">:.2f}</span><span class="ss">'</span>, fontsize<span class="op">=</span><span class="dv">9</span>)</span>
+<span id="cb1-48"><a href="#cb1-48" aria-hidden="true" tabindex="-1"></a>    ax.set_axis_off()</span>
+<span id="cb1-49"><a href="#cb1-49" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-50"><a href="#cb1-50" aria-hidden="true" tabindex="-1"></a>plt.suptitle(<span class="st">'Single-crease fold at increasing fold angles'</span>, y<span class="op">=</span><span class="fl">1.02</span>)</span>
+<span id="cb1-51"><a href="#cb1-51" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
+<span id="cb1-52"><a href="#cb1-52" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="02-geometry_files/figure-html/cell-2-output-1.png" width="950" height="345" class="figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="vertices-and-multi-crease-constraints" class="level2" data-number="2.3">
+<h2 data-number="2.3" class="anchored" data-anchor-id="vertices-and-multi-crease-constraints"><span class="header-section-number">2.3</span> Vertices and Multi-Crease Constraints</h2>
+<p>The interesting geometry begins at a <em>vertex</em> — a point where two or more creases meet. At a vertex with <span class="math inline">\(n\)</span> creases, there are <span class="math inline">\(n\)</span> fold angles <span class="math inline">\(\phi_1, \ldots, \phi_n\)</span> and <span class="math inline">\(n\)</span> sector angles <span class="math inline">\(\alpha_1, \ldots, \alpha_n\)</span>, where <span class="math inline">\(\alpha_i\)</span> is the angle between crease <span class="math inline">\(i\)</span> and crease <span class="math inline">\(i+1\)</span> measured in the flat (unfolded) sheet.</p>
+<p>The sector angles satisfy:</p>
+<p><span id="eq-sector-sum"><span class="math display">\[\sum_{i=1}^{n} \alpha_i = 2\pi \tag{2.5}\]</span></span></p>
+<p>because they partition the full angle around the vertex.</p>
+<p>For the sheet to be foldable (no tearing, no self-intersection at the vertex), the composition of rotations around the vertex must close — the last panel must connect back to the first. This closure condition is the source of all the flat-foldability constraints.</p>
+</section>
+<section id="kawasakis-theorem" class="level2" data-number="2.4">
+<h2 data-number="2.4" class="anchored" data-anchor-id="kawasakis-theorem"><span class="header-section-number">2.4</span> Kawasaki’s Theorem</h2>
+<p>For a vertex with <span class="math inline">\(2k\)</span> creases (flat-foldable vertices always have an even number of creases), flat-foldability requires:</p>
+<p><span id="eq-kawasaki"><span class="math display">\[\sum_{i=1}^{k} \alpha_{2i-1} = \sum_{i=1}^{k} \alpha_{2i} = \pi \tag{2.6}\]</span></span></p>
+<p>In words: the alternating sector angles must each sum to <span class="math inline">\(\pi\)</span>. For a 4-crease vertex, this means:</p>
+<p><span id="eq-kawasaki-4"><span class="math display">\[\alpha_1 + \alpha_3 = \alpha_2 + \alpha_4 = \pi \tag{2.7}\]</span></span></p>
+<p>This is Kawasaki’s theorem <span class="citation" data-cites="kawasaki1989relation">(<a href="references.html#ref-kawasaki1989relation" role="doc-biblioref">Kawasaki 1989</a>)</span>, and it is both necessary and sufficient for flat-foldability (in the local, single-vertex sense).</p>
+<div id="c9d28cec" class="cell" data-execution_count="2">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> check_kawasaki(sector_angles):</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="co">    Check Kawasaki's theorem for a vertex.</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="co">    sector_angles: list of angles in radians, alternating around the vertex.</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="co">    Returns (satisfied, odd_sum, even_sum).</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="co">    """</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>    alphas <span class="op">=</span> np.asarray(sector_angles)</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>    n <span class="op">=</span> <span class="bu">len</span>(alphas)</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> n <span class="op">%</span> <span class="dv">2</span> <span class="op">!=</span> <span class="dv">0</span>:</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="va">False</span>, <span class="va">None</span>, <span class="va">None</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>    odd_sum  <span class="op">=</span> np.<span class="bu">sum</span>(alphas[<span class="dv">0</span>::<span class="dv">2</span>])   <span class="co"># indices 0, 2, 4, ...</span></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>    even_sum <span class="op">=</span> np.<span class="bu">sum</span>(alphas[<span class="dv">1</span>::<span class="dv">2</span>])   <span class="co"># indices 1, 3, 5, ...</span></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>    satisfied <span class="op">=</span> np.isclose(odd_sum, np.pi) <span class="kw">and</span> np.isclose(even_sum, np.pi)</span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> satisfied, odd_sum, even_sum</span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a><span class="co"># Example: standard 4-crease vertex</span></span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>alphas <span class="op">=</span> [np.pi<span class="op">/</span><span class="dv">3</span>, <span class="dv">2</span><span class="op">*</span>np.pi<span class="op">/</span><span class="dv">3</span>, np.pi<span class="op">/</span><span class="dv">3</span>, <span class="dv">2</span><span class="op">*</span>np.pi<span class="op">/</span><span class="dv">3</span>]</span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>ok, s1, s2 <span class="op">=</span> check_kawasaki(alphas)</span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Sector angles: </span><span class="sc">{</span>[<span class="ss">f'</span><span class="sc">{</span>a<span class="sc">:.3f}</span><span class="ss">'</span> <span class="cf">for</span> a <span class="kw">in</span> alphas]<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Kawasaki satisfied: </span><span class="sc">{</span>ok<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Odd sum:  </span><span class="sc">{</span>s1<span class="sc">:.4f}</span><span class="ss">  (π = </span><span class="sc">{</span>np<span class="sc">.</span>pi<span class="sc">:.4f}</span><span class="ss">)"</span>)</span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Even sum: </span><span class="sc">{</span>s2<span class="sc">:.4f}</span><span class="ss">  (π = </span><span class="sc">{</span>np<span class="sc">.</span>pi<span class="sc">:.4f}</span><span class="ss">)"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Sector angles: ['1.047', '2.094', '1.047', '2.094']
+Kawasaki satisfied: False
+Odd sum:  2.0944  (π = 3.1416)
+Even sum: 4.1888  (π = 3.1416)</code></pre>
+</div>
+</div>
+<div id="c1c54d1f" class="cell" data-execution_count="3">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Visualize: which combinations of (α1, α2) satisfy Kawasaki for a 4-crease vertex?</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Given α1 + α3 = π  →  α3 = π - α1</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Given α2 + α4 = π  →  α4 = π - α2</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Constraint: α1 + α2 + α3 + α4 = 2π  →  always satisfied for any α1, α2.</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="co"># So for a 4-crease vertex, any (α1, α2) with α1, α2 ∈ (0, π) works.</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>alpha1_vals <span class="op">=</span> np.linspace(<span class="fl">0.1</span>, np.pi <span class="op">-</span> <span class="fl">0.1</span>, <span class="dv">200</span>)</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>alpha2_vals <span class="op">=</span> np.linspace(<span class="fl">0.1</span>, np.pi <span class="op">-</span> <span class="fl">0.1</span>, <span class="dv">200</span>)</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>A1, A2 <span class="op">=</span> np.meshgrid(alpha1_vals, alpha2_vals)</span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Compaction ratio proxy: total variation in fold space</span></span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a><span class="co"># For illustration, just show the feasible region</span></span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">5</span>, <span class="dv">4</span>))</span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>ax.fill_between(alpha1_vals, <span class="fl">0.1</span>, np.pi <span class="op">-</span> <span class="fl">0.1</span>, alpha<span class="op">=</span><span class="fl">0.15</span>, color<span class="op">=</span><span class="st">'steelblue'</span>,</span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>                label<span class="op">=</span><span class="st">'Kawasaki feasible region'</span>)</span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>ax.set_xlabel(<span class="st">'α₁ (rad)'</span>)</span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>ax.set_ylabel(<span class="st">'α₂ (rad)'</span>)</span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>ax.set_title(<span class="st">'4-crease vertex: Kawasaki feasible region'</span>)</span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>ax.set_xlim(<span class="dv">0</span>, np.pi)</span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>ax.set_ylim(<span class="dv">0</span>, np.pi)</span>
+<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a>ax.axvline(np.pi <span class="op">/</span> <span class="dv">2</span>, color<span class="op">=</span><span class="st">'gray'</span>, linestyle<span class="op">=</span><span class="st">'--'</span>, linewidth<span class="op">=</span><span class="fl">0.8</span>, label<span class="op">=</span><span class="st">'α₁ = π/2'</span>)</span>
+<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a>ax.axhline(np.pi <span class="op">/</span> <span class="dv">2</span>, color<span class="op">=</span><span class="st">'gray'</span>, linestyle<span class="op">=</span><span class="st">':'</span>, linewidth<span class="op">=</span><span class="fl">0.8</span>, label<span class="op">=</span><span class="st">'α₂ = π/2'</span>)</span>
+<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a>ax.legend(fontsize<span class="op">=</span><span class="dv">8</span>)</span>
+<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
+<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="02-geometry_files/figure-html/cell-4-output-1.png" width="469" height="372" class="figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="maekawas-theorem" class="level2" data-number="2.5">
+<h2 data-number="2.5" class="anchored" data-anchor-id="maekawas-theorem"><span class="header-section-number">2.5</span> Maekawa’s Theorem</h2>
+<p>Kawasaki tells us about the angles. Maekawa’s theorem tells us about the fold directions: at any flat-foldable vertex, the number of mountain folds <span class="math inline">\(M\)</span> and valley folds <span class="math inline">\(V\)</span> must satisfy:</p>
+<p><span id="eq-maekawa"><span class="math display">\[|M - V| = 2 \tag{2.8}\]</span></span></p>
+<p>For a 4-crease vertex, this means either <span class="math inline">\(M=3, V=1\)</span> or <span class="math inline">\(M=1, V=3\)</span>. You cannot have <span class="math inline">\(M=2, V=2\)</span> at a flat-foldable vertex.</p>
+<div id="9bbebe39" class="cell" data-execution_count="4">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> check_maekawa(fold_types):</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="co">    Check Maekawa's theorem.</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="co">    fold_types: list of +1 (mountain) or -1 (valley).</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="co">    Returns (satisfied, M, V).</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="co">    """</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>    types <span class="op">=</span> np.asarray(fold_types)</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>    M <span class="op">=</span> np.<span class="bu">sum</span>(types <span class="op">==</span> <span class="dv">1</span>)</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>    V <span class="op">=</span> np.<span class="bu">sum</span>(types <span class="op">==</span> <span class="op">-</span><span class="dv">1</span>)</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>    satisfied <span class="op">=</span> <span class="bu">abs</span>(M <span class="op">-</span> V) <span class="op">==</span> <span class="dv">2</span></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> satisfied, <span class="bu">int</span>(M), <span class="bu">int</span>(V)</span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>cases <span class="op">=</span> [</span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>    ([<span class="dv">1</span>,  <span class="dv">1</span>,  <span class="dv">1</span>, <span class="op">-</span><span class="dv">1</span>], <span class="st">"M=3, V=1"</span>),</span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>    ([<span class="dv">1</span>, <span class="op">-</span><span class="dv">1</span>,  <span class="dv">1</span>, <span class="op">-</span><span class="dv">1</span>], <span class="st">"M=2, V=2"</span>),</span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>    ([<span class="op">-</span><span class="dv">1</span>, <span class="op">-</span><span class="dv">1</span>, <span class="op">-</span><span class="dv">1</span>, <span class="dv">1</span>], <span class="st">"M=1, V=3"</span>),</span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a>]</span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> types, label <span class="kw">in</span> cases:</span>
+<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a>    ok, M, V <span class="op">=</span> check_maekawa(types)</span>
+<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"</span><span class="sc">{</span>label<span class="sc">:12s}</span><span class="ss">  →  Maekawa satisfied: </span><span class="sc">{</span>ok<span class="sc">}</span><span class="ss">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>M=3, V=1      →  Maekawa satisfied: True
+M=2, V=2      →  Maekawa satisfied: False
+M=1, V=3      →  Maekawa satisfied: True</code></pre>
+</div>
+</div>
+</section>
+<section id="a-complete-vertex-checker" class="level2" data-number="2.6">
+<h2 data-number="2.6" class="anchored" data-anchor-id="a-complete-vertex-checker"><span class="header-section-number">2.6</span> A Complete Vertex Checker</h2>
+<div id="63a6c93c" class="cell" data-execution_count="5">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> is_flat_foldable_vertex(sector_angles, fold_types):</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="co">    Check both Kawasaki and Maekawa for a single vertex.</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="co">    sector_angles: alternating sector angles in radians</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="co">    fold_types: +1 mountain, -1 valley, one per crease</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="co">    """</span></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>    kaw_ok, s1, s2 <span class="op">=</span> check_kawasaki(sector_angles)</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>    mae_ok, M, V   <span class="op">=</span> check_maekawa(fold_types)</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> {</span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>        <span class="st">'kawasaki'</span>: kaw_ok,</span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>        <span class="st">'maekawa'</span>:  mae_ok,</span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>        <span class="st">'flat_foldable'</span>: kaw_ok <span class="kw">and</span> mae_ok,</span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>        <span class="st">'odd_angle_sum'</span>:  s1,</span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>        <span class="st">'even_angle_sum'</span>: s2,</span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>        <span class="st">'mountains'</span>: M,</span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>        <span class="st">'valleys'</span>:   V,</span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a><span class="co"># Standard Miura-ori vertex</span></span>
+<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a>alphas <span class="op">=</span> [np.pi<span class="op">/</span><span class="dv">4</span>, <span class="dv">3</span><span class="op">*</span>np.pi<span class="op">/</span><span class="dv">4</span>, np.pi<span class="op">/</span><span class="dv">4</span>, <span class="dv">3</span><span class="op">*</span>np.pi<span class="op">/</span><span class="dv">4</span>]</span>
+<span id="cb7-22"><a href="#cb7-22" aria-hidden="true" tabindex="-1"></a>folds  <span class="op">=</span> [<span class="dv">1</span>, <span class="op">-</span><span class="dv">1</span>, <span class="dv">1</span>, <span class="op">-</span><span class="dv">1</span>]   <span class="co"># M, V, M, V</span></span>
+<span id="cb7-23"><a href="#cb7-23" aria-hidden="true" tabindex="-1"></a>result <span class="op">=</span> is_flat_foldable_vertex(alphas, folds)</span>
+<span id="cb7-24"><a href="#cb7-24" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> k, v <span class="kw">in</span> result.items():</span>
+<span id="cb7-25"><a href="#cb7-25" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"  </span><span class="sc">{</span>k<span class="sc">}</span><span class="ss">: </span><span class="sc">{</span>v<span class="sc">}</span><span class="ss">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>  kawasaki: False
+  maekawa: False
+  flat_foldable: False
+  odd_angle_sum: 1.5707963267948966
+  even_angle_sum: 4.71238898038469
+  mountains: 2
+  valleys: 2</code></pre>
+</div>
+</div>
+</section>
+<section id="summary" class="level2" data-number="2.7">
+<h2 data-number="2.7" class="anchored" data-anchor-id="summary"><span class="header-section-number">2.7</span> Summary</h2>
+<ul>
+<li>A fold is a rotation about a crease line, parameterized by fold angle <span class="math inline">\(\phi \in [0, \pi]\)</span>.</li>
+<li>Rodrigues’ formula gives the rotation matrix for any axis and angle.</li>
+<li>At a multi-crease vertex, flat-foldability requires Kawasaki’s theorem (alternating sector angles sum to <span class="math inline">\(\pi\)</span>) and Maekawa’s theorem (<span class="math inline">\(|M - V| = 2\)</span>).</li>
+<li>Both conditions can be checked numerically with simple array operations.</li>
+</ul>
+</section>
+<section id="further-reading" class="level2" data-number="2.8">
+<h2 data-number="2.8" class="anchored" data-anchor-id="further-reading"><span class="header-section-number">2.8</span> Further Reading</h2>
+<p><span class="citation" data-cites="demaine2007geometric">Demaine and O’Rourke (<a href="references.html#ref-demaine2007geometric" role="doc-biblioref">2007</a>)</span> provides rigorous proofs of Kawasaki’s and Maekawa’s theorems (Chapters 11–12). <span class="citation" data-cites="huffman1976curvature">Huffman (<a href="references.html#ref-huffman1976curvature" role="doc-biblioref">1976</a>)</span> is the original paper connecting curvature to crease geometry and is surprisingly readable.</p>
+</section>
+<section id="exercises" class="level2" data-number="2.9">
+<h2 data-number="2.9" class="anchored" data-anchor-id="exercises"><span class="header-section-number">2.9</span> Exercises</h2>
+<ol type="1">
+<li><p><strong>Rodrigues by hand.</strong> For a crease along <span class="math inline">\(\hat{e} = \hat{y} = (0,1,0)\)</span> and fold angle <span class="math inline">\(\phi = \pi/2\)</span>, write out <span class="math inline">\(R(\hat{e}, \phi)\)</span> using <a href="#eq-rodrigues" class="quarto-xref">Equation&nbsp;<span>2.3</span></a>. Apply it to the vector <span class="math inline">\((1, 0, 0)\)</span> and verify the result makes geometric sense.</p></li>
+<li><p><strong>Three-crease vertex.</strong> Can a vertex with exactly three creases be flat-foldable? Use Kawasaki’s theorem to argue why or why not.</p></li>
+<li><p><strong>Kawasaki violation.</strong> Write a Python function that, given a set of sector angles that violate Kawasaki’s theorem, returns the <em>minimum perturbation</em> to any single sector angle that restores the condition. (Hint: the answer is the difference between the actual alternating sums and <span class="math inline">\(\pi\)</span>, distributed optimally.)</p></li>
+<li><p><strong>Maekawa patterns.</strong> For a 6-crease vertex, list all <span class="math inline">\((M, V)\)</span> combinations that satisfy Maekawa’s theorem. How many mountain/valley assignment patterns are there for each valid <span class="math inline">\((M, V)\)</span> pair?</p></li>
+<li><p><strong>Closure check.</strong> Implement a function that, given sector angles and fold angles for a 4-crease vertex, multiplies the four rotation matrices in sequence and checks whether the product is the identity. Test it on the Miura-ori vertex from the code block above for <span class="math inline">\(\phi = \pi/4\)</span>.</p></li>
+</ol>
+
+
+<!-- -->
+
+<div id="refs" class="references csl-bib-body hanging-indent" role="list" style="display: none">
+<div id="ref-demaine2007geometric" class="csl-entry" role="listitem">
+Demaine, Erik D, and Joseph O’Rourke. 2007. <em>Geometric Folding Algorithms: Linkages, Origami, Polyhedra</em>. Cambridge University Press.
+</div>
+<div id="ref-huffman1976curvature" class="csl-entry" role="listitem">
+Huffman, David A. 1976. <span>“Curvature and Creases: A Primer on Paper.”</span> <em>IEEE Transactions on Computers</em> 25 (10): 1010–19.
+</div>
+<div id="ref-kawasaki1989relation" class="csl-entry" role="listitem">
+Kawasaki, Toshikazu. 1989. <span>“On the Relation Between Mountain-Creases and Valley-Creases of a Flat Origami.”</span> <em>Proceedings of the First International Meeting of Origami Science and Technology</em>, 229–37.
+</div>
+</div>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+    const viewSource = window.document.getElementById('quarto-view-source') ||
+                       window.document.getElementById('quarto-code-tools-source');
+    if (viewSource) {
+      const sourceUrl = viewSource.getAttribute("data-quarto-source-url");
+      viewSource.addEventListener("click", function(e) {
+        if (sourceUrl) {
+          // rstudio viewer pane
+          if (/\bcapabilities=\b/.test(window.location)) {
+            window.open(sourceUrl);
+          } else {
+            window.location.href = sourceUrl;
+          }
+        } else {
+          const modal = new bootstrap.Modal(document.getElementById('quarto-embedded-source-code-modal'));
+          modal.show();
+        }
+        return false;
+      });
+    }
+    function toggleCodeHandler(show) {
+      return function(e) {
+        const detailsSrc = window.document.querySelectorAll(".cell > details > .sourceCode");
+        for (let i=0; i<detailsSrc.length; i++) {
+          const details = detailsSrc[i].parentElement;
+          if (show) {
+            details.open = true;
+          } else {
+            details.removeAttribute("open");
+          }
+        }
+        const cellCodeDivs = window.document.querySelectorAll(".cell > .sourceCode");
+        const fromCls = show ? "hidden" : "unhidden";
+        const toCls = show ? "unhidden" : "hidden";
+        for (let i=0; i<cellCodeDivs.length; i++) {
+          const codeDiv = cellCodeDivs[i];
+          if (codeDiv.classList.contains(fromCls)) {
+            codeDiv.classList.remove(fromCls);
+            codeDiv.classList.add(toCls);
+          } 
+        }
+        return false;
+      }
+    }
+    const hideAllCode = window.document.getElementById("quarto-hide-all-code");
+    if (hideAllCode) {
+      hideAllCode.addEventListener("click", toggleCodeHandler(false));
+    }
+    const showAllCode = window.document.getElementById("quarto-show-all-code");
+    if (showAllCode) {
+      showAllCode.addEventListener("click", toggleCodeHandler(true));
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./preface.html" class="pagination-link" aria-label="Preface">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Preface</span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./03-miura-ori.html" class="pagination-link" aria-label="The Miura-ori">
+        <span class="nav-page-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">The Miura-ori</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu"># Geometry of a Crease</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>::: {.callout-note}</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="fu">## Learning Objectives</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Represent a fold as a rotation matrix and compute panel positions after folding</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>State and apply Kawasaki's theorem for flat-foldability at a vertex</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Apply Maekawa's theorem to count mountain and valley folds</span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Write Python functions to check both conditions numerically</span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>A piece of paper has three properties that make it mathematically interesting: it is flat, it is inextensible, and it can be folded. Flatness means the rest configuration is a plane. Inextensibility means distances between points on the surface are preserved during folding — the paper does not stretch. Foldability means that along a crease line, one panel can rotate relative to another by an arbitrary angle.</span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>These three properties together severely constrain what shapes a folded sheet can take. Almost all of the content of this book follows from working out those constraints carefully.</span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a><span class="fu">## The Fold Angle</span></span>
+<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a>Consider a single straight crease running across a sheet. The crease divides the sheet into two planar panels, which we call the *left panel* and the *right panel* (or panel 1 and panel 2). Define the *fold angle* $\phi$ as the dihedral angle between the two panels, measured such that:</span>
+<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a>$$\phi = 0 \quad \text{(flat, unfolded)}$$ {#eq-phi-flat}</span>
+<span id="cb9-20"><a href="#cb9-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-21"><a href="#cb9-21" aria-hidden="true" tabindex="-1"></a>$$\phi = \pi \quad \text{(fully folded, panels touching)}$$ {#eq-phi-folded}</span>
+<span id="cb9-22"><a href="#cb9-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-23"><a href="#cb9-23" aria-hidden="true" tabindex="-1"></a>The sign of $\phi$ distinguishes mountain folds (panel 2 folds *up* relative to panel 1, $\phi &gt; 0$) from valley folds ($\phi &lt; 0$). For a single crease, this sign convention is arbitrary — we can always flip the sheet — but once we have a vertex where multiple creases meet, the relative signs matter.</span>
+<span id="cb9-24"><a href="#cb9-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-25"><a href="#cb9-25" aria-hidden="true" tabindex="-1"></a><span class="fu">## Rotation Matrices at Fold Lines</span></span>
+<span id="cb9-26"><a href="#cb9-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-27"><a href="#cb9-27" aria-hidden="true" tabindex="-1"></a>Let the crease lie along the unit vector $\hat{e}$. If panel 1 is fixed in space, then panel 2 is obtained by rotating panel 1 about $\hat{e}$ by angle $\phi$. The rotation is given by the Rodrigues formula:</span>
+<span id="cb9-28"><a href="#cb9-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-29"><a href="#cb9-29" aria-hidden="true" tabindex="-1"></a>$$R(\hat{e}, \phi) = I \cos\phi + (1 - \cos\phi)\hat{e}\hat{e}^T + \sin\phi\, <span class="co">[</span><span class="ot">\hat{e}</span><span class="co">]</span>_\times$$ {#eq-rodrigues}</span>
+<span id="cb9-30"><a href="#cb9-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-31"><a href="#cb9-31" aria-hidden="true" tabindex="-1"></a>where $<span class="co">[</span><span class="ot">\hat{e}</span><span class="co">]</span>_\times$ is the skew-symmetric cross-product matrix:</span>
+<span id="cb9-32"><a href="#cb9-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-33"><a href="#cb9-33" aria-hidden="true" tabindex="-1"></a>$$<span class="co">[</span><span class="ot">\hat{e}</span><span class="co">]</span>_\times = \begin{pmatrix} 0 &amp; -e_z &amp; e_y <span class="sc">\\</span> e_z &amp; 0 &amp; -e_x <span class="sc">\\</span> -e_y &amp; e_x &amp; 0 \end{pmatrix}$$ {#eq-skew}</span>
+<span id="cb9-34"><a href="#cb9-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-37"><a href="#cb9-37" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb9-38"><a href="#cb9-38" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb9-39"><a href="#cb9-39" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb9-40"><a href="#cb9-40" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> mpl_toolkits.mplot3d <span class="im">import</span> Axes3D</span>
+<span id="cb9-41"><a href="#cb9-41" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> mpl_toolkits.mplot3d.art3d <span class="im">import</span> Poly3DCollection</span>
+<span id="cb9-42"><a href="#cb9-42" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-43"><a href="#cb9-43" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> rotation_matrix(axis, angle):</span>
+<span id="cb9-44"><a href="#cb9-44" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Rodrigues rotation matrix: rotate by angle about axis."""</span></span>
+<span id="cb9-45"><a href="#cb9-45" aria-hidden="true" tabindex="-1"></a>    e <span class="op">=</span> np.asarray(axis, dtype<span class="op">=</span><span class="bu">float</span>)</span>
+<span id="cb9-46"><a href="#cb9-46" aria-hidden="true" tabindex="-1"></a>    e <span class="op">=</span> e <span class="op">/</span> np.linalg.norm(e)</span>
+<span id="cb9-47"><a href="#cb9-47" aria-hidden="true" tabindex="-1"></a>    c, s <span class="op">=</span> np.cos(angle), np.sin(angle)</span>
+<span id="cb9-48"><a href="#cb9-48" aria-hidden="true" tabindex="-1"></a>    skew <span class="op">=</span> np.array([</span>
+<span id="cb9-49"><a href="#cb9-49" aria-hidden="true" tabindex="-1"></a>        [ <span class="dv">0</span>,    <span class="op">-</span>e[<span class="dv">2</span>],  e[<span class="dv">1</span>]],</span>
+<span id="cb9-50"><a href="#cb9-50" aria-hidden="true" tabindex="-1"></a>        [ e[<span class="dv">2</span>],  <span class="dv">0</span>,    <span class="op">-</span>e[<span class="dv">0</span>]],</span>
+<span id="cb9-51"><a href="#cb9-51" aria-hidden="true" tabindex="-1"></a>        [<span class="op">-</span>e[<span class="dv">1</span>],  e[<span class="dv">0</span>],  <span class="dv">0</span>   ]</span>
+<span id="cb9-52"><a href="#cb9-52" aria-hidden="true" tabindex="-1"></a>    ])</span>
+<span id="cb9-53"><a href="#cb9-53" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> c <span class="op">*</span> np.eye(<span class="dv">3</span>) <span class="op">+</span> (<span class="dv">1</span> <span class="op">-</span> c) <span class="op">*</span> np.outer(e, e) <span class="op">+</span> s <span class="op">*</span> skew</span>
+<span id="cb9-54"><a href="#cb9-54" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-55"><a href="#cb9-55" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-56"><a href="#cb9-56" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> fold_panel(panel_vertices, crease_point, crease_axis, angle):</span>
+<span id="cb9-57"><a href="#cb9-57" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Rotate panel_vertices about a crease line by angle."""</span></span>
+<span id="cb9-58"><a href="#cb9-58" aria-hidden="true" tabindex="-1"></a>    verts <span class="op">=</span> np.asarray(panel_vertices, dtype<span class="op">=</span><span class="bu">float</span>)</span>
+<span id="cb9-59"><a href="#cb9-59" aria-hidden="true" tabindex="-1"></a>    R <span class="op">=</span> rotation_matrix(crease_axis, angle)</span>
+<span id="cb9-60"><a href="#cb9-60" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Translate so crease_point is origin, rotate, translate back</span></span>
+<span id="cb9-61"><a href="#cb9-61" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> (R <span class="op">@</span> (verts <span class="op">-</span> crease_point).T).T <span class="op">+</span> crease_point</span>
+<span id="cb9-62"><a href="#cb9-62" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-63"><a href="#cb9-63" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-64"><a href="#cb9-64" aria-hidden="true" tabindex="-1"></a><span class="co"># Demo: fold a single-crease sheet</span></span>
+<span id="cb9-65"><a href="#cb9-65" aria-hidden="true" tabindex="-1"></a>fig <span class="op">=</span> plt.figure(figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">4</span>))</span>
+<span id="cb9-66"><a href="#cb9-66" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-67"><a href="#cb9-67" aria-hidden="true" tabindex="-1"></a>fold_angles <span class="op">=</span> [<span class="dv">0</span>, np.pi <span class="op">/</span> <span class="dv">4</span>, np.pi <span class="op">/</span> <span class="dv">2</span>, <span class="dv">3</span> <span class="op">*</span> np.pi <span class="op">/</span> <span class="dv">4</span>]</span>
+<span id="cb9-68"><a href="#cb9-68" aria-hidden="true" tabindex="-1"></a>panel1 <span class="op">=</span> np.array([[<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>], [<span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">0</span>], [<span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">0</span>], [<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">0</span>]])</span>
+<span id="cb9-69"><a href="#cb9-69" aria-hidden="true" tabindex="-1"></a>panel2_flat <span class="op">=</span> np.array([[<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>], [<span class="op">-</span><span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">0</span>], [<span class="op">-</span><span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">0</span>], [<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">0</span>]])</span>
+<span id="cb9-70"><a href="#cb9-70" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-71"><a href="#cb9-71" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i, phi <span class="kw">in</span> <span class="bu">enumerate</span>(fold_angles):</span>
+<span id="cb9-72"><a href="#cb9-72" aria-hidden="true" tabindex="-1"></a>    ax <span class="op">=</span> fig.add_subplot(<span class="dv">1</span>, <span class="dv">4</span>, i <span class="op">+</span> <span class="dv">1</span>, projection<span class="op">=</span><span class="st">'3d'</span>)</span>
+<span id="cb9-73"><a href="#cb9-73" aria-hidden="true" tabindex="-1"></a>    crease_axis <span class="op">=</span> np.array([<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">0</span>])</span>
+<span id="cb9-74"><a href="#cb9-74" aria-hidden="true" tabindex="-1"></a>    crease_point <span class="op">=</span> np.array([<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>])</span>
+<span id="cb9-75"><a href="#cb9-75" aria-hidden="true" tabindex="-1"></a>    panel2 <span class="op">=</span> fold_panel(panel2_flat, crease_point, crease_axis, <span class="op">-</span>phi)</span>
+<span id="cb9-76"><a href="#cb9-76" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-77"><a href="#cb9-77" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> verts, color <span class="kw">in</span> [(panel1, <span class="st">'steelblue'</span>), (panel2, <span class="st">'coral'</span>)]:</span>
+<span id="cb9-78"><a href="#cb9-78" aria-hidden="true" tabindex="-1"></a>        poly <span class="op">=</span> Poly3DCollection([verts], alpha<span class="op">=</span><span class="fl">0.6</span>, facecolor<span class="op">=</span>color, edgecolor<span class="op">=</span><span class="st">'k'</span>, linewidth<span class="op">=</span><span class="fl">0.5</span>)</span>
+<span id="cb9-79"><a href="#cb9-79" aria-hidden="true" tabindex="-1"></a>        ax.add_collection3d(poly)</span>
+<span id="cb9-80"><a href="#cb9-80" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-81"><a href="#cb9-81" aria-hidden="true" tabindex="-1"></a>    ax.set_xlim(<span class="op">-</span><span class="fl">1.2</span>, <span class="fl">1.2</span>)</span>
+<span id="cb9-82"><a href="#cb9-82" aria-hidden="true" tabindex="-1"></a>    ax.set_ylim(<span class="op">-</span><span class="fl">0.2</span>, <span class="fl">1.2</span>)</span>
+<span id="cb9-83"><a href="#cb9-83" aria-hidden="true" tabindex="-1"></a>    ax.set_zlim(<span class="op">-</span><span class="fl">1.2</span>, <span class="fl">0.2</span>)</span>
+<span id="cb9-84"><a href="#cb9-84" aria-hidden="true" tabindex="-1"></a>    ax.set_title(<span class="ss">f'φ = </span><span class="sc">{</span>phi<span class="sc">:.2f}</span><span class="ss">'</span>, fontsize<span class="op">=</span><span class="dv">9</span>)</span>
+<span id="cb9-85"><a href="#cb9-85" aria-hidden="true" tabindex="-1"></a>    ax.set_axis_off()</span>
+<span id="cb9-86"><a href="#cb9-86" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-87"><a href="#cb9-87" aria-hidden="true" tabindex="-1"></a>plt.suptitle(<span class="st">'Single-crease fold at increasing fold angles'</span>, y<span class="op">=</span><span class="fl">1.02</span>)</span>
+<span id="cb9-88"><a href="#cb9-88" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
+<span id="cb9-89"><a href="#cb9-89" aria-hidden="true" tabindex="-1"></a>plt.show()</span>
+<span id="cb9-90"><a href="#cb9-90" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb9-91"><a href="#cb9-91" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-92"><a href="#cb9-92" aria-hidden="true" tabindex="-1"></a><span class="fu">## Vertices and Multi-Crease Constraints</span></span>
+<span id="cb9-93"><a href="#cb9-93" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-94"><a href="#cb9-94" aria-hidden="true" tabindex="-1"></a>The interesting geometry begins at a *vertex* — a point where two or more creases meet. At a vertex with $n$ creases, there are $n$ fold angles $\phi_1, \ldots, \phi_n$ and $n$ sector angles $\alpha_1, \ldots, \alpha_n$, where $\alpha_i$ is the angle between crease $i$ and crease $i+1$ measured in the flat (unfolded) sheet.</span>
+<span id="cb9-95"><a href="#cb9-95" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-96"><a href="#cb9-96" aria-hidden="true" tabindex="-1"></a>The sector angles satisfy:</span>
+<span id="cb9-97"><a href="#cb9-97" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-98"><a href="#cb9-98" aria-hidden="true" tabindex="-1"></a>$$\sum_{i=1}^{n} \alpha_i = 2\pi$$ {#eq-sector-sum}</span>
+<span id="cb9-99"><a href="#cb9-99" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-100"><a href="#cb9-100" aria-hidden="true" tabindex="-1"></a>because they partition the full angle around the vertex.</span>
+<span id="cb9-101"><a href="#cb9-101" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-102"><a href="#cb9-102" aria-hidden="true" tabindex="-1"></a>For the sheet to be foldable (no tearing, no self-intersection at the vertex), the composition of rotations around the vertex must close — the last panel must connect back to the first. This closure condition is the source of all the flat-foldability constraints.</span>
+<span id="cb9-103"><a href="#cb9-103" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-104"><a href="#cb9-104" aria-hidden="true" tabindex="-1"></a><span class="fu">## Kawasaki's Theorem</span></span>
+<span id="cb9-105"><a href="#cb9-105" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-106"><a href="#cb9-106" aria-hidden="true" tabindex="-1"></a>For a vertex with $2k$ creases (flat-foldable vertices always have an even number of creases), flat-foldability requires:</span>
+<span id="cb9-107"><a href="#cb9-107" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-108"><a href="#cb9-108" aria-hidden="true" tabindex="-1"></a>$$\sum_{i=1}^{k} \alpha_{2i-1} = \sum_{i=1}^{k} \alpha_{2i} = \pi$$ {#eq-kawasaki}</span>
+<span id="cb9-109"><a href="#cb9-109" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-110"><a href="#cb9-110" aria-hidden="true" tabindex="-1"></a>In words: the alternating sector angles must each sum to $\pi$. For a 4-crease vertex, this means:</span>
+<span id="cb9-111"><a href="#cb9-111" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-112"><a href="#cb9-112" aria-hidden="true" tabindex="-1"></a>$$\alpha_1 + \alpha_3 = \alpha_2 + \alpha_4 = \pi$$ {#eq-kawasaki-4}</span>
+<span id="cb9-113"><a href="#cb9-113" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-114"><a href="#cb9-114" aria-hidden="true" tabindex="-1"></a>This is Kawasaki's theorem <span class="co">[</span><span class="ot">@kawasaki1989relation</span><span class="co">]</span>, and it is both necessary and sufficient for flat-foldability (in the local, single-vertex sense).</span>
+<span id="cb9-115"><a href="#cb9-115" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-118"><a href="#cb9-118" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb9-119"><a href="#cb9-119" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> check_kawasaki(sector_angles):</span>
+<span id="cb9-120"><a href="#cb9-120" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""</span></span>
+<span id="cb9-121"><a href="#cb9-121" aria-hidden="true" tabindex="-1"></a><span class="co">    Check Kawasaki's theorem for a vertex.</span></span>
+<span id="cb9-122"><a href="#cb9-122" aria-hidden="true" tabindex="-1"></a><span class="co">    sector_angles: list of angles in radians, alternating around the vertex.</span></span>
+<span id="cb9-123"><a href="#cb9-123" aria-hidden="true" tabindex="-1"></a><span class="co">    Returns (satisfied, odd_sum, even_sum).</span></span>
+<span id="cb9-124"><a href="#cb9-124" aria-hidden="true" tabindex="-1"></a><span class="co">    """</span></span>
+<span id="cb9-125"><a href="#cb9-125" aria-hidden="true" tabindex="-1"></a>    alphas <span class="op">=</span> np.asarray(sector_angles)</span>
+<span id="cb9-126"><a href="#cb9-126" aria-hidden="true" tabindex="-1"></a>    n <span class="op">=</span> <span class="bu">len</span>(alphas)</span>
+<span id="cb9-127"><a href="#cb9-127" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> n <span class="op">%</span> <span class="dv">2</span> <span class="op">!=</span> <span class="dv">0</span>:</span>
+<span id="cb9-128"><a href="#cb9-128" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="va">False</span>, <span class="va">None</span>, <span class="va">None</span></span>
+<span id="cb9-129"><a href="#cb9-129" aria-hidden="true" tabindex="-1"></a>    odd_sum  <span class="op">=</span> np.<span class="bu">sum</span>(alphas[<span class="dv">0</span>::<span class="dv">2</span>])   <span class="co"># indices 0, 2, 4, ...</span></span>
+<span id="cb9-130"><a href="#cb9-130" aria-hidden="true" tabindex="-1"></a>    even_sum <span class="op">=</span> np.<span class="bu">sum</span>(alphas[<span class="dv">1</span>::<span class="dv">2</span>])   <span class="co"># indices 1, 3, 5, ...</span></span>
+<span id="cb9-131"><a href="#cb9-131" aria-hidden="true" tabindex="-1"></a>    satisfied <span class="op">=</span> np.isclose(odd_sum, np.pi) <span class="kw">and</span> np.isclose(even_sum, np.pi)</span>
+<span id="cb9-132"><a href="#cb9-132" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> satisfied, odd_sum, even_sum</span>
+<span id="cb9-133"><a href="#cb9-133" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-134"><a href="#cb9-134" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-135"><a href="#cb9-135" aria-hidden="true" tabindex="-1"></a><span class="co"># Example: standard 4-crease vertex</span></span>
+<span id="cb9-136"><a href="#cb9-136" aria-hidden="true" tabindex="-1"></a>alphas <span class="op">=</span> [np.pi<span class="op">/</span><span class="dv">3</span>, <span class="dv">2</span><span class="op">*</span>np.pi<span class="op">/</span><span class="dv">3</span>, np.pi<span class="op">/</span><span class="dv">3</span>, <span class="dv">2</span><span class="op">*</span>np.pi<span class="op">/</span><span class="dv">3</span>]</span>
+<span id="cb9-137"><a href="#cb9-137" aria-hidden="true" tabindex="-1"></a>ok, s1, s2 <span class="op">=</span> check_kawasaki(alphas)</span>
+<span id="cb9-138"><a href="#cb9-138" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Sector angles: </span><span class="sc">{</span>[<span class="ss">f'</span><span class="sc">{</span>a<span class="sc">:.3f}</span><span class="ss">'</span> <span class="cf">for</span> a <span class="kw">in</span> alphas]<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb9-139"><a href="#cb9-139" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Kawasaki satisfied: </span><span class="sc">{</span>ok<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb9-140"><a href="#cb9-140" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Odd sum:  </span><span class="sc">{</span>s1<span class="sc">:.4f}</span><span class="ss">  (π = </span><span class="sc">{</span>np<span class="sc">.</span>pi<span class="sc">:.4f}</span><span class="ss">)"</span>)</span>
+<span id="cb9-141"><a href="#cb9-141" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Even sum: </span><span class="sc">{</span>s2<span class="sc">:.4f}</span><span class="ss">  (π = </span><span class="sc">{</span>np<span class="sc">.</span>pi<span class="sc">:.4f}</span><span class="ss">)"</span>)</span>
+<span id="cb9-142"><a href="#cb9-142" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb9-143"><a href="#cb9-143" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-146"><a href="#cb9-146" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb9-147"><a href="#cb9-147" aria-hidden="true" tabindex="-1"></a><span class="co"># Visualize: which combinations of (α1, α2) satisfy Kawasaki for a 4-crease vertex?</span></span>
+<span id="cb9-148"><a href="#cb9-148" aria-hidden="true" tabindex="-1"></a><span class="co"># Given α1 + α3 = π  →  α3 = π - α1</span></span>
+<span id="cb9-149"><a href="#cb9-149" aria-hidden="true" tabindex="-1"></a><span class="co"># Given α2 + α4 = π  →  α4 = π - α2</span></span>
+<span id="cb9-150"><a href="#cb9-150" aria-hidden="true" tabindex="-1"></a><span class="co"># Constraint: α1 + α2 + α3 + α4 = 2π  →  always satisfied for any α1, α2.</span></span>
+<span id="cb9-151"><a href="#cb9-151" aria-hidden="true" tabindex="-1"></a><span class="co"># So for a 4-crease vertex, any (α1, α2) with α1, α2 ∈ (0, π) works.</span></span>
+<span id="cb9-152"><a href="#cb9-152" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-153"><a href="#cb9-153" aria-hidden="true" tabindex="-1"></a>alpha1_vals <span class="op">=</span> np.linspace(<span class="fl">0.1</span>, np.pi <span class="op">-</span> <span class="fl">0.1</span>, <span class="dv">200</span>)</span>
+<span id="cb9-154"><a href="#cb9-154" aria-hidden="true" tabindex="-1"></a>alpha2_vals <span class="op">=</span> np.linspace(<span class="fl">0.1</span>, np.pi <span class="op">-</span> <span class="fl">0.1</span>, <span class="dv">200</span>)</span>
+<span id="cb9-155"><a href="#cb9-155" aria-hidden="true" tabindex="-1"></a>A1, A2 <span class="op">=</span> np.meshgrid(alpha1_vals, alpha2_vals)</span>
+<span id="cb9-156"><a href="#cb9-156" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-157"><a href="#cb9-157" aria-hidden="true" tabindex="-1"></a><span class="co"># Compaction ratio proxy: total variation in fold space</span></span>
+<span id="cb9-158"><a href="#cb9-158" aria-hidden="true" tabindex="-1"></a><span class="co"># For illustration, just show the feasible region</span></span>
+<span id="cb9-159"><a href="#cb9-159" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">5</span>, <span class="dv">4</span>))</span>
+<span id="cb9-160"><a href="#cb9-160" aria-hidden="true" tabindex="-1"></a>ax.fill_between(alpha1_vals, <span class="fl">0.1</span>, np.pi <span class="op">-</span> <span class="fl">0.1</span>, alpha<span class="op">=</span><span class="fl">0.15</span>, color<span class="op">=</span><span class="st">'steelblue'</span>,</span>
+<span id="cb9-161"><a href="#cb9-161" aria-hidden="true" tabindex="-1"></a>                label<span class="op">=</span><span class="st">'Kawasaki feasible region'</span>)</span>
+<span id="cb9-162"><a href="#cb9-162" aria-hidden="true" tabindex="-1"></a>ax.set_xlabel(<span class="st">'α₁ (rad)'</span>)</span>
+<span id="cb9-163"><a href="#cb9-163" aria-hidden="true" tabindex="-1"></a>ax.set_ylabel(<span class="st">'α₂ (rad)'</span>)</span>
+<span id="cb9-164"><a href="#cb9-164" aria-hidden="true" tabindex="-1"></a>ax.set_title(<span class="st">'4-crease vertex: Kawasaki feasible region'</span>)</span>
+<span id="cb9-165"><a href="#cb9-165" aria-hidden="true" tabindex="-1"></a>ax.set_xlim(<span class="dv">0</span>, np.pi)</span>
+<span id="cb9-166"><a href="#cb9-166" aria-hidden="true" tabindex="-1"></a>ax.set_ylim(<span class="dv">0</span>, np.pi)</span>
+<span id="cb9-167"><a href="#cb9-167" aria-hidden="true" tabindex="-1"></a>ax.axvline(np.pi <span class="op">/</span> <span class="dv">2</span>, color<span class="op">=</span><span class="st">'gray'</span>, linestyle<span class="op">=</span><span class="st">'--'</span>, linewidth<span class="op">=</span><span class="fl">0.8</span>, label<span class="op">=</span><span class="st">'α₁ = π/2'</span>)</span>
+<span id="cb9-168"><a href="#cb9-168" aria-hidden="true" tabindex="-1"></a>ax.axhline(np.pi <span class="op">/</span> <span class="dv">2</span>, color<span class="op">=</span><span class="st">'gray'</span>, linestyle<span class="op">=</span><span class="st">':'</span>, linewidth<span class="op">=</span><span class="fl">0.8</span>, label<span class="op">=</span><span class="st">'α₂ = π/2'</span>)</span>
+<span id="cb9-169"><a href="#cb9-169" aria-hidden="true" tabindex="-1"></a>ax.legend(fontsize<span class="op">=</span><span class="dv">8</span>)</span>
+<span id="cb9-170"><a href="#cb9-170" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
+<span id="cb9-171"><a href="#cb9-171" aria-hidden="true" tabindex="-1"></a>plt.show()</span>
+<span id="cb9-172"><a href="#cb9-172" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb9-173"><a href="#cb9-173" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-174"><a href="#cb9-174" aria-hidden="true" tabindex="-1"></a><span class="fu">## Maekawa's Theorem</span></span>
+<span id="cb9-175"><a href="#cb9-175" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-176"><a href="#cb9-176" aria-hidden="true" tabindex="-1"></a>Kawasaki tells us about the angles. Maekawa's theorem tells us about the fold directions: at any flat-foldable vertex, the number of mountain folds $M$ and valley folds $V$ must satisfy:</span>
+<span id="cb9-177"><a href="#cb9-177" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-178"><a href="#cb9-178" aria-hidden="true" tabindex="-1"></a>$$|M - V| = 2$$ {#eq-maekawa}</span>
+<span id="cb9-179"><a href="#cb9-179" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-180"><a href="#cb9-180" aria-hidden="true" tabindex="-1"></a>For a 4-crease vertex, this means either $M=3, V=1$ or $M=1, V=3$. You cannot have $M=2, V=2$ at a flat-foldable vertex.</span>
+<span id="cb9-181"><a href="#cb9-181" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-184"><a href="#cb9-184" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb9-185"><a href="#cb9-185" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> check_maekawa(fold_types):</span>
+<span id="cb9-186"><a href="#cb9-186" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""</span></span>
+<span id="cb9-187"><a href="#cb9-187" aria-hidden="true" tabindex="-1"></a><span class="co">    Check Maekawa's theorem.</span></span>
+<span id="cb9-188"><a href="#cb9-188" aria-hidden="true" tabindex="-1"></a><span class="co">    fold_types: list of +1 (mountain) or -1 (valley).</span></span>
+<span id="cb9-189"><a href="#cb9-189" aria-hidden="true" tabindex="-1"></a><span class="co">    Returns (satisfied, M, V).</span></span>
+<span id="cb9-190"><a href="#cb9-190" aria-hidden="true" tabindex="-1"></a><span class="co">    """</span></span>
+<span id="cb9-191"><a href="#cb9-191" aria-hidden="true" tabindex="-1"></a>    types <span class="op">=</span> np.asarray(fold_types)</span>
+<span id="cb9-192"><a href="#cb9-192" aria-hidden="true" tabindex="-1"></a>    M <span class="op">=</span> np.<span class="bu">sum</span>(types <span class="op">==</span> <span class="dv">1</span>)</span>
+<span id="cb9-193"><a href="#cb9-193" aria-hidden="true" tabindex="-1"></a>    V <span class="op">=</span> np.<span class="bu">sum</span>(types <span class="op">==</span> <span class="op">-</span><span class="dv">1</span>)</span>
+<span id="cb9-194"><a href="#cb9-194" aria-hidden="true" tabindex="-1"></a>    satisfied <span class="op">=</span> <span class="bu">abs</span>(M <span class="op">-</span> V) <span class="op">==</span> <span class="dv">2</span></span>
+<span id="cb9-195"><a href="#cb9-195" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> satisfied, <span class="bu">int</span>(M), <span class="bu">int</span>(V)</span>
+<span id="cb9-196"><a href="#cb9-196" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-197"><a href="#cb9-197" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-198"><a href="#cb9-198" aria-hidden="true" tabindex="-1"></a>cases <span class="op">=</span> [</span>
+<span id="cb9-199"><a href="#cb9-199" aria-hidden="true" tabindex="-1"></a>    ([<span class="dv">1</span>,  <span class="dv">1</span>,  <span class="dv">1</span>, <span class="op">-</span><span class="dv">1</span>], <span class="st">"M=3, V=1"</span>),</span>
+<span id="cb9-200"><a href="#cb9-200" aria-hidden="true" tabindex="-1"></a>    ([<span class="dv">1</span>, <span class="op">-</span><span class="dv">1</span>,  <span class="dv">1</span>, <span class="op">-</span><span class="dv">1</span>], <span class="st">"M=2, V=2"</span>),</span>
+<span id="cb9-201"><a href="#cb9-201" aria-hidden="true" tabindex="-1"></a>    ([<span class="op">-</span><span class="dv">1</span>, <span class="op">-</span><span class="dv">1</span>, <span class="op">-</span><span class="dv">1</span>, <span class="dv">1</span>], <span class="st">"M=1, V=3"</span>),</span>
+<span id="cb9-202"><a href="#cb9-202" aria-hidden="true" tabindex="-1"></a>]</span>
+<span id="cb9-203"><a href="#cb9-203" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> types, label <span class="kw">in</span> cases:</span>
+<span id="cb9-204"><a href="#cb9-204" aria-hidden="true" tabindex="-1"></a>    ok, M, V <span class="op">=</span> check_maekawa(types)</span>
+<span id="cb9-205"><a href="#cb9-205" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"</span><span class="sc">{</span>label<span class="sc">:12s}</span><span class="ss">  →  Maekawa satisfied: </span><span class="sc">{</span>ok<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb9-206"><a href="#cb9-206" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb9-207"><a href="#cb9-207" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-208"><a href="#cb9-208" aria-hidden="true" tabindex="-1"></a><span class="fu">## A Complete Vertex Checker</span></span>
+<span id="cb9-209"><a href="#cb9-209" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-212"><a href="#cb9-212" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb9-213"><a href="#cb9-213" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> is_flat_foldable_vertex(sector_angles, fold_types):</span>
+<span id="cb9-214"><a href="#cb9-214" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""</span></span>
+<span id="cb9-215"><a href="#cb9-215" aria-hidden="true" tabindex="-1"></a><span class="co">    Check both Kawasaki and Maekawa for a single vertex.</span></span>
+<span id="cb9-216"><a href="#cb9-216" aria-hidden="true" tabindex="-1"></a><span class="co">    sector_angles: alternating sector angles in radians</span></span>
+<span id="cb9-217"><a href="#cb9-217" aria-hidden="true" tabindex="-1"></a><span class="co">    fold_types: +1 mountain, -1 valley, one per crease</span></span>
+<span id="cb9-218"><a href="#cb9-218" aria-hidden="true" tabindex="-1"></a><span class="co">    """</span></span>
+<span id="cb9-219"><a href="#cb9-219" aria-hidden="true" tabindex="-1"></a>    kaw_ok, s1, s2 <span class="op">=</span> check_kawasaki(sector_angles)</span>
+<span id="cb9-220"><a href="#cb9-220" aria-hidden="true" tabindex="-1"></a>    mae_ok, M, V   <span class="op">=</span> check_maekawa(fold_types)</span>
+<span id="cb9-221"><a href="#cb9-221" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> {</span>
+<span id="cb9-222"><a href="#cb9-222" aria-hidden="true" tabindex="-1"></a>        <span class="st">'kawasaki'</span>: kaw_ok,</span>
+<span id="cb9-223"><a href="#cb9-223" aria-hidden="true" tabindex="-1"></a>        <span class="st">'maekawa'</span>:  mae_ok,</span>
+<span id="cb9-224"><a href="#cb9-224" aria-hidden="true" tabindex="-1"></a>        <span class="st">'flat_foldable'</span>: kaw_ok <span class="kw">and</span> mae_ok,</span>
+<span id="cb9-225"><a href="#cb9-225" aria-hidden="true" tabindex="-1"></a>        <span class="st">'odd_angle_sum'</span>:  s1,</span>
+<span id="cb9-226"><a href="#cb9-226" aria-hidden="true" tabindex="-1"></a>        <span class="st">'even_angle_sum'</span>: s2,</span>
+<span id="cb9-227"><a href="#cb9-227" aria-hidden="true" tabindex="-1"></a>        <span class="st">'mountains'</span>: M,</span>
+<span id="cb9-228"><a href="#cb9-228" aria-hidden="true" tabindex="-1"></a>        <span class="st">'valleys'</span>:   V,</span>
+<span id="cb9-229"><a href="#cb9-229" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb9-230"><a href="#cb9-230" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-231"><a href="#cb9-231" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-232"><a href="#cb9-232" aria-hidden="true" tabindex="-1"></a><span class="co"># Standard Miura-ori vertex</span></span>
+<span id="cb9-233"><a href="#cb9-233" aria-hidden="true" tabindex="-1"></a>alphas <span class="op">=</span> [np.pi<span class="op">/</span><span class="dv">4</span>, <span class="dv">3</span><span class="op">*</span>np.pi<span class="op">/</span><span class="dv">4</span>, np.pi<span class="op">/</span><span class="dv">4</span>, <span class="dv">3</span><span class="op">*</span>np.pi<span class="op">/</span><span class="dv">4</span>]</span>
+<span id="cb9-234"><a href="#cb9-234" aria-hidden="true" tabindex="-1"></a>folds  <span class="op">=</span> [<span class="dv">1</span>, <span class="op">-</span><span class="dv">1</span>, <span class="dv">1</span>, <span class="op">-</span><span class="dv">1</span>]   <span class="co"># M, V, M, V</span></span>
+<span id="cb9-235"><a href="#cb9-235" aria-hidden="true" tabindex="-1"></a>result <span class="op">=</span> is_flat_foldable_vertex(alphas, folds)</span>
+<span id="cb9-236"><a href="#cb9-236" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> k, v <span class="kw">in</span> result.items():</span>
+<span id="cb9-237"><a href="#cb9-237" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"  </span><span class="sc">{</span>k<span class="sc">}</span><span class="ss">: </span><span class="sc">{</span>v<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb9-238"><a href="#cb9-238" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb9-239"><a href="#cb9-239" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-240"><a href="#cb9-240" aria-hidden="true" tabindex="-1"></a><span class="fu">## Summary</span></span>
+<span id="cb9-241"><a href="#cb9-241" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-242"><a href="#cb9-242" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>A fold is a rotation about a crease line, parameterized by fold angle $\phi \in <span class="co">[</span><span class="ot">0, \pi</span><span class="co">]</span>$.</span>
+<span id="cb9-243"><a href="#cb9-243" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Rodrigues' formula gives the rotation matrix for any axis and angle.</span>
+<span id="cb9-244"><a href="#cb9-244" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>At a multi-crease vertex, flat-foldability requires Kawasaki's theorem (alternating sector angles sum to $\pi$) and Maekawa's theorem ($|M - V| = 2$).</span>
+<span id="cb9-245"><a href="#cb9-245" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Both conditions can be checked numerically with simple array operations.</span>
+<span id="cb9-246"><a href="#cb9-246" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-247"><a href="#cb9-247" aria-hidden="true" tabindex="-1"></a><span class="fu">## Further Reading</span></span>
+<span id="cb9-248"><a href="#cb9-248" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-249"><a href="#cb9-249" aria-hidden="true" tabindex="-1"></a>@demaine2007geometric provides rigorous proofs of Kawasaki's and Maekawa's theorems (Chapters 11–12). @huffman1976curvature is the original paper connecting curvature to crease geometry and is surprisingly readable.</span>
+<span id="cb9-250"><a href="#cb9-250" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-251"><a href="#cb9-251" aria-hidden="true" tabindex="-1"></a><span class="fu">## Exercises</span></span>
+<span id="cb9-252"><a href="#cb9-252" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-253"><a href="#cb9-253" aria-hidden="true" tabindex="-1"></a><span class="ss">1. </span>**Rodrigues by hand.** For a crease along $\hat{e} = \hat{y} = (0,1,0)$ and fold angle $\phi = \pi/2$, write out $R(\hat{e}, \phi)$ using @eq-rodrigues. Apply it to the vector $(1, 0, 0)$ and verify the result makes geometric sense.</span>
+<span id="cb9-254"><a href="#cb9-254" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-255"><a href="#cb9-255" aria-hidden="true" tabindex="-1"></a><span class="ss">2. </span>**Three-crease vertex.** Can a vertex with exactly three creases be flat-foldable? Use Kawasaki's theorem to argue why or why not.</span>
+<span id="cb9-256"><a href="#cb9-256" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-257"><a href="#cb9-257" aria-hidden="true" tabindex="-1"></a><span class="ss">3. </span>**Kawasaki violation.** Write a Python function that, given a set of sector angles that violate Kawasaki's theorem, returns the *minimum perturbation* to any single sector angle that restores the condition. (Hint: the answer is the difference between the actual alternating sums and $\pi$, distributed optimally.)</span>
+<span id="cb9-258"><a href="#cb9-258" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-259"><a href="#cb9-259" aria-hidden="true" tabindex="-1"></a><span class="ss">4. </span>**Maekawa patterns.** For a 6-crease vertex, list all $(M, V)$ combinations that satisfy Maekawa's theorem. How many mountain/valley assignment patterns are there for each valid $(M, V)$ pair?</span>
+<span id="cb9-260"><a href="#cb9-260" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-261"><a href="#cb9-261" aria-hidden="true" tabindex="-1"></a><span class="ss">5. </span>**Closure check.** Implement a function that, given sector angles and fold angles for a 4-crease vertex, multiplies the four rotation matrices in sequence and checks whether the product is the identity. Test it on the Miura-ori vertex from the code block above for $\phi = \pi/4$.</span>
+</code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
+</div></div></div></div></div>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

@@ -1,0 +1,12 @@
+.quarto/
+docs/.quarto/
+__pycache__/
+*.pyc
+*.ipynb_checkpoints
+.ipynb_checkpoints/
+.netlify/
+*.pkl
+*.joblib
+
+/.quarto/
+**/*.quarto_ipynb

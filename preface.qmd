@@ -1,0 +1,34 @@
+# Preface {.unnumbered}
+
+This book began with a photograph.
+
+It showed a solar panel array folded into a cylinder small enough to fit inside a rocket nosecone, and the caption explained that the entire 8-square-meter panel had been collapsed by a single degree of freedom — one pull on one mechanism caused every crease to fold simultaneously, every panel to stack neatly against its neighbor, with a geometry so beautifully constrained that the only way it *could* fold was the way the designer intended. The origami pattern had been computed. The fold was optimal.
+
+That photograph was taken aboard the ISAS Space Flyer Unit in 1995, and the fold pattern was the Miura-ori, invented by astrophysicist Koryo Miura in the 1970s as a solution to a very specific engineering problem: how do you package a large flat surface inside a small cylinder and deploy it reliably in zero gravity, with no hinges, no motors, and no chance of a second attempt?
+
+Miura's answer — a parallelogram tessellation that collapses along two axes simultaneously — turned out to be one of the most elegant intersections of geometry and engineering in the twentieth century. And it is, at its core, a solution to an optimization problem.
+
+## What this book is about {.unnumbered}
+
+The argument of this book is that origami and numerical optimization are the same subject wearing different clothes. A valid flat-foldable crease pattern is a feasible point in a constrained geometric space. Designing an origami base is a circle-packing problem. Finding the equilibrium shape of a partially-folded structure is an energy minimization. And recovering the crease pattern that produces a desired deployed shape — the inverse problem — is a nonlinear program.
+
+We develop all of these ideas from scratch, with Python code at every step.
+
+## Who this book is for {.unnumbered}
+
+Engineers and scientists who are comfortable with linear algebra and calculus, and who have written some Python but may not have used `scipy.optimize` seriously. No prior origami knowledge is assumed. No prior optimization theory is required beyond the intuition that minimizing a function means finding its lowest point.
+
+Each chapter ends with exercises that range from "verify this by hand" to "implement this extension." The exercises are the book. Reading without working them is like reading a recipe without cooking.
+
+## A note on the code {.unnumbered}
+
+All code runs inside the `pixi` environment defined in `pixi.toml`. To reproduce any result:
+
+```bash
+pixi install
+pixi run kernel     # register the Jupyter kernel
+pixi run render     # render HTML
+pixi run preview    # live preview
+```
+
+The only dependencies are `numpy`, `scipy`, and `matplotlib` — all available from conda-forge with native ARM64 builds on Apple Silicon.

@@ -1,0 +1,261 @@
+# Inverse Design
+
+::: {.callout-note}
+## Learning Objectives
+- Formulate the inverse origami design problem as a nonlinear program
+- Recover Miura-ori parameters from target deployed dimensions
+- Explore the Pareto front when multiple objectives conflict
+- Understand when the inverse problem is ill-posed and how to regularize it
+:::
+
+Everything up to this point has been *forward*: given a crease pattern, find the deployed shape, the compaction ratio, the equilibrium configuration. Engineers rarely work forward. They start with requirements — a solar panel that deploys to exactly 2m × 0.5m and collapses to 200mm diameter — and work backward to find the crease pattern.
+
+This is the inverse problem. It is harder, more interesting, and usually under-determined: many crease patterns may satisfy the same set of requirements.
+
+## The Inverse Miura-ori Problem
+
+For the Miura-ori with $m \times n$ unit cells and panel dimensions $a \times b$ (width × length), the deployed and collapsed dimensions are functions of $\alpha$, $\gamma$, $m$, $n$, $a$, $b$.
+
+From Chapter 3, in the fully deployed state ($\gamma = \pi/2$):
+
+$$W_\text{deployed} = 2m \cdot a \cos\alpha$$ {#eq-Wdep}
+
+$$L_\text{deployed} = n \cdot b$$ {#eq-Ldep}
+
+In the fully collapsed state ($\gamma \to 0$):
+
+$$W_\text{collapsed} = 2m \cdot a \sin\alpha \cos\alpha$$ {#eq-Wcol}
+
+The compaction ratio is $\rho = W_\text{collapsed}/W_\text{deployed} = \sin\alpha$.
+
+**Inverse problem:** Given target $W_\text{deployed}^*$, $L_\text{deployed}^*$, and $\rho^* = W_\text{collapsed}^*/W_\text{deployed}^*$, find $(\alpha, m, n, a, b)$.
+
+For fixed grid $m, n$, the continuous parameters $(\alpha, a, b)$ are determined by three equations:
+
+$$2m \cdot a \cos\alpha = W^* \quad \Rightarrow \quad a = \frac{W^*}{2m\cos\alpha}$$ {#eq-a-from-W}
+
+$$n \cdot b = L^* \quad \Rightarrow \quad b = \frac{L^*}{n}$$ {#eq-b-from-L}
+
+$$\sin\alpha = \rho^*$$ {#eq-alpha-from-rho}
+
+The last equation gives $\alpha = \arcsin(\rho^*)$ directly. The system is exactly determined for fixed $m, n$.
+
+```{python}
+import numpy as np
+from scipy.optimize import minimize, differential_evolution
+import matplotlib.pyplot as plt
+
+def miura_forward(alpha, m, n, a, b, gamma=np.pi/2):
+    """Compute deployed and collapsed dimensions for given Miura-ori parameters."""
+    sa, ca = np.sin(alpha), np.cos(alpha)
+    sg, cg = np.sin(gamma), np.cos(gamma)
+    W_deployed  = 2 * m * a * ca
+    L_deployed  = n * b
+    W_collapsed = 2 * m * a * sa * ca   # approximate (exact only at γ→0)
+    rho = sa
+    return {'W_dep': W_deployed, 'L_dep': L_deployed,
+            'W_col': W_collapsed, 'rho': rho, 'alpha': alpha, 'a': a, 'b': b}
+
+
+def solve_miura_inverse_fixed_grid(W_target, L_target, rho_target, m, n):
+    """
+    Given target deployed dimensions and compaction ratio,
+    recover (alpha, a, b) analytically for fixed grid m x n.
+    """
+    alpha = np.arcsin(rho_target)
+    a = W_target / (2 * m * np.cos(alpha))
+    b = L_target / n
+    result = miura_forward(alpha, m, n, a, b)
+    return alpha, a, b, result
+
+
+# Example: solar panel requirements
+W_target  = 2.0    # m deployed width
+L_target  = 0.5    # m deployed length
+rho_target = 0.15  # collapse to 15% of deployed width
+
+m, n = 6, 4   # 6 columns, 4 rows of unit cells
+
+alpha, a, b, fwd = solve_miura_inverse_fixed_grid(W_target, L_target, rho_target, m, n)
+print("=== Inverse Design Result ===")
+print(f"Target:   W_dep={W_target}m  L_dep={L_target}m  rho={rho_target}")
+print(f"Solution: α = {np.degrees(alpha):.3f}°  a = {a*1000:.2f}mm  b = {b*1000:.2f}mm")
+print(f"Verify:   W_dep={fwd['W_dep']:.4f}m  L_dep={fwd['L_dep']:.4f}m  rho={fwd['rho']:.4f}")
+```
+
+## When the Grid is Also a Variable
+
+If we allow $m$ and $n$ to vary (they are integers), the problem becomes a mixed-integer nonlinear program. For small ranges, we can sweep all feasible grid combinations and pick the best.
+
+```{python}
+def panel_aspect_ratio(alpha, m, n, W_target, L_target):
+    """Return aspect ratio a/b for given grid and targets."""
+    a = W_target / (2 * m * np.cos(alpha))
+    b = L_target / n
+    return a / b
+
+# Grid sweep: find all (m,n) combinations within panel aspect ratio bounds
+W_target, L_target, rho_target = 2.0, 0.5, 0.15
+alpha_fixed = np.arcsin(rho_target)
+ar_min, ar_max = 0.5, 2.0   # acceptable panel aspect ratios
+
+results = []
+for m in range(2, 20):
+    for n in range(2, 12):
+        ar = panel_aspect_ratio(alpha_fixed, m, n, W_target, L_target)
+        if ar_min <= ar <= ar_max:
+            a = W_target / (2 * m * np.cos(alpha_fixed))
+            b = L_target / n
+            results.append({'m': m, 'n': n, 'a': a*1000, 'b': b*1000,
+                             'aspect': ar, 'n_panels': m * n})
+
+results.sort(key=lambda x: abs(x['aspect'] - 1.0))   # prefer square panels
+
+print(f"{'m':>4} {'n':>4} {'a(mm)':>8} {'b(mm)':>8} {'aspect':>8} {'panels':>7}")
+print("-" * 45)
+for r in results[:10]:
+    print(f"{r['m']:>4} {r['n']:>4} {r['a']:>8.2f} {r['b']:>8.2f} {r['aspect']:>8.4f} {r['n_panels']:>7}")
+```
+
+## Multi-Objective Inverse Design
+
+Real requirements conflict. You want:
+1. Small compaction ratio $\rho$ (good — collapses well)
+2. Near-square panels (good — easier to manufacture and less buckling risk)
+3. Few panels (good — lower mass, fewer hinges)
+
+No single design satisfies all three simultaneously. The Pareto front shows the trade-off.
+
+```{python}
+def pareto_sweep(W_target, L_target, m, n):
+    """
+    Sweep alpha over feasible range, compute objectives for each.
+    Returns arrays of (rho, aspect_deviation, n_panels).
+    """
+    alphas = np.linspace(0.05, np.pi/2 - 0.05, 300)
+    rhos, aspect_devs = [], []
+
+    for alpha in alphas:
+        a = W_target / (2 * m * np.cos(alpha))
+        b = L_target / n
+        ar = a / b
+        rhos.append(np.sin(alpha))
+        aspect_devs.append(abs(ar - 1.0))  # deviation from square
+
+    return np.array(rhos), np.array(aspect_devs)
+
+
+fig, ax = plt.subplots(figsize=(7, 5))
+colors = plt.cm.viridis(np.linspace(0, 1, 5))
+
+for i, (m, n) in enumerate([(4,3), (6,4), (8,5), (10,6), (12,8)]):
+    rhos, asp_devs = pareto_sweep(2.0, 0.5, m, n)
+    ax.scatter(rhos, asp_devs, s=4, color=colors[i], label=f'{m}×{n} = {m*n} panels', alpha=0.7)
+
+ax.set_xlabel('Compaction ratio ρ (lower = better collapse)')
+ax.set_ylabel('Panel aspect ratio deviation |a/b − 1| (lower = more square)')
+ax.set_title('Pareto front: compaction vs panel squareness\n(each curve = one grid choice)')
+ax.legend(fontsize=8, markerscale=3)
+ax.grid(True, linewidth=0.5, alpha=0.5)
+plt.tight_layout()
+plt.show()
+```
+
+## Numerical Inverse Design with scipy
+
+When the forward model is more complex (non-analytic, simulated), we solve the inverse problem numerically using a nonlinear least-squares formulation.
+
+```{python}
+from scipy.optimize import least_squares
+
+def residuals(params, W_target, L_target, rho_target, m, n):
+    """
+    Residuals for inverse design: [W_error, L_error, rho_error].
+    params = [alpha, log_a, log_b]  (log-parameterize to enforce positivity)
+    """
+    alpha = params[0]
+    a = np.exp(params[1])
+    b = np.exp(params[2])
+    fwd = miura_forward(alpha, m, n, a, b)
+    return np.array([
+        (fwd['W_dep'] - W_target) / W_target,
+        (fwd['L_dep'] - L_target) / L_target,
+        (fwd['rho']   - rho_target) / rho_target,
+    ])
+
+
+# Solve numerically (should recover same result as analytic solution)
+m, n = 6, 4
+x0 = np.array([0.3, np.log(0.1), np.log(0.05)])  # initial guess
+result = least_squares(
+    residuals, x0,
+    args=(W_target, L_target, rho_target, m, n),
+    method='lm',
+    ftol=1e-12, xtol=1e-12
+)
+
+alpha_num = result.x[0]
+a_num = np.exp(result.x[1])
+b_num = np.exp(result.x[2])
+
+print("=== Numerical Inverse Design ===")
+print(f"α = {np.degrees(alpha_num):.4f}°  (analytic: {np.degrees(alpha):.4f}°)")
+print(f"a = {a_num*1000:.4f}mm  (analytic: {a*1000:.4f}mm)")
+print(f"b = {b_num*1000:.4f}mm  (analytic: {b*1000:.4f}mm)")
+print(f"Residual norm: {np.linalg.norm(result.fun):.2e}")
+```
+
+## Ill-Posedness and Regularization
+
+The inverse problem is ill-posed when there are fewer constraints than parameters, or when multiple solutions produce nearly the same forward output. A common remedy is Tikhonov regularization: add a penalty term that prefers solutions near a nominal design $\boldsymbol{\theta}_0$:
+
+$$\min_{\boldsymbol{\theta}} \quad \|\mathbf{r}(\boldsymbol{\theta})\|^2 + \lambda \|\boldsymbol{\theta} - \boldsymbol{\theta}_0\|^2$$ {#eq-tikhonov}
+
+```{python}
+def regularized_residuals(params, W_target, L_target, rho_target, m, n, theta0, lam):
+    """Residuals including Tikhonov regularization."""
+    physics = residuals(params, W_target, L_target, rho_target, m, n)
+    reg = np.sqrt(lam) * (params - theta0)
+    return np.concatenate([physics, reg])
+
+
+theta0 = np.array([np.pi/4, np.log(0.15), np.log(0.06)])  # nominal design
+lambdas = [0.0, 0.01, 0.1, 1.0]
+
+print(f"{'λ':>8} {'α (°)':>10} {'a (mm)':>10} {'b (mm)':>10} {'||r||':>12}")
+print("-" * 55)
+for lam in lambdas:
+    res = least_squares(
+        regularized_residuals, theta0.copy(),
+        args=(W_target, L_target, rho_target, m, n, theta0, lam),
+        method='lm', ftol=1e-12
+    )
+    a_r = np.exp(res.x[1])
+    b_r = np.exp(res.x[2])
+    phys_resid = residuals(res.x, W_target, L_target, rho_target, m, n)
+    print(f"{lam:>8.2f} {np.degrees(res.x[0]):>10.3f} {a_r*1000:>10.3f} {b_r*1000:>10.3f} {np.linalg.norm(phys_resid):>12.2e}")
+```
+
+## Summary
+
+- The inverse design problem: given target deployed shape and compaction ratio, recover crease parameters.
+- For fixed grid $(m, n)$, the Miura-ori inverse problem has an analytic solution.
+- When the grid is variable, sweep feasible $(m, n)$ pairs and select by secondary criteria (aspect ratio, panel count).
+- Multiple objectives conflict — compaction vs. panel squareness — and the Pareto front shows the trade-off space.
+- Numerical formulation via least-squares enables inverse design when no analytic solution exists; Tikhonov regularization manages ill-posedness.
+
+## Further Reading
+
+@dudte2016programming solves inverse design for curved origami tessellations using gradient-based optimization. @lang2011origami (Chapter 14) discusses the degrees of freedom in base design and how constraints determine feasibility.
+
+## Exercises
+
+1. **Sensitivity analysis.** Using the numerical inverse design setup, compute the Jacobian $\partial \mathbf{r}/\partial \boldsymbol{\theta}$ at the solution using `least_squares` output (it returns `jac`). What is the condition number? What does this tell you about the inverse problem's sensitivity to measurement noise in the target dimensions?
+
+2. **Underdetermined case.** Add a fourth parameter (e.g., vary both $a$ and $b$ independently while also varying $\alpha$ and the aspect ratio target). The system now has four unknowns and three equations. How many solutions exist? Use `differential_evolution` to find two distinct solutions.
+
+3. **Noisy targets.** Add Gaussian noise with $\sigma = 0.01$ to $W^*, L^*, \rho^*$ and solve the inverse problem 100 times. Plot the distribution of recovered $\alpha$ values. What is the standard deviation of $\alpha$ for $\sigma = 0.01$?
+
+4. **Pareto-optimal grid selection.** For the grid sweep in this chapter, implement a proper Pareto dominance filter that retains only non-dominated $(m, n)$ pairs when considering three objectives simultaneously: $\rho$, aspect deviation, and total panel count. Plot the Pareto front in 3D.
+
+5. **Curved crease inverse problem.** (Advanced) Instead of straight creases, consider a crease pattern where the crease angle $\alpha$ varies linearly from $\alpha_1$ at one end to $\alpha_2$ at the other. The deployed shape is then a curved surface. Formulate the inverse problem of finding $(\alpha_1, \alpha_2)$ to hit a target curvature, and solve it numerically.

@@ -1,0 +1,69 @@
+# Why Fold?
+
+::: {.callout-note}
+## Learning Objectives
+- Understand why folding is an engineering strategy, not just an art form
+- Identify real deployable structures that use origami-based fold patterns
+- Recognize the optimization problem hiding inside every valid crease pattern
+- Set up the conceptual vocabulary used throughout the book
+:::
+
+There is a medical device called a self-expanding stent that is threaded through an artery in collapsed form, guided to a blockage, and then released — at which point it springs open to its full diameter and holds the vessel wall apart. The collapsed form fits through a catheter 2mm wide. The deployed form spans 30mm. The ratio is not achieved by brute force; it is achieved by geometry. The stent is a folded structure, and the fold pattern determines both how small it gets and how reliably it opens.
+
+This is origami. Not the paper cranes of grade school, but the serious application of fold geometry to problems where the stakes are a patient's aorta, a satellite's power supply, or a telescope lens larger than a building.
+
+## A Brief History of Useful Folding
+
+The engineering use of origami principles has a surprisingly short formal history, given how ancient the art is. The mathematical study of paper folding began in earnest in the 1970s, with David Huffman's 1976 paper on curvature and creases [@huffman1976curvature] and Koryo Miura's work on deployable space structures. The connection to computational optimization came later still — Lang's 1996 algorithm for automated origami design [@lang1996mathematical] was the first to state the problem explicitly as a constrained program.
+
+What caused the delay? Partly the usual disciplinary walls between mathematics, engineering, and art. Partly the absence of adequate computational tools. But mostly, perhaps, the fact that paper is cheap and the intuition for folding develops faster by hand than by analysis. It took the space program — where paper is unavailable and the cost of a failed deployment is a destroyed satellite — to force the geometry into equations.
+
+The Miura-ori solar array on the ISAS Space Flyer Unit (1995) is the canonical example [@miura1985method]. Eight square meters of solar panel, folded into a cylinder 500mm in diameter. The key property: the entire structure has exactly one mechanical degree of freedom. Pull one point and everything moves. Release it and everything locks. The geometry enforces this — it is not an accident of the mechanism, it is a consequence of the fold pattern.
+
+Since then, origami-inspired engineering has appeared in:
+
+- **Aerospace:** solar arrays, telescope sunshields (the James Webb Space Telescope's sunshield uses a variant of the Miura fold), deployable antennae
+- **Medicine:** stents, heart valves, surgical instruments, drug delivery capsules
+- **Architecture:** folded plate structures, adaptive facades, flat-pack furniture that assembles without fasteners
+- **Robotics:** soft robots that change shape by selectively activating folds, grippers, crawlers
+
+## The Optimization Problem Inside Every Fold
+
+Consider the simplest possible origami: a single straight crease across a rectangular sheet. The crease divides the sheet into two panels. Folding along the crease means rotating one panel relative to the other by a fold angle $\phi$, measured from the flat state ($\phi = 0$) to fully folded ($\phi = \pi$).
+
+Nothing interesting yet. Now add a second crease, intersecting the first at a vertex. The two fold angles are no longer independent — they are coupled by a constraint: the sheet is made of paper, and paper does not stretch. The angles must satisfy a geometric relationship determined by the vertex geometry.
+
+Add more vertices, and the constraints proliferate. A crease pattern with $V$ interior vertices has $2V$ fold-angle unknowns (two creases at each vertex, roughly) and $V$ geometric constraints plus boundary conditions. The system is generically under-constrained — there are many valid configurations — but some patterns are so highly constrained that only one configuration is possible: the flat state and the folded state, connected by a single continuous path with one degree of freedom.
+
+Finding crease patterns with specific mechanical properties — one DOF, target compaction ratio, target deployed shape — is an optimization problem. The rest of this book works out the details.
+
+## What We Will Build
+
+The book divides into two parts.
+
+**Part I** covers the geometry. Chapter 2 establishes the mathematical language: rotation matrices at fold lines, the flat-foldability conditions (Kawasaki's theorem, Maekawa's theorem), and how to check whether a given vertex satisfies them. Chapter 3 analyzes the Miura-ori in detail — its parameterization, its single degree of freedom, and why it achieves the compaction ratios that make it useful.
+
+**Part II** covers the optimization. Chapter 4 treats origami base design as a circle-packing problem and implements Lang's algorithm using `scipy`. Chapter 5 minimizes elastic fold energy to find equilibrium shapes of partially-folded structures. Chapter 6 solves the inverse problem: given a target deployed geometry, find the crease parameters that achieve it.
+
+Throughout, the emphasis is on the connection between the geometric picture and the numerical algorithm. A fold angle constraint is also a nonlinear equality constraint in a program. A compaction ratio is also an objective function. The vocabulary of origami and the vocabulary of optimization are, in the end, the same vocabulary.
+
+## Summary
+
+- Origami engineering solves real problems: deployable solar panels, self-expanding stents, flat-pack structures.
+- Every valid crease pattern is a feasible point in a constrained geometric space.
+- Finding crease patterns with desired properties is an optimization problem.
+- The rest of this book develops the geometric and numerical tools to solve it.
+
+## Further Reading
+
+The best single-volume introduction to the mathematics of origami is @demaine2007geometric. For the engineering applications, @lang2011origami covers origami design from a practitioner's perspective. The original Miura solar array paper [@miura1985method] is short and worth reading in full.
+
+## Exercises
+
+1. **Identify the fold.** Find one example of an origami-inspired engineering application not mentioned in this chapter. Identify what property of the fold makes it useful (compaction ratio, single DOF, specific deployed shape, etc.).
+
+2. **Count degrees of freedom.** A flat sheet with $n$ parallel creases all running the same direction has how many mechanical degrees of freedom? What changes if the creases are not parallel?
+
+3. **The fold angle.** Define a fold angle $\phi$ for a single crease such that $\phi = 0$ means flat and $\phi = \pi$ means fully folded (the two panels touch). Write an expression for the perpendicular distance between the two far edges of a sheet of width $W$ as a function of $\phi$ and the crease position $x_0$.
+
+4. **Constraint counting.** A vertex where four creases meet has four fold angles. How many scalar constraints does flat-foldability impose at that vertex? Is the vertex generically rigid (zero DOF), mobile (one or more DOF), or does it depend on the geometry?

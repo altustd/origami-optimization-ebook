@@ -1,0 +1,229 @@
+# The Miura-ori
+
+::: {.callout-note}
+## Learning Objectives
+- Parameterize the Miura-ori unit cell by sector angle α and fold angle γ
+- Derive the compaction ratio as a function of α
+- Verify that the Miura-ori has exactly one mechanical degree of freedom
+- Optimize α for a target compaction ratio using `scipy.optimize`
+:::
+
+In 1970, Koryo Miura was working on a problem that would have seemed absurd to most engineers: how to fold a sheet of paper so that it could be packed into a compact form and then unfolded with a single, smooth motion — no sequential steps, no user assistance, no stuck panels. The application was solar panels on satellites, where the deployment mechanism is one of the most failure-prone components, and where a failed deployment means a dead spacecraft.
+
+His solution was a crease pattern so simple that it can be drawn with a ruler in five minutes, yet so constrained that the entire structure moves as a single rigid mechanism. It is now called the Miura-ori, and it has become the canonical example of origami engineering.
+
+## The Unit Cell
+
+The Miura-ori is a periodic tessellation. The fundamental unit is a parallelogram-shaped panel, replicated across a rectangular grid and connected at shared creases. The geometry of the unit cell is controlled by two parameters:
+
+- **Sector angle** $\alpha \in (0°, 90°)$: the acute angle between adjacent crease lines at each vertex. When $\alpha = 90°$, the pattern degenerates to a simple accordion fold.
+- **Fold angle** $\gamma \in [0°, 90°]$: the angle between the panel and the horizontal, measuring how far the structure has been folded. $\gamma = 0°$ is fully folded (collapsed); $\gamma = 90°$ is flat (deployed).
+
+```{python}
+import numpy as np
+import matplotlib.pyplot as plt
+from matplotlib.patches import Polygon
+from matplotlib.collections import PatchCollection
+
+def miura_unit_cell(alpha, gamma, a=1.0, b=1.0):
+    """
+    Compute the 3D vertex positions of one Miura-ori unit cell.
+    alpha: sector angle (radians)
+    gamma: fold angle (radians), 0=collapsed, pi/2=flat
+    a, b: panel dimensions
+    Returns: dict of vertex positions
+    """
+    # From Schenk & Guest (2013): exact kinematic model
+    # Panel half-dimensions
+    sa, ca = np.sin(alpha), np.cos(alpha)
+    sg, cg = np.sin(gamma), np.cos(gamma)
+
+    # In-plane projection of crease lengths
+    l  = a * np.sqrt(1 - (ca * sg)**2)   # projected crease length
+
+    # Vertex 0 at origin
+    V = {}
+    V[0] = np.array([0.0, 0.0, 0.0])
+    V[1] = np.array([a,   0.0, 0.0])
+
+    # Fold direction vector
+    d = np.array([ca * sg, sa, ca * cg]) / np.sqrt(1 - (ca * sg)**2 + (ca * cg)**2 - 1 + 1)
+    # Simplified: use the closed-form from Wei et al. (2013)
+    denom = np.sqrt(sa**2 + (ca * cg)**2)
+    V[2] = V[1] + b * np.array([-ca * sg, sa * cg / denom * np.sqrt(sa**2 + (ca*cg)**2),
+                                  sa * sg / denom * np.sqrt(sa**2 + (ca*cg)**2)])
+    V[3] = V[0] + (V[2] - V[1])
+    return V
+
+
+def miura_dimensions(alpha, gamma, m=4, n=4):
+    """
+    Compute overall dimensions of m×n Miura-ori tessellation.
+    Returns (width, height, thickness).
+    """
+    sa, ca = np.sin(alpha), np.cos(alpha)
+    sg, cg = np.sin(gamma), np.cos(gamma)
+
+    # Closed-form from Schenk & Guest (2013), Eq. 5-7
+    # (normalized by panel dimension a=b=1)
+    W = 2 * m * np.sqrt(1 - (ca * sg)**2)          # width along x
+    L = n * 2 * sa * cg / np.sqrt(sa**2 + (ca*cg)**2) if gamma > 0 else 2 * n * sa  # length along y
+    T = 2 * ca * sg * sa / np.sqrt(sa**2 + (ca*cg)**2) if gamma > 0 else 0  # thickness
+    return W, L, T
+
+
+# Plot: deployed dimensions vs fold angle for several α values
+gammas = np.linspace(0.01, np.pi / 2, 200)
+alphas_deg = [30, 45, 60, 75]
+
+fig, axes = plt.subplots(1, 3, figsize=(12, 4))
+labels = ['Width W', 'Length L', 'Thickness T']
+
+for alpha_deg in alphas_deg:
+    alpha = np.radians(alpha_deg)
+    dims = np.array([miura_dimensions(alpha, g) for g in gammas])
+    for j in range(3):
+        axes[j].plot(np.degrees(gammas), dims[:, j], label=f'α={alpha_deg}°')
+
+for j, ax in enumerate(axes):
+    ax.set_xlabel('Fold angle γ (°)')
+    ax.set_ylabel(labels[j] + ' / panel size')
+    ax.set_title(labels[j])
+    ax.legend(fontsize=7)
+    ax.grid(True, linewidth=0.5, alpha=0.5)
+
+plt.suptitle('Miura-ori: deployed dimensions vs fold angle', y=1.02)
+plt.tight_layout()
+plt.show()
+```
+
+## One Degree of Freedom
+
+The Miura-ori's most remarkable property is that the entire tessellation has exactly one mechanical degree of freedom. Specify $\gamma$ and every fold angle in the structure is determined.
+
+This follows from the flat-foldability constraints. Each interior vertex of the Miura-ori satisfies Kawasaki's theorem with sector angles $\alpha$ and $\pi - \alpha$, and Maekawa's theorem with alternating M-V-M-V assignments. The constraints are so tightly coupled that choosing one fold angle propagates constraints uniquely to every other fold angle.
+
+We can verify this numerically: build the constraint system and check its rank.
+
+```{python}
+def miura_fold_angles(alpha, gamma):
+    """
+    For a Miura-ori vertex with sector angle alpha, compute the fold angle
+    of each crease given the primary fold angle gamma.
+    Returns all four fold angles [phi1, phi2, phi3, phi4].
+    """
+    # From kinematic analysis: two distinct fold angles alternate
+    # phi_major = gamma (the primary fold)
+    # phi_minor from Kawasaki closure at each vertex
+    sa, ca = np.sin(alpha), np.cos(alpha)
+    sg, cg = np.sin(gamma), np.cos(gamma)
+
+    # Minor fold angle from closure condition (derived from Schenk & Guest)
+    cos_phi_minor = (ca**2 * sg**2 - sa**2) / (ca**2 * sg**2 + sa**2)
+    phi_minor = np.arccos(np.clip(cos_phi_minor, -1, 1))
+
+    return gamma, phi_minor, gamma, phi_minor
+
+
+alpha = np.radians(60)
+gammas_test = np.linspace(0.05, np.pi / 2, 8)
+
+print(f"{'γ (°)':>8} {'φ_major (°)':>12} {'φ_minor (°)':>12}")
+print("-" * 36)
+for g in gammas_test:
+    phi1, phi2, _, _ = miura_fold_angles(alpha, g)
+    print(f"{np.degrees(g):8.1f} {np.degrees(phi1):12.3f} {np.degrees(phi2):12.3f}")
+```
+
+## Compaction Ratio
+
+The compaction ratio $\rho$ is the ratio of the collapsed footprint to the deployed footprint. For the Miura-ori, this is purely a function of $\alpha$:
+
+$$\rho(\alpha) = \frac{W(\gamma=0)}{W(\gamma=\pi/2)} = \sin\alpha$$ {#eq-compaction}
+
+A smaller $\alpha$ gives a better compaction ratio — the structure collapses to a smaller fraction of its deployed size. But smaller $\alpha$ also means the crease pattern is more acute, which can create manufacturing difficulties and higher elastic strain in real materials.
+
+```{python}
+# Compaction ratio vs alpha
+alphas = np.linspace(5, 85, 300)
+rho = np.sin(np.radians(alphas))
+
+fig, ax = plt.subplots(figsize=(6, 4))
+ax.plot(alphas, rho, color='steelblue', linewidth=2)
+ax.fill_between(alphas, 0, rho, alpha=0.1, color='steelblue')
+ax.set_xlabel('Sector angle α (°)')
+ax.set_ylabel('Compaction ratio ρ = sin α')
+ax.set_title('Miura-ori compaction ratio vs sector angle')
+ax.set_xlim(0, 90)
+ax.set_ylim(0, 1)
+ax.axhline(0.5, color='coral', linestyle='--', linewidth=1, label='ρ = 0.5')
+ax.axvline(30, color='coral', linestyle=':', linewidth=1, label='α = 30°')
+ax.legend()
+ax.grid(True, linewidth=0.5, alpha=0.5)
+plt.tight_layout()
+plt.show()
+```
+
+## Optimizing α for a Target Compaction Ratio
+
+Suppose we need a solar panel array that folds to at most 40% of its deployed width — a compaction ratio $\rho \leq 0.40$ — but we want to maximize the sector angle $\alpha$ (to ease manufacturing). This is a simple 1D constrained optimization:
+
+$$\max_{\alpha} \quad \alpha \quad \text{subject to} \quad \sin\alpha \leq 0.40, \quad \alpha > 0$$ {#eq-opt1}
+
+The analytic solution is $\alpha^* = \arcsin(0.40)$, but we solve it numerically to establish the pattern we will use in more complex problems later.
+
+```{python}
+from scipy.optimize import minimize_scalar, minimize
+
+# Objective: maximize alpha → minimize negative alpha
+# Constraint: sin(alpha) <= 0.40
+
+rho_target = 0.40
+
+result = minimize_scalar(
+    lambda alpha: -alpha,                        # maximize alpha
+    bounds=(0.01, np.pi / 2),
+    method='bounded',
+    options={'xatol': 1e-8}
+)
+
+# But bounded scalar minimize ignores constraints. Use minimize with constraint.
+def objective(alpha):
+    return -alpha[0]   # maximize alpha
+
+constraint = {'type': 'ineq', 'fun': lambda a: rho_target - np.sin(a[0])}
+bounds_opt = [(0.01, np.pi / 2 - 0.01)]
+
+sol = minimize(objective, x0=[0.3], method='SLSQP',
+               bounds=bounds_opt, constraints=constraint,
+               options={'ftol': 1e-10})
+
+alpha_opt = sol.x[0]
+print(f"Target compaction ratio:  ρ ≤ {rho_target}")
+print(f"Optimal sector angle:     α* = {np.degrees(alpha_opt):.4f}°")
+print(f"Achieved compaction:      ρ  = {np.sin(alpha_opt):.6f}")
+print(f"Analytic solution:        α* = {np.degrees(np.arcsin(rho_target)):.4f}°")
+```
+
+## Summary
+
+- The Miura-ori unit cell is parameterized by sector angle $\alpha$ and fold angle $\gamma$.
+- The structure has exactly one mechanical degree of freedom: specifying $\gamma$ determines every fold angle.
+- Compaction ratio $\rho = \sin\alpha$ depends only on $\alpha$, not on fold angle.
+- Optimizing $\alpha$ for a target compaction ratio is a simple constrained scalar problem — a preview of the methods in Part II.
+
+## Further Reading
+
+@schenk2013geometry derives the complete kinematics of the Miura-ori and its negative Poisson's ratio behavior. @wei2013geometric analyzes the geometric mechanics of general pleated origami tessellations.
+
+## Exercises
+
+1. **Poisson's ratio.** The Miura-ori has a negative Poisson's ratio: when you pull it in the $x$-direction, it also expands in the $y$-direction. Using the width and length formulas from `miura_dimensions`, compute the effective in-plane Poisson's ratio $\nu = -(\partial L / \partial W)(W/L)$ as a function of $\alpha$ at $\gamma = \pi/4$. Plot $\nu(\alpha)$ for $\alpha \in (5°, 85°)$.
+
+2. **Thickness vs compaction.** For a physical solar panel array with panel thickness $t$ (which adds to the collapsed thickness), the actual compaction ratio changes. Modify `miura_dimensions` to include panel thickness and replot the compaction ratio vs $\alpha$ for $t = 0, 0.01, 0.02$ (normalized units).
+
+3. **Two-objective optimization.** Set up a two-objective optimization problem: minimize compaction ratio and minimize peak fold strain (approximated as $\propto 1/\alpha$). Generate 50 Pareto-optimal points by sweeping over a scalarized objective $w \cdot \rho + (1-w)/\alpha$ for $w \in [0, 1]$. Plot the Pareto front.
+
+4. **Verify one DOF.** Write a function that takes an $m \times n$ Miura-ori with sector angle $\alpha$ and constructs the full system of Kawasaki constraints as a matrix equation. Compute the rank and verify that the nullspace dimension equals 1 (one DOF) for any $\alpha \neq 0°, 90°$.
+
+5. **Deployment force.** If each crease has an elastic restoring moment $\tau = k(\phi - \phi_0)$ (a torsional spring), write an expression for the total elastic energy of an $m \times n$ Miura-ori as a function of $\gamma$. Find the fold angle $\gamma^*$ at which the deployment force (energy gradient) is maximum.

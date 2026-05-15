@@ -1,0 +1,251 @@
+# Geometry of a Crease
+
+::: {.callout-note}
+## Learning Objectives
+- Represent a fold as a rotation matrix and compute panel positions after folding
+- State and apply Kawasaki's theorem for flat-foldability at a vertex
+- Apply Maekawa's theorem to count mountain and valley folds
+- Write Python functions to check both conditions numerically
+:::
+
+A piece of paper has three properties that make it mathematically interesting: it is flat, it is inextensible, and it can be folded. Flatness means the rest configuration is a plane. Inextensibility means distances between points on the surface are preserved during folding — the paper does not stretch. Foldability means that along a crease line, one panel can rotate relative to another by an arbitrary angle.
+
+These three properties together severely constrain what shapes a folded sheet can take. Almost all of the content of this book follows from working out those constraints carefully.
+
+## The Fold Angle
+
+Consider a single straight crease running across a sheet. The crease divides the sheet into two planar panels, which we call the *left panel* and the *right panel* (or panel 1 and panel 2). Define the *fold angle* $\phi$ as the dihedral angle between the two panels, measured such that:
+
+$$\phi = 0 \quad \text{(flat, unfolded)}$$ {#eq-phi-flat}
+
+$$\phi = \pi \quad \text{(fully folded, panels touching)}$$ {#eq-phi-folded}
+
+The sign of $\phi$ distinguishes mountain folds (panel 2 folds *up* relative to panel 1, $\phi > 0$) from valley folds ($\phi < 0$). For a single crease, this sign convention is arbitrary — we can always flip the sheet — but once we have a vertex where multiple creases meet, the relative signs matter.
+
+## Rotation Matrices at Fold Lines
+
+Let the crease lie along the unit vector $\hat{e}$. If panel 1 is fixed in space, then panel 2 is obtained by rotating panel 1 about $\hat{e}$ by angle $\phi$. The rotation is given by the Rodrigues formula:
+
+$$R(\hat{e}, \phi) = I \cos\phi + (1 - \cos\phi)\hat{e}\hat{e}^T + \sin\phi\, [\hat{e}]_\times$$ {#eq-rodrigues}
+
+where $[\hat{e}]_\times$ is the skew-symmetric cross-product matrix:
+
+$$[\hat{e}]_\times = \begin{pmatrix} 0 & -e_z & e_y \\ e_z & 0 & -e_x \\ -e_y & e_x & 0 \end{pmatrix}$$ {#eq-skew}
+
+```{python}
+import numpy as np
+import matplotlib.pyplot as plt
+from mpl_toolkits.mplot3d import Axes3D
+from mpl_toolkits.mplot3d.art3d import Poly3DCollection
+
+def rotation_matrix(axis, angle):
+    """Rodrigues rotation matrix: rotate by angle about axis."""
+    e = np.asarray(axis, dtype=float)
+    e = e / np.linalg.norm(e)
+    c, s = np.cos(angle), np.sin(angle)
+    skew = np.array([
+        [ 0,    -e[2],  e[1]],
+        [ e[2],  0,    -e[0]],
+        [-e[1],  e[0],  0   ]
+    ])
+    return c * np.eye(3) + (1 - c) * np.outer(e, e) + s * skew
+
+
+def fold_panel(panel_vertices, crease_point, crease_axis, angle):
+    """Rotate panel_vertices about a crease line by angle."""
+    verts = np.asarray(panel_vertices, dtype=float)
+    R = rotation_matrix(crease_axis, angle)
+    # Translate so crease_point is origin, rotate, translate back
+    return (R @ (verts - crease_point).T).T + crease_point
+
+
+# Demo: fold a single-crease sheet
+fig = plt.figure(figsize=(10, 4))
+
+fold_angles = [0, np.pi / 4, np.pi / 2, 3 * np.pi / 4]
+panel1 = np.array([[0, 0, 0], [1, 0, 0], [1, 1, 0], [0, 1, 0]])
+panel2_flat = np.array([[0, 0, 0], [-1, 0, 0], [-1, 1, 0], [0, 1, 0]])
+
+for i, phi in enumerate(fold_angles):
+    ax = fig.add_subplot(1, 4, i + 1, projection='3d')
+    crease_axis = np.array([0, 1, 0])
+    crease_point = np.array([0, 0, 0])
+    panel2 = fold_panel(panel2_flat, crease_point, crease_axis, -phi)
+
+    for verts, color in [(panel1, 'steelblue'), (panel2, 'coral')]:
+        poly = Poly3DCollection([verts], alpha=0.6, facecolor=color, edgecolor='k', linewidth=0.5)
+        ax.add_collection3d(poly)
+
+    ax.set_xlim(-1.2, 1.2)
+    ax.set_ylim(-0.2, 1.2)
+    ax.set_zlim(-1.2, 0.2)
+    ax.set_title(f'φ = {phi:.2f}', fontsize=9)
+    ax.set_axis_off()
+
+plt.suptitle('Single-crease fold at increasing fold angles', y=1.02)
+plt.tight_layout()
+plt.show()
+```
+
+## Vertices and Multi-Crease Constraints
+
+The interesting geometry begins at a *vertex* — a point where two or more creases meet. At a vertex with $n$ creases, there are $n$ fold angles $\phi_1, \ldots, \phi_n$ and $n$ sector angles $\alpha_1, \ldots, \alpha_n$, where $\alpha_i$ is the angle between crease $i$ and crease $i+1$ measured in the flat (unfolded) sheet.
+
+The sector angles satisfy:
+
+$$\sum_{i=1}^{n} \alpha_i = 2\pi$$ {#eq-sector-sum}
+
+because they partition the full angle around the vertex.
+
+For the sheet to be foldable (no tearing, no self-intersection at the vertex), the composition of rotations around the vertex must close — the last panel must connect back to the first. This closure condition is the source of all the flat-foldability constraints.
+
+## Kawasaki's Theorem
+
+For a vertex with $2k$ creases (flat-foldable vertices always have an even number of creases), flat-foldability requires:
+
+$$\sum_{i=1}^{k} \alpha_{2i-1} = \sum_{i=1}^{k} \alpha_{2i} = \pi$$ {#eq-kawasaki}
+
+In words: the alternating sector angles must each sum to $\pi$. For a 4-crease vertex, this means:
+
+$$\alpha_1 + \alpha_3 = \alpha_2 + \alpha_4 = \pi$$ {#eq-kawasaki-4}
+
+This is Kawasaki's theorem [@kawasaki1989relation], and it is both necessary and sufficient for flat-foldability (in the local, single-vertex sense).
+
+```{python}
+def check_kawasaki(sector_angles):
+    """
+    Check Kawasaki's theorem for a vertex.
+    sector_angles: list of angles in radians, alternating around the vertex.
+    Returns (satisfied, odd_sum, even_sum).
+    """
+    alphas = np.asarray(sector_angles)
+    n = len(alphas)
+    if n % 2 != 0:
+        return False, None, None
+    odd_sum  = np.sum(alphas[0::2])   # indices 0, 2, 4, ...
+    even_sum = np.sum(alphas[1::2])   # indices 1, 3, 5, ...
+    satisfied = np.isclose(odd_sum, np.pi) and np.isclose(even_sum, np.pi)
+    return satisfied, odd_sum, even_sum
+
+
+# Example: standard 4-crease vertex
+alphas = [np.pi/3, 2*np.pi/3, np.pi/3, 2*np.pi/3]
+ok, s1, s2 = check_kawasaki(alphas)
+print(f"Sector angles: {[f'{a:.3f}' for a in alphas]}")
+print(f"Kawasaki satisfied: {ok}")
+print(f"Odd sum:  {s1:.4f}  (π = {np.pi:.4f})")
+print(f"Even sum: {s2:.4f}  (π = {np.pi:.4f})")
+```
+
+```{python}
+# Visualize: which combinations of (α1, α2) satisfy Kawasaki for a 4-crease vertex?
+# Given α1 + α3 = π  →  α3 = π - α1
+# Given α2 + α4 = π  →  α4 = π - α2
+# Constraint: α1 + α2 + α3 + α4 = 2π  →  always satisfied for any α1, α2.
+# So for a 4-crease vertex, any (α1, α2) with α1, α2 ∈ (0, π) works.
+
+alpha1_vals = np.linspace(0.1, np.pi - 0.1, 200)
+alpha2_vals = np.linspace(0.1, np.pi - 0.1, 200)
+A1, A2 = np.meshgrid(alpha1_vals, alpha2_vals)
+
+# Compaction ratio proxy: total variation in fold space
+# For illustration, just show the feasible region
+fig, ax = plt.subplots(figsize=(5, 4))
+ax.fill_between(alpha1_vals, 0.1, np.pi - 0.1, alpha=0.15, color='steelblue',
+                label='Kawasaki feasible region')
+ax.set_xlabel('α₁ (rad)')
+ax.set_ylabel('α₂ (rad)')
+ax.set_title('4-crease vertex: Kawasaki feasible region')
+ax.set_xlim(0, np.pi)
+ax.set_ylim(0, np.pi)
+ax.axvline(np.pi / 2, color='gray', linestyle='--', linewidth=0.8, label='α₁ = π/2')
+ax.axhline(np.pi / 2, color='gray', linestyle=':', linewidth=0.8, label='α₂ = π/2')
+ax.legend(fontsize=8)
+plt.tight_layout()
+plt.show()
+```
+
+## Maekawa's Theorem
+
+Kawasaki tells us about the angles. Maekawa's theorem tells us about the fold directions: at any flat-foldable vertex, the number of mountain folds $M$ and valley folds $V$ must satisfy:
+
+$$|M - V| = 2$$ {#eq-maekawa}
+
+For a 4-crease vertex, this means either $M=3, V=1$ or $M=1, V=3$. You cannot have $M=2, V=2$ at a flat-foldable vertex.
+
+```{python}
+def check_maekawa(fold_types):
+    """
+    Check Maekawa's theorem.
+    fold_types: list of +1 (mountain) or -1 (valley).
+    Returns (satisfied, M, V).
+    """
+    types = np.asarray(fold_types)
+    M = np.sum(types == 1)
+    V = np.sum(types == -1)
+    satisfied = abs(M - V) == 2
+    return satisfied, int(M), int(V)
+
+
+cases = [
+    ([1,  1,  1, -1], "M=3, V=1"),
+    ([1, -1,  1, -1], "M=2, V=2"),
+    ([-1, -1, -1, 1], "M=1, V=3"),
+]
+for types, label in cases:
+    ok, M, V = check_maekawa(types)
+    print(f"{label:12s}  →  Maekawa satisfied: {ok}")
+```
+
+## A Complete Vertex Checker
+
+```{python}
+def is_flat_foldable_vertex(sector_angles, fold_types):
+    """
+    Check both Kawasaki and Maekawa for a single vertex.
+    sector_angles: alternating sector angles in radians
+    fold_types: +1 mountain, -1 valley, one per crease
+    """
+    kaw_ok, s1, s2 = check_kawasaki(sector_angles)
+    mae_ok, M, V   = check_maekawa(fold_types)
+    return {
+        'kawasaki': kaw_ok,
+        'maekawa':  mae_ok,
+        'flat_foldable': kaw_ok and mae_ok,
+        'odd_angle_sum':  s1,
+        'even_angle_sum': s2,
+        'mountains': M,
+        'valleys':   V,
+    }
+
+
+# Standard Miura-ori vertex
+alphas = [np.pi/4, 3*np.pi/4, np.pi/4, 3*np.pi/4]
+folds  = [1, -1, 1, -1]   # M, V, M, V
+result = is_flat_foldable_vertex(alphas, folds)
+for k, v in result.items():
+    print(f"  {k}: {v}")
+```
+
+## Summary
+
+- A fold is a rotation about a crease line, parameterized by fold angle $\phi \in [0, \pi]$.
+- Rodrigues' formula gives the rotation matrix for any axis and angle.
+- At a multi-crease vertex, flat-foldability requires Kawasaki's theorem (alternating sector angles sum to $\pi$) and Maekawa's theorem ($|M - V| = 2$).
+- Both conditions can be checked numerically with simple array operations.
+
+## Further Reading
+
+@demaine2007geometric provides rigorous proofs of Kawasaki's and Maekawa's theorems (Chapters 11–12). @huffman1976curvature is the original paper connecting curvature to crease geometry and is surprisingly readable.
+
+## Exercises
+
+1. **Rodrigues by hand.** For a crease along $\hat{e} = \hat{y} = (0,1,0)$ and fold angle $\phi = \pi/2$, write out $R(\hat{e}, \phi)$ using @eq-rodrigues. Apply it to the vector $(1, 0, 0)$ and verify the result makes geometric sense.
+
+2. **Three-crease vertex.** Can a vertex with exactly three creases be flat-foldable? Use Kawasaki's theorem to argue why or why not.
+
+3. **Kawasaki violation.** Write a Python function that, given a set of sector angles that violate Kawasaki's theorem, returns the *minimum perturbation* to any single sector angle that restores the condition. (Hint: the answer is the difference between the actual alternating sums and $\pi$, distributed optimally.)
+
+4. **Maekawa patterns.** For a 6-crease vertex, list all $(M, V)$ combinations that satisfy Maekawa's theorem. How many mountain/valley assignment patterns are there for each valid $(M, V)$ pair?
+
+5. **Closure check.** Implement a function that, given sector angles and fold angles for a 4-crease vertex, multiplies the four rotation matrices in sequence and checks whether the product is the identity. Test it on the Miura-ori vertex from the code block above for $\phi = \pi/4$.
