@@ -368,7 +368,7 @@ window.Quarto = {
 <p><em>Inside square:</em> For all <span class="math inline">\(i\)</span>, <span id="eq-inside-x"><span class="math display">\[s r_i \leq x_i \leq 1 - s r_i \tag{4.2}\]</span></span> <span id="eq-inside-y"><span class="math display">\[s r_i \leq y_i \leq 1 - s r_i \tag{4.3}\]</span></span></p>
 <p><em>Positivity:</em> <span class="math inline">\(s &gt; 0\)</span></p>
 <p>The decision variables are <span class="math inline">\(\{x_i, y_i\}_{i=1}^n\)</span> and <span class="math inline">\(s\)</span>. The problem is a nonlinear program with quadratic constraints.</p>
-<div id="ce722967" class="cell" data-execution_count="1">
+<div id="fa605c57" class="cell" data-execution_count="1">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
@@ -466,7 +466,7 @@ window.Quarto = {
 <section id="example-bird-base-tree" class="level2" data-number="4.3">
 <h2 data-number="4.3" class="anchored" data-anchor-id="example-bird-base-tree"><span class="header-section-number">4.3</span> Example: Bird Base Tree</h2>
 <p>The classic bird base underlies thousands of origami models. Its tree has four terminal nodes (two wings, head, tail) connected through a central joint. We assign relative radii based on desired flap proportions.</p>
-<div id="c2fd9207" class="cell" data-execution_count="2">
+<div id="3ccaf288" class="cell" data-execution_count="2">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Bird base: 4 flaps</span></span>
@@ -527,7 +527,7 @@ Circle centers:
 <section id="unequal-flaps-insect-base" class="level2" data-number="4.4">
 <h2 data-number="4.4" class="anchored" data-anchor-id="unequal-flaps-insect-base"><span class="header-section-number">4.4</span> Unequal Flaps: Insect Base</h2>
 <p>An insect model needs long legs and shorter body parts. We assign unequal radii:</p>
-<div id="ccd54ab6" class="cell" data-execution_count="3">
+<div id="8bb4699b" class="cell" data-execution_count="3">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Insect: 6 flaps — 3 pairs of legs + head + abdomen + 2 wings</span></span>
@@ -553,7 +553,7 @@ Circle centers:
 <h2 data-number="4.5" class="anchored" data-anchor-id="packing-efficiency"><span class="header-section-number">4.5</span> Packing Efficiency</h2>
 <p>The packing efficiency <span class="math inline">\(\eta\)</span> is the fraction of the square’s area covered by circles:</p>
 <p><span id="eq-efficiency"><span class="math display">\[\eta = s^2 \pi \sum_{i=1}^n r_i^2 \tag{4.4}\]</span></span></p>
-<div id="35fd0764" class="cell" data-execution_count="4">
+<div id="51fa98ed" class="cell" data-execution_count="4">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> packing_efficiency(s, radii):</span>

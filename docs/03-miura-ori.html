@@ -352,7 +352,7 @@ window.Quarto = {
 <li><strong>Sector angle</strong> <span class="math inline">\(\alpha \in (0°, 90°)\)</span>: the acute angle between adjacent crease lines at each vertex. When <span class="math inline">\(\alpha = 90°\)</span>, the pattern degenerates to a simple accordion fold.</li>
 <li><strong>Fold angle</strong> <span class="math inline">\(\gamma \in [0°, 90°]\)</span>: the angle between the panel and the horizontal, measuring how far the structure has been folded. <span class="math inline">\(\gamma = 0°\)</span> is fully folded (collapsed); <span class="math inline">\(\gamma = 90°\)</span> is flat (deployed).</li>
 </ul>
-<div id="95932c3d" class="cell" data-execution_count="1">
+<div id="9cd79b7b" class="cell" data-execution_count="1">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
@@ -445,7 +445,7 @@ window.Quarto = {
 <p>The Miura-ori’s most remarkable property is that the entire tessellation has exactly one mechanical degree of freedom. Specify <span class="math inline">\(\gamma\)</span> and every fold angle in the structure is determined.</p>
 <p>This follows from the flat-foldability constraints. Each interior vertex of the Miura-ori satisfies Kawasaki’s theorem with sector angles <span class="math inline">\(\alpha\)</span> and <span class="math inline">\(\pi - \alpha\)</span>, and Maekawa’s theorem with alternating M-V-M-V assignments. The constraints are so tightly coupled that choosing one fold angle propagates constraints uniquely to every other fold angle.</p>
 <p>We can verify this numerically: build the constraint system and check its rank.</p>
-<div id="40b1e15c" class="cell" data-execution_count="2">
+<div id="01c7d0c1" class="cell" data-execution_count="2">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> miura_fold_angles(alpha, gamma):</span>
@@ -495,7 +495,7 @@ window.Quarto = {
 <p>The compaction ratio <span class="math inline">\(\rho\)</span> is the ratio of the collapsed footprint to the deployed footprint. For the Miura-ori, this is purely a function of <span class="math inline">\(\alpha\)</span>:</p>
 <p><span id="eq-compaction"><span class="math display">\[\rho(\alpha) = \frac{W(\gamma=0)}{W(\gamma=\pi/2)} = \sin\alpha \tag{3.1}\]</span></span></p>
 <p>A smaller <span class="math inline">\(\alpha\)</span> gives a better compaction ratio — the structure collapses to a smaller fraction of its deployed size. But smaller <span class="math inline">\(\alpha\)</span> also means the crease pattern is more acute, which can create manufacturing difficulties and higher elastic strain in real materials.</p>
-<div id="86018a8a" class="cell" data-execution_count="3">
+<div id="559fa8bc" class="cell" data-execution_count="3">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Compaction ratio vs alpha</span></span>
@@ -531,7 +531,7 @@ window.Quarto = {
 <p>Suppose we need a solar panel array that folds to at most 40% of its deployed width — a compaction ratio <span class="math inline">\(\rho \leq 0.40\)</span> — but we want to maximize the sector angle <span class="math inline">\(\alpha\)</span> (to ease manufacturing). This is a simple 1D constrained optimization:</p>
 <p><span id="eq-opt1"><span class="math display">\[\max_{\alpha} \quad \alpha \quad \text{subject to} \quad \sin\alpha \leq 0.40, \quad \alpha &gt; 0 \tag{3.2}\]</span></span></p>
 <p>The analytic solution is <span class="math inline">\(\alpha^* = \arcsin(0.40)\)</span>, but we solve it numerically to establish the pattern we will use in more complex problems later.</p>
-<div id="cc50c9ca" class="cell" data-execution_count="4">
+<div id="c75280bd" class="cell" data-execution_count="4">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> scipy.optimize <span class="im">import</span> minimize_scalar, minimize</span>

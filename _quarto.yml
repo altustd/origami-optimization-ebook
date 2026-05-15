@@ -47,6 +47,9 @@ format:
     colorlinks: true
     toc: true
     toc-depth: 3
+    pdf-engine: latexmk
+    pdf-engine-opts:
+      - -lualatex
 
 bibliography: references.bib
 jupyter: origami-opt

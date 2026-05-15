@@ -1,4 +1,4 @@
-[project]
+[workspace]
 name = "origami-optimization-ebook"
 version = "0.1.0"
 description = "Numerical optimization through the lens of origami engineering"
