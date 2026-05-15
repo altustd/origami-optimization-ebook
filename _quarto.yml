@@ -10,16 +10,12 @@ book:
   repo-url: https://github.com/altustd/origami-optimization-ebook
   chapters:
     - preface.qmd
-    - part: "Part I: The Geometry of Folds"
-      chapters:
-        - index.qmd
-        - 02-geometry.qmd
-        - 03-miura-ori.qmd
-    - part: "Part II: Optimization Methods"
-      chapters:
-        - 04-circle-packing.qmd
-        - 05-energy-minimization.qmd
-        - 06-inverse-design.qmd
+    - index.qmd
+    - 02-geometry.qmd
+    - 03-miura-ori.qmd
+    - 04-circle-packing.qmd
+    - 05-energy-minimization.qmd
+    - 06-inverse-design.qmd
     - references.qmd
   appendices:
     - appendix-a-code.qmd
