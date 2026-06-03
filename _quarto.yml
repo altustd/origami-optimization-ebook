@@ -2,6 +2,9 @@ project:
   type: book
   output-dir: docs
 
+engine: python
+jupyter: origami-opt
+
 book:
   title: "Origami Optimization"
   subtitle: "Numerical Optimization in Origami Engineering"
@@ -48,7 +51,6 @@ format:
       - -lualatex
 
 bibliography: references.bib
-jupyter: origami-opt
 
 execute:
   warning: false
