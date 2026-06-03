@@ -15,7 +15,7 @@ ipykernel = ">=6.0"
 ipympl = ">=0.9"
 
 [tasks]
-render     = "quarto render"
-render-pdf = "quarto render --to pdf"
+render     = "./render.sh"
+render-pdf = "./render.sh --to pdf"
 preview    = "quarto preview"
 kernel     = "python -m ipykernel install --user --name origami-opt --display-name 'Origami Optimization'"

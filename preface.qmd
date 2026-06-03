@@ -26,9 +26,15 @@ All code runs inside the `pixi` environment defined in `pixi.toml`. To reproduce
 
 ```bash
 pixi install
-pixi run kernel     # register the Jupyter kernel
-pixi run render     # render HTML
+pixi run kernel     # register the Jupyter kernel (once)
+pixi shell          # enter env (3rd step — ensures correct default python/kernel for renders)
+  ./render.sh       # renders using this project's Python (QUARTO_PYTHON + engine: python)
+  exit
 pixi run preview    # live preview
 ```
 
 The only dependencies are `numpy`, `scipy`, and `matplotlib` — all available from conda-forge with native ARM64 builds on Apple Silicon.
+
+`engine: python` (in `_quarto.yml`) + the render.sh wrapper is used so that when you are inside `pixi shell`, `quarto render` reliably executes using this project's Python. The 3rd step (`pixi shell`) is required on machines with many pixi projects because the shared Jupyter kernels directory otherwise causes quarto's Jupyter engine to pick the wrong Python for code cells (e.g. expat-destination-analysis's instead of this project's).
+
+For interactive JupyterLab / Notebook work: after `pixi run kernel`, select the "Origami Optimization" kernel.

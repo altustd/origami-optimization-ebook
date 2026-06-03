@@ -35,10 +35,13 @@ Origami is secretly a constrained optimization problem. Every valid fold pattern
 ```bash
 pixi install
 pixi run kernel     # register Jupyter kernel (run once)
-pixi run render     # HTML → docs/
-pixi run render-pdf # PDF → docs/
+pixi shell          # enter env (3rd step — required for reliable `render` on multi-project machines)
+  ./render.sh       # or quarto render / render-pdf
+  exit
 pixi run preview    # live preview
 ```
+
+See the preface ("A note on the code") for why the 3rd bullet is `pixi shell` before render (avoids cross-pixi-project kernel pollution that causes the wrong Python to be used for code execution).
 
 ## Tech Stack
 

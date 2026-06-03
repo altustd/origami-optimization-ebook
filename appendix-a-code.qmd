@@ -167,9 +167,13 @@ def solve_miura_inverse_fixed_grid(W_target, L_target, rho_target, m, n):
 
 ```bash
 pixi install
-pixi run kernel     # register Jupyter kernel
-pixi run render     # render full ebook to docs/
+pixi run kernel     # register Jupyter kernel (once)
+pixi shell          # enter the env (3rd step for reliable render)
+  ./render.sh
+  exit
 pixi run preview    # live preview in browser
 ```
 
 Dependencies: `numpy`, `scipy`, `matplotlib` — all from conda-forge.
+
+(See preface for why `pixi shell` before render is the 3rd bullet in the workflow.)
