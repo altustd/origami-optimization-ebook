@@ -3,8 +3,8 @@ project:
   output-dir: docs
 
 book:
-  title: "The Engineering of Folding"
-  subtitle: "Numerical Optimization through Origami"
+  title: "Origami Optimization"
+  subtitle: "Numerical Optimization in Origami Engineering"
   author: "Troy Altus"
   date: "June 2026"
   repo-url: https://github.com/altustd/origami-optimization-ebook

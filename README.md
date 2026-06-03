@@ -1,6 +1,6 @@
-# The Engineering of Folding
+# Origami Optimization
 
-*Numerical Optimization through Origami*
+*Numerical Optimization in Origami Engineering*
 
 Origami is secretly a constrained optimization problem. Every valid fold pattern satisfies geometric closure constraints; deployable structures are designed by solving those constraints for target performance. This book develops the connection between origami geometry and numerical optimization, from the basics of fold-angle kinematics through circle-packing base design, energy minimization, and inverse design — with Python code throughout.
 
