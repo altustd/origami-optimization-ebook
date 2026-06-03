@@ -333,7 +333,7 @@ window.Quarto = {
 <p>This is a constrained nonlinear program:</p>
 <p><span id="eq-energy-opt"><span class="math display">\[\min_{\boldsymbol{\phi}} \quad E_\text{total}(\boldsymbol{\phi}) \quad \text{subject to} \quad g_j(\boldsymbol{\phi}) = 0 \quad j = 1, \ldots, M \tag{5.3}\]</span></span></p>
 <p>where the <span class="math inline">\(g_j\)</span> are the Kawasaki constraints (or more generally, the geometric closure conditions at each vertex).</p>
-<div id="46eda252" class="cell">
+<div id="b3208a60" class="cell">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
@@ -354,7 +354,7 @@ window.Quarto = {
 <h2 data-number="5.2" class="anchored" data-anchor-id="example-four-crease-vertex-under-load"><span class="header-section-number">5.2</span> Example: Four-Crease Vertex Under Load</h2>
 <p>Consider a single four-crease vertex (the Miura-ori unit vertex) with sector angles <span class="math inline">\(\alpha\)</span> and <span class="math inline">\(\pi - \alpha\)</span>. The vertex has four fold angles <span class="math inline">\(\phi_1, \phi_2, \phi_3, \phi_4\)</span> subject to the Kawasaki closure condition.</p>
 <p>We will minimize the elastic energy over the feasible set — the manifold of fold-angle vectors satisfying Kawasaki — and trace how the equilibrium configuration depends on the stiffness distribution.</p>
-<div id="c04f5918" class="cell">
+<div id="e6395f0f" class="cell">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> kawasaki_residual(phi, alpha):</span>
@@ -447,7 +447,7 @@ window.Quarto = {
 <section id="comparing-optimizers" class="level2" data-number="5.3">
 <h2 data-number="5.3" class="anchored" data-anchor-id="comparing-optimizers"><span class="header-section-number">5.3</span> Comparing Optimizers</h2>
 <p>The energy minimization problem <a href="#eq-energy-opt" class="quarto-xref">Equation&nbsp;<span>5.3</span></a> is smooth and has analytic gradients. Different optimizers make different trade-offs between convergence speed, memory, and constraint-handling capability.</p>
-<div id="2ba626fe" class="cell">
+<div id="162ec65f" class="cell">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> time</span>
@@ -542,7 +542,7 @@ window.Quarto = {
 <section id="non-uniform-stiffness-and-multiple-equilibria" class="level2" data-number="5.4">
 <h2 data-number="5.4" class="anchored" data-anchor-id="non-uniform-stiffness-and-multiple-equilibria"><span class="header-section-number">5.4</span> Non-Uniform Stiffness and Multiple Equilibria</h2>
 <p>Real origami structures often have creases with different stiffnesses — due to material variation, different crease depths, or deliberate design. When stiffness is non-uniform, the energy landscape can develop multiple local minima.</p>
-<div id="818d6a13" class="cell">
+<div id="0a28b28a" class="cell">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Sweep stiffness ratio k2/k1 and track equilibrium</span></span>

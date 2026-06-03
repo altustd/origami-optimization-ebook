@@ -338,7 +338,7 @@ window.Quarto = {
 <p><span id="eq-rodrigues"><span class="math display">\[R(\hat{e}, \phi) = I \cos\phi + (1 - \cos\phi)\hat{e}\hat{e}^T + \sin\phi\, [\hat{e}]_\times \tag{2.3}\]</span></span></p>
 <p>where <span class="math inline">\([\hat{e}]_\times\)</span> is the skew-symmetric cross-product matrix:</p>
 <p><span id="eq-skew"><span class="math display">\[[\hat{e}]_\times = \begin{pmatrix} 0 &amp; -e_z &amp; e_y \\ e_z &amp; 0 &amp; -e_x \\ -e_y &amp; e_x &amp; 0 \end{pmatrix} \tag{2.4}\]</span></span></p>
-<div id="db1ce724" class="cell">
+<div id="76e51ba7" class="cell">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
@@ -411,7 +411,7 @@ window.Quarto = {
 <p>In words: the alternating sector angles must each sum to <span class="math inline">\(\pi\)</span>. For a 4-crease vertex, this means:</p>
 <p><span id="eq-kawasaki-4"><span class="math display">\[\alpha_1 + \alpha_3 = \alpha_2 + \alpha_4 = \pi \tag{2.7}\]</span></span></p>
 <p>This is Kawasaki’s theorem <span class="citation" data-cites="kawasaki1989relation">(<a href="references.html#ref-kawasaki1989relation" role="doc-biblioref">Kawasaki 1989</a>)</span>, and it is both necessary and sufficient for flat-foldability (in the local, single-vertex sense).</p>
-<div id="f59d932b" class="cell">
+<div id="8e842a23" class="cell">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> check_kawasaki(sector_angles):</span>
@@ -439,7 +439,7 @@ window.Quarto = {
 <span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Even sum: </span><span class="sc">{</span>s2<span class="sc">:.4f}</span><span class="ss">  (π = </span><span class="sc">{</span>np<span class="sc">.</span>pi<span class="sc">:.4f}</span><span class="ss">)"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
-<div id="d9f62cc9" class="cell">
+<div id="f46545f8" class="cell">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Visualize: which combinations of (α1, α2) satisfy Kawasaki for a 4-crease vertex?</span></span>
@@ -475,7 +475,7 @@ window.Quarto = {
 <p>Kawasaki tells us about the angles. Maekawa’s theorem tells us about the fold directions: at any flat-foldable vertex, the number of mountain folds <span class="math inline">\(M\)</span> and valley folds <span class="math inline">\(V\)</span> must satisfy:</p>
 <p><span id="eq-maekawa"><span class="math display">\[|M - V| = 2 \tag{2.8}\]</span></span></p>
 <p>For a 4-crease vertex, this means either <span class="math inline">\(M=3, V=1\)</span> or <span class="math inline">\(M=1, V=3\)</span>. You cannot have <span class="math inline">\(M=2, V=2\)</span> at a flat-foldable vertex.</p>
-<div id="a6a62d69" class="cell">
+<div id="ca8082a4" class="cell">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> check_maekawa(fold_types):</span>
@@ -504,7 +504,7 @@ window.Quarto = {
 </section>
 <section id="a-complete-vertex-checker" class="level2" data-number="2.6">
 <h2 data-number="2.6" class="anchored" data-anchor-id="a-complete-vertex-checker"><span class="header-section-number">2.6</span> A Complete Vertex Checker</h2>
-<div id="f9fd265f" class="cell">
+<div id="a230e29a" class="cell">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> is_flat_foldable_vertex(sector_angles, fold_types):</span>
