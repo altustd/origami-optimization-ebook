@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>6&nbsp; Inverse Design – The Mathematics of Folding</title>
+<title>6&nbsp; Inverse Design – The Engineering of Folding</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -183,7 +183,7 @@ window.Quarto = {
   <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
     <div class="pt-lg-2 mt-2 text-left sidebar-header">
     <div class="sidebar-title mb-0 py-0">
-      <a href="./">The Mathematics of Folding</a> 
+      <a href="./">The Engineering of Folding</a> 
         <div class="sidebar-tools-main">
     <a href="https://github.com/altustd/origami-optimization-ebook" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
 </div>
@@ -339,7 +339,7 @@ window.Quarto = {
 <p><span id="eq-b-from-L"><span class="math display">\[n \cdot b = L^* \quad \Rightarrow \quad b = \frac{L^*}{n} \tag{6.5}\]</span></span></p>
 <p><span id="eq-alpha-from-rho"><span class="math display">\[\sin\alpha = \rho^* \tag{6.6}\]</span></span></p>
 <p>The last equation gives <span class="math inline">\(\alpha = \arcsin(\rho^*)\)</span> directly. The system is exactly determined for fixed <span class="math inline">\(m, n\)</span>.</p>
-<div id="19608223" class="cell" data-execution_count="1">
+<div id="b840ae69" class="cell">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
@@ -383,204 +383,162 @@ window.Quarto = {
 <span id="cb1-39"><a href="#cb1-39" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Solution: α = </span><span class="sc">{</span>np<span class="sc">.</span>degrees(alpha)<span class="sc">:.3f}</span><span class="ss">°  a = </span><span class="sc">{</span>a<span class="op">*</span><span class="dv">1000</span><span class="sc">:.2f}</span><span class="ss">mm  b = </span><span class="sc">{</span>b<span class="op">*</span><span class="dv">1000</span><span class="sc">:.2f}</span><span class="ss">mm"</span>)</span>
 <span id="cb1-40"><a href="#cb1-40" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Verify:   W_dep=</span><span class="sc">{</span>fwd[<span class="st">'W_dep'</span>]<span class="sc">:.4f}</span><span class="ss">m  L_dep=</span><span class="sc">{</span>fwd[<span class="st">'L_dep'</span>]<span class="sc">:.4f}</span><span class="ss">m  rho=</span><span class="sc">{</span>fwd[<span class="st">'rho'</span>]<span class="sc">:.4f}</span><span class="ss">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
-<div class="cell-output cell-output-stdout">
-<pre><code>=== Inverse Design Result ===
-Target:   W_dep=2.0m  L_dep=0.5m  rho=0.15
-Solution: α = 8.627°  a = 168.57mm  b = 125.00mm
-Verify:   W_dep=2.0000m  L_dep=0.5000m  rho=0.1500</code></pre>
-</div>
 </div>
 </section>
 <section id="when-the-grid-is-also-a-variable" class="level2" data-number="6.2">
 <h2 data-number="6.2" class="anchored" data-anchor-id="when-the-grid-is-also-a-variable"><span class="header-section-number">6.2</span> When the Grid is Also a Variable</h2>
 <p>If we allow <span class="math inline">\(m\)</span> and <span class="math inline">\(n\)</span> to vary (they are integers), the problem becomes a mixed-integer nonlinear program. For small ranges, we can sweep all feasible grid combinations and pick the best.</p>
-<div id="89976f36" class="cell" data-execution_count="2">
+<div id="21af9ee3" class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> panel_aspect_ratio(alpha, m, n, W_target, L_target):</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Return aspect ratio a/b for given grid and targets."""</span></span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    a <span class="op">=</span> W_target <span class="op">/</span> (<span class="dv">2</span> <span class="op">*</span> m <span class="op">*</span> np.cos(alpha))</span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    b <span class="op">=</span> L_target <span class="op">/</span> n</span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> a <span class="op">/</span> b</span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Grid sweep: find all (m,n) combinations within panel aspect ratio bounds</span></span>
-<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>W_target, L_target, rho_target <span class="op">=</span> <span class="fl">2.0</span>, <span class="fl">0.5</span>, <span class="fl">0.15</span></span>
-<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>alpha_fixed <span class="op">=</span> np.arcsin(rho_target)</span>
-<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>ar_min, ar_max <span class="op">=</span> <span class="fl">0.5</span>, <span class="fl">2.0</span>   <span class="co"># acceptable panel aspect ratios</span></span>
-<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>results <span class="op">=</span> []</span>
-<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> m <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">2</span>, <span class="dv">20</span>):</span>
-<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> n <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">2</span>, <span class="dv">12</span>):</span>
-<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>        ar <span class="op">=</span> panel_aspect_ratio(alpha_fixed, m, n, W_target, L_target)</span>
-<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> ar_min <span class="op">&lt;=</span> ar <span class="op">&lt;=</span> ar_max:</span>
-<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>            a <span class="op">=</span> W_target <span class="op">/</span> (<span class="dv">2</span> <span class="op">*</span> m <span class="op">*</span> np.cos(alpha_fixed))</span>
-<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>            b <span class="op">=</span> L_target <span class="op">/</span> n</span>
-<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>            results.append({<span class="st">'m'</span>: m, <span class="st">'n'</span>: n, <span class="st">'a'</span>: a<span class="op">*</span><span class="dv">1000</span>, <span class="st">'b'</span>: b<span class="op">*</span><span class="dv">1000</span>,</span>
-<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>                             <span class="st">'aspect'</span>: ar, <span class="st">'n_panels'</span>: m <span class="op">*</span> n})</span>
-<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a>results.sort(key<span class="op">=</span><span class="kw">lambda</span> x: <span class="bu">abs</span>(x[<span class="st">'aspect'</span>] <span class="op">-</span> <span class="fl">1.0</span>))   <span class="co"># prefer square panels</span></span>
-<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"</span><span class="sc">{</span><span class="st">'m'</span><span class="sc">:&gt;4}</span><span class="ss"> </span><span class="sc">{</span><span class="st">'n'</span><span class="sc">:&gt;4}</span><span class="ss"> </span><span class="sc">{</span><span class="st">'a(mm)'</span><span class="sc">:&gt;8}</span><span class="ss"> </span><span class="sc">{</span><span class="st">'b(mm)'</span><span class="sc">:&gt;8}</span><span class="ss"> </span><span class="sc">{</span><span class="st">'aspect'</span><span class="sc">:&gt;8}</span><span class="ss"> </span><span class="sc">{</span><span class="st">'panels'</span><span class="sc">:&gt;7}</span><span class="ss">"</span>)</span>
-<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"-"</span> <span class="op">*</span> <span class="dv">45</span>)</span>
-<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> r <span class="kw">in</span> results[:<span class="dv">10</span>]:</span>
-<span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"</span><span class="sc">{</span>r[<span class="st">'m'</span>]<span class="sc">:&gt;4}</span><span class="ss"> </span><span class="sc">{</span>r[<span class="st">'n'</span>]<span class="sc">:&gt;4}</span><span class="ss"> </span><span class="sc">{</span>r[<span class="st">'a'</span>]<span class="sc">:&gt;8.2f}</span><span class="ss"> </span><span class="sc">{</span>r[<span class="st">'b'</span>]<span class="sc">:&gt;8.2f}</span><span class="ss"> </span><span class="sc">{</span>r[<span class="st">'aspect'</span>]<span class="sc">:&gt;8.4f}</span><span class="ss"> </span><span class="sc">{</span>r[<span class="st">'n_panels'</span>]<span class="sc">:&gt;7}</span><span class="ss">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> panel_aspect_ratio(alpha, m, n, W_target, L_target):</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Return aspect ratio a/b for given grid and targets."""</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    a <span class="op">=</span> W_target <span class="op">/</span> (<span class="dv">2</span> <span class="op">*</span> m <span class="op">*</span> np.cos(alpha))</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    b <span class="op">=</span> L_target <span class="op">/</span> n</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> a <span class="op">/</span> b</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Grid sweep: find all (m,n) combinations within panel aspect ratio bounds</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>W_target, L_target, rho_target <span class="op">=</span> <span class="fl">2.0</span>, <span class="fl">0.5</span>, <span class="fl">0.15</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>alpha_fixed <span class="op">=</span> np.arcsin(rho_target)</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>ar_min, ar_max <span class="op">=</span> <span class="fl">0.5</span>, <span class="fl">2.0</span>   <span class="co"># acceptable panel aspect ratios</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>results <span class="op">=</span> []</span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> m <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">2</span>, <span class="dv">20</span>):</span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> n <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">2</span>, <span class="dv">12</span>):</span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>        ar <span class="op">=</span> panel_aspect_ratio(alpha_fixed, m, n, W_target, L_target)</span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> ar_min <span class="op">&lt;=</span> ar <span class="op">&lt;=</span> ar_max:</span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>            a <span class="op">=</span> W_target <span class="op">/</span> (<span class="dv">2</span> <span class="op">*</span> m <span class="op">*</span> np.cos(alpha_fixed))</span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>            b <span class="op">=</span> L_target <span class="op">/</span> n</span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>            results.append({<span class="st">'m'</span>: m, <span class="st">'n'</span>: n, <span class="st">'a'</span>: a<span class="op">*</span><span class="dv">1000</span>, <span class="st">'b'</span>: b<span class="op">*</span><span class="dv">1000</span>,</span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>                             <span class="st">'aspect'</span>: ar, <span class="st">'n_panels'</span>: m <span class="op">*</span> n})</span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a>results.sort(key<span class="op">=</span><span class="kw">lambda</span> x: <span class="bu">abs</span>(x[<span class="st">'aspect'</span>] <span class="op">-</span> <span class="fl">1.0</span>))   <span class="co"># prefer square panels</span></span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"</span><span class="sc">{</span><span class="st">'m'</span><span class="sc">:&gt;4}</span><span class="ss"> </span><span class="sc">{</span><span class="st">'n'</span><span class="sc">:&gt;4}</span><span class="ss"> </span><span class="sc">{</span><span class="st">'a(mm)'</span><span class="sc">:&gt;8}</span><span class="ss"> </span><span class="sc">{</span><span class="st">'b(mm)'</span><span class="sc">:&gt;8}</span><span class="ss"> </span><span class="sc">{</span><span class="st">'aspect'</span><span class="sc">:&gt;8}</span><span class="ss"> </span><span class="sc">{</span><span class="st">'panels'</span><span class="sc">:&gt;7}</span><span class="ss">"</span>)</span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"-"</span> <span class="op">*</span> <span class="dv">45</span>)</span>
+<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> r <span class="kw">in</span> results[:<span class="dv">10</span>]:</span>
+<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"</span><span class="sc">{</span>r[<span class="st">'m'</span>]<span class="sc">:&gt;4}</span><span class="ss"> </span><span class="sc">{</span>r[<span class="st">'n'</span>]<span class="sc">:&gt;4}</span><span class="ss"> </span><span class="sc">{</span>r[<span class="st">'a'</span>]<span class="sc">:&gt;8.2f}</span><span class="ss"> </span><span class="sc">{</span>r[<span class="st">'b'</span>]<span class="sc">:&gt;8.2f}</span><span class="ss"> </span><span class="sc">{</span>r[<span class="st">'aspect'</span>]<span class="sc">:&gt;8.4f}</span><span class="ss"> </span><span class="sc">{</span>r[<span class="st">'n_panels'</span>]<span class="sc">:&gt;7}</span><span class="ss">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
-<div class="cell-output cell-output-stdout">
-<pre><code>   m    n    a(mm)    b(mm)   aspect  panels
----------------------------------------------
-   4    2   252.86   250.00   1.0114       8
-   8    4   126.43   125.00   1.0114      32
-  16    8    63.22    62.50   1.0114     128
-   6    3   168.57   166.67   1.0114      18
-  10    5   101.14   100.00   1.0114      50
-  12    6    84.29    83.33   1.0114      72
-  14    7    72.25    71.43   1.0114      98
-  18    9    56.19    55.56   1.0114     162
-  19    9    53.23    55.56   0.9582     171
-  17    8    59.50    62.50   0.9519     136</code></pre>
-</div>
 </div>
 </section>
 <section id="multi-objective-inverse-design" class="level2" data-number="6.3">
 <h2 data-number="6.3" class="anchored" data-anchor-id="multi-objective-inverse-design"><span class="header-section-number">6.3</span> Multi-Objective Inverse Design</h2>
 <p>Real requirements conflict. You want: 1. Small compaction ratio <span class="math inline">\(\rho\)</span> (good — collapses well) 2. Near-square panels (good — easier to manufacture and less buckling risk) 3. Few panels (good — lower mass, fewer hinges)</p>
 <p>No single design satisfies all three simultaneously. The Pareto front shows the trade-off.</p>
-<div id="e3af1d3a" class="cell" data-execution_count="3">
+<div id="64dc677c" class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> pareto_sweep(W_target, L_target, m, n):</span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""</span></span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="co">    Sweep alpha over feasible range, compute objectives for each.</span></span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="co">    Returns arrays of (rho, aspect_deviation, n_panels).</span></span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="co">    """</span></span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>    alphas <span class="op">=</span> np.linspace(<span class="fl">0.05</span>, np.pi<span class="op">/</span><span class="dv">2</span> <span class="op">-</span> <span class="fl">0.05</span>, <span class="dv">300</span>)</span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>    rhos, aspect_devs <span class="op">=</span> [], []</span>
-<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> alpha <span class="kw">in</span> alphas:</span>
-<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>        a <span class="op">=</span> W_target <span class="op">/</span> (<span class="dv">2</span> <span class="op">*</span> m <span class="op">*</span> np.cos(alpha))</span>
-<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>        b <span class="op">=</span> L_target <span class="op">/</span> n</span>
-<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>        ar <span class="op">=</span> a <span class="op">/</span> b</span>
-<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>        rhos.append(np.sin(alpha))</span>
-<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>        aspect_devs.append(<span class="bu">abs</span>(ar <span class="op">-</span> <span class="fl">1.0</span>))  <span class="co"># deviation from square</span></span>
-<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> np.array(rhos), np.array(aspect_devs)</span>
-<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">7</span>, <span class="dv">5</span>))</span>
-<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a>colors <span class="op">=</span> plt.cm.viridis(np.linspace(<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">5</span>))</span>
-<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i, (m, n) <span class="kw">in</span> <span class="bu">enumerate</span>([(<span class="dv">4</span>,<span class="dv">3</span>), (<span class="dv">6</span>,<span class="dv">4</span>), (<span class="dv">8</span>,<span class="dv">5</span>), (<span class="dv">10</span>,<span class="dv">6</span>), (<span class="dv">12</span>,<span class="dv">8</span>)]):</span>
-<span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a>    rhos, asp_devs <span class="op">=</span> pareto_sweep(<span class="fl">2.0</span>, <span class="fl">0.5</span>, m, n)</span>
-<span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a>    ax.scatter(rhos, asp_devs, s<span class="op">=</span><span class="dv">4</span>, color<span class="op">=</span>colors[i], label<span class="op">=</span><span class="ss">f'</span><span class="sc">{</span>m<span class="sc">}</span><span class="ss">×</span><span class="sc">{</span>n<span class="sc">}</span><span class="ss"> = </span><span class="sc">{</span>m<span class="op">*</span>n<span class="sc">}</span><span class="ss"> panels'</span>, alpha<span class="op">=</span><span class="fl">0.7</span>)</span>
-<span id="cb5-25"><a href="#cb5-25" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-26"><a href="#cb5-26" aria-hidden="true" tabindex="-1"></a>ax.set_xlabel(<span class="st">'Compaction ratio ρ (lower = better collapse)'</span>)</span>
-<span id="cb5-27"><a href="#cb5-27" aria-hidden="true" tabindex="-1"></a>ax.set_ylabel(<span class="st">'Panel aspect ratio deviation |a/b − 1| (lower = more square)'</span>)</span>
-<span id="cb5-28"><a href="#cb5-28" aria-hidden="true" tabindex="-1"></a>ax.set_title(<span class="st">'Pareto front: compaction vs panel squareness</span><span class="ch">\n</span><span class="st">(each curve = one grid choice)'</span>)</span>
-<span id="cb5-29"><a href="#cb5-29" aria-hidden="true" tabindex="-1"></a>ax.legend(fontsize<span class="op">=</span><span class="dv">8</span>, markerscale<span class="op">=</span><span class="dv">3</span>)</span>
-<span id="cb5-30"><a href="#cb5-30" aria-hidden="true" tabindex="-1"></a>ax.grid(<span class="va">True</span>, linewidth<span class="op">=</span><span class="fl">0.5</span>, alpha<span class="op">=</span><span class="fl">0.5</span>)</span>
-<span id="cb5-31"><a href="#cb5-31" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
-<span id="cb5-32"><a href="#cb5-32" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> pareto_sweep(W_target, L_target, m, n):</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="co">    Sweep alpha over feasible range, compute objectives for each.</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="co">    Returns arrays of (rho, aspect_deviation, n_panels).</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="co">    """</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>    alphas <span class="op">=</span> np.linspace(<span class="fl">0.05</span>, np.pi<span class="op">/</span><span class="dv">2</span> <span class="op">-</span> <span class="fl">0.05</span>, <span class="dv">300</span>)</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>    rhos, aspect_devs <span class="op">=</span> [], []</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> alpha <span class="kw">in</span> alphas:</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>        a <span class="op">=</span> W_target <span class="op">/</span> (<span class="dv">2</span> <span class="op">*</span> m <span class="op">*</span> np.cos(alpha))</span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>        b <span class="op">=</span> L_target <span class="op">/</span> n</span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>        ar <span class="op">=</span> a <span class="op">/</span> b</span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>        rhos.append(np.sin(alpha))</span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>        aspect_devs.append(<span class="bu">abs</span>(ar <span class="op">-</span> <span class="fl">1.0</span>))  <span class="co"># deviation from square</span></span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> np.array(rhos), np.array(aspect_devs)</span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">7</span>, <span class="dv">5</span>))</span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>colors <span class="op">=</span> plt.cm.viridis(np.linspace(<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">5</span>))</span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i, (m, n) <span class="kw">in</span> <span class="bu">enumerate</span>([(<span class="dv">4</span>,<span class="dv">3</span>), (<span class="dv">6</span>,<span class="dv">4</span>), (<span class="dv">8</span>,<span class="dv">5</span>), (<span class="dv">10</span>,<span class="dv">6</span>), (<span class="dv">12</span>,<span class="dv">8</span>)]):</span>
+<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a>    rhos, asp_devs <span class="op">=</span> pareto_sweep(<span class="fl">2.0</span>, <span class="fl">0.5</span>, m, n)</span>
+<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a>    ax.scatter(rhos, asp_devs, s<span class="op">=</span><span class="dv">4</span>, color<span class="op">=</span>colors[i], label<span class="op">=</span><span class="ss">f'</span><span class="sc">{</span>m<span class="sc">}</span><span class="ss">×</span><span class="sc">{</span>n<span class="sc">}</span><span class="ss"> = </span><span class="sc">{</span>m<span class="op">*</span>n<span class="sc">}</span><span class="ss"> panels'</span>, alpha<span class="op">=</span><span class="fl">0.7</span>)</span>
+<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a>ax.set_xlabel(<span class="st">'Compaction ratio ρ (lower = better collapse)'</span>)</span>
+<span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a>ax.set_ylabel(<span class="st">'Panel aspect ratio deviation |a/b − 1| (lower = more square)'</span>)</span>
+<span id="cb3-28"><a href="#cb3-28" aria-hidden="true" tabindex="-1"></a>ax.set_title(<span class="st">'Pareto front: compaction vs panel squareness</span><span class="ch">\n</span><span class="st">(each curve = one grid choice)'</span>)</span>
+<span id="cb3-29"><a href="#cb3-29" aria-hidden="true" tabindex="-1"></a>ax.legend(fontsize<span class="op">=</span><span class="dv">8</span>, markerscale<span class="op">=</span><span class="dv">3</span>)</span>
+<span id="cb3-30"><a href="#cb3-30" aria-hidden="true" tabindex="-1"></a>ax.grid(<span class="va">True</span>, linewidth<span class="op">=</span><span class="fl">0.5</span>, alpha<span class="op">=</span><span class="fl">0.5</span>)</span>
+<span id="cb3-31"><a href="#cb3-31" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
+<span id="cb3-32"><a href="#cb3-32" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
-<div class="cell-output cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="06-inverse-design_files/figure-html/cell-4-output-1.png" width="661" height="469" class="figure-img"></p>
-</figure>
-</div>
-</div>
 </div>
 </section>
 <section id="numerical-inverse-design-with-scipy" class="level2" data-number="6.4">
 <h2 data-number="6.4" class="anchored" data-anchor-id="numerical-inverse-design-with-scipy"><span class="header-section-number">6.4</span> Numerical Inverse Design with scipy</h2>
 <p>When the forward model is more complex (non-analytic, simulated), we solve the inverse problem numerically using a nonlinear least-squares formulation.</p>
-<div id="faccbeff" class="cell" data-execution_count="4">
+<div id="0b18dcbf" class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> scipy.optimize <span class="im">import</span> least_squares</span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> residuals(params, W_target, L_target, rho_target, m, n):</span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""</span></span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="co">    Residuals for inverse design: [W_error, L_error, rho_error].</span></span>
-<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="co">    params = [alpha, log_a, log_b]  (log-parameterize to enforce positivity)</span></span>
-<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="co">    """</span></span>
-<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>    alpha <span class="op">=</span> params[<span class="dv">0</span>]</span>
-<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>    a <span class="op">=</span> np.exp(params[<span class="dv">1</span>])</span>
-<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>    b <span class="op">=</span> np.exp(params[<span class="dv">2</span>])</span>
-<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>    fwd <span class="op">=</span> miura_forward(alpha, m, n, a, b)</span>
-<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> np.array([</span>
-<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>        (fwd[<span class="st">'W_dep'</span>] <span class="op">-</span> W_target) <span class="op">/</span> W_target,</span>
-<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>        (fwd[<span class="st">'L_dep'</span>] <span class="op">-</span> L_target) <span class="op">/</span> L_target,</span>
-<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>        (fwd[<span class="st">'rho'</span>]   <span class="op">-</span> rho_target) <span class="op">/</span> rho_target,</span>
-<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>    ])</span>
-<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a><span class="co"># Solve numerically (should recover same result as analytic solution)</span></span>
-<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a>m, n <span class="op">=</span> <span class="dv">6</span>, <span class="dv">4</span></span>
-<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a>x0 <span class="op">=</span> np.array([<span class="fl">0.3</span>, np.log(<span class="fl">0.1</span>), np.log(<span class="fl">0.05</span>)])  <span class="co"># initial guess</span></span>
-<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a>result <span class="op">=</span> least_squares(</span>
-<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a>    residuals, x0,</span>
-<span id="cb6-24"><a href="#cb6-24" aria-hidden="true" tabindex="-1"></a>    args<span class="op">=</span>(W_target, L_target, rho_target, m, n),</span>
-<span id="cb6-25"><a href="#cb6-25" aria-hidden="true" tabindex="-1"></a>    method<span class="op">=</span><span class="st">'lm'</span>,</span>
-<span id="cb6-26"><a href="#cb6-26" aria-hidden="true" tabindex="-1"></a>    ftol<span class="op">=</span><span class="fl">1e-12</span>, xtol<span class="op">=</span><span class="fl">1e-12</span></span>
-<span id="cb6-27"><a href="#cb6-27" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb6-28"><a href="#cb6-28" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-29"><a href="#cb6-29" aria-hidden="true" tabindex="-1"></a>alpha_num <span class="op">=</span> result.x[<span class="dv">0</span>]</span>
-<span id="cb6-30"><a href="#cb6-30" aria-hidden="true" tabindex="-1"></a>a_num <span class="op">=</span> np.exp(result.x[<span class="dv">1</span>])</span>
-<span id="cb6-31"><a href="#cb6-31" aria-hidden="true" tabindex="-1"></a>b_num <span class="op">=</span> np.exp(result.x[<span class="dv">2</span>])</span>
-<span id="cb6-32"><a href="#cb6-32" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-33"><a href="#cb6-33" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"=== Numerical Inverse Design ==="</span>)</span>
-<span id="cb6-34"><a href="#cb6-34" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"α = </span><span class="sc">{</span>np<span class="sc">.</span>degrees(alpha_num)<span class="sc">:.4f}</span><span class="ss">°  (analytic: </span><span class="sc">{</span>np<span class="sc">.</span>degrees(alpha)<span class="sc">:.4f}</span><span class="ss">°)"</span>)</span>
-<span id="cb6-35"><a href="#cb6-35" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"a = </span><span class="sc">{</span>a_num<span class="op">*</span><span class="dv">1000</span><span class="sc">:.4f}</span><span class="ss">mm  (analytic: </span><span class="sc">{</span>a<span class="op">*</span><span class="dv">1000</span><span class="sc">:.4f}</span><span class="ss">mm)"</span>)</span>
-<span id="cb6-36"><a href="#cb6-36" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"b = </span><span class="sc">{</span>b_num<span class="op">*</span><span class="dv">1000</span><span class="sc">:.4f}</span><span class="ss">mm  (analytic: </span><span class="sc">{</span>b<span class="op">*</span><span class="dv">1000</span><span class="sc">:.4f}</span><span class="ss">mm)"</span>)</span>
-<span id="cb6-37"><a href="#cb6-37" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Residual norm: </span><span class="sc">{</span>np<span class="sc">.</span>linalg<span class="sc">.</span>norm(result.fun)<span class="sc">:.2e}</span><span class="ss">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> scipy.optimize <span class="im">import</span> least_squares</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> residuals(params, W_target, L_target, rho_target, m, n):</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="co">    Residuals for inverse design: [W_error, L_error, rho_error].</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="co">    params = [alpha, log_a, log_b]  (log-parameterize to enforce positivity)</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="co">    """</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>    alpha <span class="op">=</span> params[<span class="dv">0</span>]</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>    a <span class="op">=</span> np.exp(params[<span class="dv">1</span>])</span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>    b <span class="op">=</span> np.exp(params[<span class="dv">2</span>])</span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>    fwd <span class="op">=</span> miura_forward(alpha, m, n, a, b)</span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> np.array([</span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>        (fwd[<span class="st">'W_dep'</span>] <span class="op">-</span> W_target) <span class="op">/</span> W_target,</span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>        (fwd[<span class="st">'L_dep'</span>] <span class="op">-</span> L_target) <span class="op">/</span> L_target,</span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>        (fwd[<span class="st">'rho'</span>]   <span class="op">-</span> rho_target) <span class="op">/</span> rho_target,</span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>    ])</span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a><span class="co"># Solve numerically (should recover same result as analytic solution)</span></span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>m, n <span class="op">=</span> <span class="dv">6</span>, <span class="dv">4</span></span>
+<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a>x0 <span class="op">=</span> np.array([<span class="fl">0.3</span>, np.log(<span class="fl">0.1</span>), np.log(<span class="fl">0.05</span>)])  <span class="co"># initial guess</span></span>
+<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a>result <span class="op">=</span> least_squares(</span>
+<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a>    residuals, x0,</span>
+<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a>    args<span class="op">=</span>(W_target, L_target, rho_target, m, n),</span>
+<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a>    method<span class="op">=</span><span class="st">'lm'</span>,</span>
+<span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a>    ftol<span class="op">=</span><span class="fl">1e-12</span>, xtol<span class="op">=</span><span class="fl">1e-12</span></span>
+<span id="cb4-27"><a href="#cb4-27" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb4-28"><a href="#cb4-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-29"><a href="#cb4-29" aria-hidden="true" tabindex="-1"></a>alpha_num <span class="op">=</span> result.x[<span class="dv">0</span>]</span>
+<span id="cb4-30"><a href="#cb4-30" aria-hidden="true" tabindex="-1"></a>a_num <span class="op">=</span> np.exp(result.x[<span class="dv">1</span>])</span>
+<span id="cb4-31"><a href="#cb4-31" aria-hidden="true" tabindex="-1"></a>b_num <span class="op">=</span> np.exp(result.x[<span class="dv">2</span>])</span>
+<span id="cb4-32"><a href="#cb4-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-33"><a href="#cb4-33" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"=== Numerical Inverse Design ==="</span>)</span>
+<span id="cb4-34"><a href="#cb4-34" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"α = </span><span class="sc">{</span>np<span class="sc">.</span>degrees(alpha_num)<span class="sc">:.4f}</span><span class="ss">°  (analytic: </span><span class="sc">{</span>np<span class="sc">.</span>degrees(alpha)<span class="sc">:.4f}</span><span class="ss">°)"</span>)</span>
+<span id="cb4-35"><a href="#cb4-35" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"a = </span><span class="sc">{</span>a_num<span class="op">*</span><span class="dv">1000</span><span class="sc">:.4f}</span><span class="ss">mm  (analytic: </span><span class="sc">{</span>a<span class="op">*</span><span class="dv">1000</span><span class="sc">:.4f}</span><span class="ss">mm)"</span>)</span>
+<span id="cb4-36"><a href="#cb4-36" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"b = </span><span class="sc">{</span>b_num<span class="op">*</span><span class="dv">1000</span><span class="sc">:.4f}</span><span class="ss">mm  (analytic: </span><span class="sc">{</span>b<span class="op">*</span><span class="dv">1000</span><span class="sc">:.4f}</span><span class="ss">mm)"</span>)</span>
+<span id="cb4-37"><a href="#cb4-37" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Residual norm: </span><span class="sc">{</span>np<span class="sc">.</span>linalg<span class="sc">.</span>norm(result.fun)<span class="sc">:.2e}</span><span class="ss">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
-<div class="cell-output cell-output-stdout">
-<pre><code>=== Numerical Inverse Design ===
-α = 8.6269°  (analytic: 8.6269°)
-a = 168.5739mm  (analytic: 53.2339mm)
-b = 125.0000mm  (analytic: 45.4545mm)
-Residual norm: 2.48e-16</code></pre>
-</div>
 </div>
 </section>
 <section id="ill-posedness-and-regularization" class="level2" data-number="6.5">
 <h2 data-number="6.5" class="anchored" data-anchor-id="ill-posedness-and-regularization"><span class="header-section-number">6.5</span> Ill-Posedness and Regularization</h2>
 <p>The inverse problem is ill-posed when there are fewer constraints than parameters, or when multiple solutions produce nearly the same forward output. A common remedy is Tikhonov regularization: add a penalty term that prefers solutions near a nominal design <span class="math inline">\(\boldsymbol{\theta}_0\)</span>:</p>
 <p><span id="eq-tikhonov"><span class="math display">\[\min_{\boldsymbol{\theta}} \quad \|\mathbf{r}(\boldsymbol{\theta})\|^2 + \lambda \|\boldsymbol{\theta} - \boldsymbol{\theta}_0\|^2 \tag{6.7}\]</span></span></p>
-<div id="8636e605" class="cell" data-execution_count="5">
+<div id="47c3f8a4" class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> regularized_residuals(params, W_target, L_target, rho_target, m, n, theta0, lam):</span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Residuals including Tikhonov regularization."""</span></span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    physics <span class="op">=</span> residuals(params, W_target, L_target, rho_target, m, n)</span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>    reg <span class="op">=</span> np.sqrt(lam) <span class="op">*</span> (params <span class="op">-</span> theta0)</span>
-<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> np.concatenate([physics, reg])</span>
-<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>theta0 <span class="op">=</span> np.array([np.pi<span class="op">/</span><span class="dv">4</span>, np.log(<span class="fl">0.15</span>), np.log(<span class="fl">0.06</span>)])  <span class="co"># nominal design</span></span>
-<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>lambdas <span class="op">=</span> [<span class="fl">0.0</span>, <span class="fl">0.01</span>, <span class="fl">0.1</span>, <span class="fl">1.0</span>]</span>
-<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"</span><span class="sc">{</span><span class="st">'λ'</span><span class="sc">:&gt;8}</span><span class="ss"> </span><span class="sc">{</span><span class="st">'α (°)'</span><span class="sc">:&gt;10}</span><span class="ss"> </span><span class="sc">{</span><span class="st">'a (mm)'</span><span class="sc">:&gt;10}</span><span class="ss"> </span><span class="sc">{</span><span class="st">'b (mm)'</span><span class="sc">:&gt;10}</span><span class="ss"> </span><span class="sc">{</span><span class="st">'||r||'</span><span class="sc">:&gt;12}</span><span class="ss">"</span>)</span>
-<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"-"</span> <span class="op">*</span> <span class="dv">55</span>)</span>
-<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> lam <span class="kw">in</span> lambdas:</span>
-<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>    res <span class="op">=</span> least_squares(</span>
-<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a>        regularized_residuals, theta0.copy(),</span>
-<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a>        args<span class="op">=</span>(W_target, L_target, rho_target, m, n, theta0, lam),</span>
-<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a>        method<span class="op">=</span><span class="st">'lm'</span>, ftol<span class="op">=</span><span class="fl">1e-12</span></span>
-<span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a>    a_r <span class="op">=</span> np.exp(res.x[<span class="dv">1</span>])</span>
-<span id="cb8-20"><a href="#cb8-20" aria-hidden="true" tabindex="-1"></a>    b_r <span class="op">=</span> np.exp(res.x[<span class="dv">2</span>])</span>
-<span id="cb8-21"><a href="#cb8-21" aria-hidden="true" tabindex="-1"></a>    phys_resid <span class="op">=</span> residuals(res.x, W_target, L_target, rho_target, m, n)</span>
-<span id="cb8-22"><a href="#cb8-22" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"</span><span class="sc">{</span>lam<span class="sc">:&gt;8.2f}</span><span class="ss"> </span><span class="sc">{</span>np<span class="sc">.</span>degrees(res.x[<span class="dv">0</span>])<span class="sc">:&gt;10.3f}</span><span class="ss"> </span><span class="sc">{</span>a_r<span class="op">*</span><span class="dv">1000</span><span class="sc">:&gt;10.3f}</span><span class="ss"> </span><span class="sc">{</span>b_r<span class="op">*</span><span class="dv">1000</span><span class="sc">:&gt;10.3f}</span><span class="ss"> </span><span class="sc">{</span>np<span class="sc">.</span>linalg<span class="sc">.</span>norm(phys_resid)<span class="sc">:&gt;12.2e}</span><span class="ss">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> regularized_residuals(params, W_target, L_target, rho_target, m, n, theta0, lam):</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Residuals including Tikhonov regularization."""</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    physics <span class="op">=</span> residuals(params, W_target, L_target, rho_target, m, n)</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>    reg <span class="op">=</span> np.sqrt(lam) <span class="op">*</span> (params <span class="op">-</span> theta0)</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> np.concatenate([physics, reg])</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>theta0 <span class="op">=</span> np.array([np.pi<span class="op">/</span><span class="dv">4</span>, np.log(<span class="fl">0.15</span>), np.log(<span class="fl">0.06</span>)])  <span class="co"># nominal design</span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>lambdas <span class="op">=</span> [<span class="fl">0.0</span>, <span class="fl">0.01</span>, <span class="fl">0.1</span>, <span class="fl">1.0</span>]</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"</span><span class="sc">{</span><span class="st">'λ'</span><span class="sc">:&gt;8}</span><span class="ss"> </span><span class="sc">{</span><span class="st">'α (°)'</span><span class="sc">:&gt;10}</span><span class="ss"> </span><span class="sc">{</span><span class="st">'a (mm)'</span><span class="sc">:&gt;10}</span><span class="ss"> </span><span class="sc">{</span><span class="st">'b (mm)'</span><span class="sc">:&gt;10}</span><span class="ss"> </span><span class="sc">{</span><span class="st">'||r||'</span><span class="sc">:&gt;12}</span><span class="ss">"</span>)</span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"-"</span> <span class="op">*</span> <span class="dv">55</span>)</span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> lam <span class="kw">in</span> lambdas:</span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>    res <span class="op">=</span> least_squares(</span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>        regularized_residuals, theta0.copy(),</span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>        args<span class="op">=</span>(W_target, L_target, rho_target, m, n, theta0, lam),</span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>        method<span class="op">=</span><span class="st">'lm'</span>, ftol<span class="op">=</span><span class="fl">1e-12</span></span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a>    a_r <span class="op">=</span> np.exp(res.x[<span class="dv">1</span>])</span>
+<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a>    b_r <span class="op">=</span> np.exp(res.x[<span class="dv">2</span>])</span>
+<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a>    phys_resid <span class="op">=</span> residuals(res.x, W_target, L_target, rho_target, m, n)</span>
+<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"</span><span class="sc">{</span>lam<span class="sc">:&gt;8.2f}</span><span class="ss"> </span><span class="sc">{</span>np<span class="sc">.</span>degrees(res.x[<span class="dv">0</span>])<span class="sc">:&gt;10.3f}</span><span class="ss"> </span><span class="sc">{</span>a_r<span class="op">*</span><span class="dv">1000</span><span class="sc">:&gt;10.3f}</span><span class="ss"> </span><span class="sc">{</span>b_r<span class="op">*</span><span class="dv">1000</span><span class="sc">:&gt;10.3f}</span><span class="ss"> </span><span class="sc">{</span>np<span class="sc">.</span>linalg<span class="sc">.</span>norm(phys_resid)<span class="sc">:&gt;12.2e}</span><span class="ss">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
-<div class="cell-output cell-output-stdout">
-<pre><code>       λ      α (°)     a (mm)     b (mm)        ||r||
--------------------------------------------------------
-    0.00      8.627    168.574    125.000     3.14e-16
-    0.01      8.635    168.382    124.085     7.47e-03
-    0.10      8.708    166.801    116.116     7.25e-02
-    1.00      9.436    158.754     76.131     4.06e-01</code></pre>
-</div>
 </div>
 </section>
 <section id="summary" class="level2" data-number="6.6">
@@ -1084,267 +1042,267 @@ Lang, Robert J. 2011. <em>Origami Design Secrets: Mathematical Methods for an An
       </a>
   </div>
 </nav><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu"># Inverse Design</span></span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>::: {.callout-note}</span>
-<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a><span class="fu">## Learning Objectives</span></span>
-<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Formulate the inverse origami design problem as a nonlinear program</span>
-<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Recover Miura-ori parameters from target deployed dimensions</span>
-<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Explore the Pareto front when multiple objectives conflict</span>
-<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Understand when the inverse problem is ill-posed and how to regularize it</span>
-<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>:::</span>
-<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>Everything up to this point has been *forward*: given a crease pattern, find the deployed shape, the compaction ratio, the equilibrium configuration. Engineers rarely work forward. They start with requirements — a solar panel that deploys to exactly 2m × 0.5m and collapses to 200mm diameter — and work backward to find the crease pattern.</span>
-<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a>This is the inverse problem. It is harder, more interesting, and usually under-determined: many crease patterns may satisfy the same set of requirements.</span>
-<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a><span class="fu">## The Inverse Miura-ori Problem</span></span>
-<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a>For the Miura-ori with $m \times n$ unit cells and panel dimensions $a \times b$ (width × length), the deployed and collapsed dimensions are functions of $\alpha$, $\gamma$, $m$, $n$, $a$, $b$.</span>
-<span id="cb10-18"><a href="#cb10-18" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-19"><a href="#cb10-19" aria-hidden="true" tabindex="-1"></a>From Chapter 3, in the fully deployed state ($\gamma = \pi/2$):</span>
-<span id="cb10-20"><a href="#cb10-20" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-21"><a href="#cb10-21" aria-hidden="true" tabindex="-1"></a>$$W_\text{deployed} = 2m \cdot a \cos\alpha$$ {#eq-Wdep}</span>
-<span id="cb10-22"><a href="#cb10-22" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-23"><a href="#cb10-23" aria-hidden="true" tabindex="-1"></a>$$L_\text{deployed} = n \cdot b$$ {#eq-Ldep}</span>
-<span id="cb10-24"><a href="#cb10-24" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-25"><a href="#cb10-25" aria-hidden="true" tabindex="-1"></a>In the fully collapsed state ($\gamma \to 0$):</span>
-<span id="cb10-26"><a href="#cb10-26" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-27"><a href="#cb10-27" aria-hidden="true" tabindex="-1"></a>$$W_\text{collapsed} = 2m \cdot a \sin\alpha \cos\alpha$$ {#eq-Wcol}</span>
-<span id="cb10-28"><a href="#cb10-28" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-29"><a href="#cb10-29" aria-hidden="true" tabindex="-1"></a>The compaction ratio is $\rho = W_\text{collapsed}/W_\text{deployed} = \sin\alpha$.</span>
-<span id="cb10-30"><a href="#cb10-30" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-31"><a href="#cb10-31" aria-hidden="true" tabindex="-1"></a>**Inverse problem:** Given target $W_\text{deployed}^*$, $L_\text{deployed}^*$, and $\rho^* = W_\text{collapsed}^*/W_\text{deployed}^*$, find $(\alpha, m, n, a, b)$.</span>
-<span id="cb10-32"><a href="#cb10-32" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-33"><a href="#cb10-33" aria-hidden="true" tabindex="-1"></a>For fixed grid $m, n$, the continuous parameters $(\alpha, a, b)$ are determined by three equations:</span>
-<span id="cb10-34"><a href="#cb10-34" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-35"><a href="#cb10-35" aria-hidden="true" tabindex="-1"></a>$$2m \cdot a \cos\alpha = W^* \quad \Rightarrow \quad a = \frac{W^*}{2m\cos\alpha}$$ {#eq-a-from-W}</span>
-<span id="cb10-36"><a href="#cb10-36" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-37"><a href="#cb10-37" aria-hidden="true" tabindex="-1"></a>$$n \cdot b = L^* \quad \Rightarrow \quad b = \frac{L^*}{n}$$ {#eq-b-from-L}</span>
-<span id="cb10-38"><a href="#cb10-38" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-39"><a href="#cb10-39" aria-hidden="true" tabindex="-1"></a>$$\sin\alpha = \rho^*$$ {#eq-alpha-from-rho}</span>
-<span id="cb10-40"><a href="#cb10-40" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-41"><a href="#cb10-41" aria-hidden="true" tabindex="-1"></a>The last equation gives $\alpha = \arcsin(\rho^*)$ directly. The system is exactly determined for fixed $m, n$.</span>
-<span id="cb10-42"><a href="#cb10-42" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-45"><a href="#cb10-45" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
-<span id="cb10-46"><a href="#cb10-46" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
-<span id="cb10-47"><a href="#cb10-47" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> scipy.optimize <span class="im">import</span> minimize, differential_evolution</span>
-<span id="cb10-48"><a href="#cb10-48" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
-<span id="cb10-49"><a href="#cb10-49" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-50"><a href="#cb10-50" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> miura_forward(alpha, m, n, a, b, gamma<span class="op">=</span>np.pi<span class="op">/</span><span class="dv">2</span>):</span>
-<span id="cb10-51"><a href="#cb10-51" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Compute deployed and collapsed dimensions for given Miura-ori parameters."""</span></span>
-<span id="cb10-52"><a href="#cb10-52" aria-hidden="true" tabindex="-1"></a>    sa, ca <span class="op">=</span> np.sin(alpha), np.cos(alpha)</span>
-<span id="cb10-53"><a href="#cb10-53" aria-hidden="true" tabindex="-1"></a>    sg, cg <span class="op">=</span> np.sin(gamma), np.cos(gamma)</span>
-<span id="cb10-54"><a href="#cb10-54" aria-hidden="true" tabindex="-1"></a>    W_deployed  <span class="op">=</span> <span class="dv">2</span> <span class="op">*</span> m <span class="op">*</span> a <span class="op">*</span> ca</span>
-<span id="cb10-55"><a href="#cb10-55" aria-hidden="true" tabindex="-1"></a>    L_deployed  <span class="op">=</span> n <span class="op">*</span> b</span>
-<span id="cb10-56"><a href="#cb10-56" aria-hidden="true" tabindex="-1"></a>    W_collapsed <span class="op">=</span> <span class="dv">2</span> <span class="op">*</span> m <span class="op">*</span> a <span class="op">*</span> sa <span class="op">*</span> ca   <span class="co"># approximate (exact only at γ→0)</span></span>
-<span id="cb10-57"><a href="#cb10-57" aria-hidden="true" tabindex="-1"></a>    rho <span class="op">=</span> sa</span>
-<span id="cb10-58"><a href="#cb10-58" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> {<span class="st">'W_dep'</span>: W_deployed, <span class="st">'L_dep'</span>: L_deployed,</span>
-<span id="cb10-59"><a href="#cb10-59" aria-hidden="true" tabindex="-1"></a>            <span class="st">'W_col'</span>: W_collapsed, <span class="st">'rho'</span>: rho, <span class="st">'alpha'</span>: alpha, <span class="st">'a'</span>: a, <span class="st">'b'</span>: b}</span>
-<span id="cb10-60"><a href="#cb10-60" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-61"><a href="#cb10-61" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-62"><a href="#cb10-62" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> solve_miura_inverse_fixed_grid(W_target, L_target, rho_target, m, n):</span>
-<span id="cb10-63"><a href="#cb10-63" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""</span></span>
-<span id="cb10-64"><a href="#cb10-64" aria-hidden="true" tabindex="-1"></a><span class="co">    Given target deployed dimensions and compaction ratio,</span></span>
-<span id="cb10-65"><a href="#cb10-65" aria-hidden="true" tabindex="-1"></a><span class="co">    recover (alpha, a, b) analytically for fixed grid m x n.</span></span>
-<span id="cb10-66"><a href="#cb10-66" aria-hidden="true" tabindex="-1"></a><span class="co">    """</span></span>
-<span id="cb10-67"><a href="#cb10-67" aria-hidden="true" tabindex="-1"></a>    alpha <span class="op">=</span> np.arcsin(rho_target)</span>
-<span id="cb10-68"><a href="#cb10-68" aria-hidden="true" tabindex="-1"></a>    a <span class="op">=</span> W_target <span class="op">/</span> (<span class="dv">2</span> <span class="op">*</span> m <span class="op">*</span> np.cos(alpha))</span>
-<span id="cb10-69"><a href="#cb10-69" aria-hidden="true" tabindex="-1"></a>    b <span class="op">=</span> L_target <span class="op">/</span> n</span>
-<span id="cb10-70"><a href="#cb10-70" aria-hidden="true" tabindex="-1"></a>    result <span class="op">=</span> miura_forward(alpha, m, n, a, b)</span>
-<span id="cb10-71"><a href="#cb10-71" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> alpha, a, b, result</span>
-<span id="cb10-72"><a href="#cb10-72" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-73"><a href="#cb10-73" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-74"><a href="#cb10-74" aria-hidden="true" tabindex="-1"></a><span class="co"># Example: solar panel requirements</span></span>
-<span id="cb10-75"><a href="#cb10-75" aria-hidden="true" tabindex="-1"></a>W_target  <span class="op">=</span> <span class="fl">2.0</span>    <span class="co"># m deployed width</span></span>
-<span id="cb10-76"><a href="#cb10-76" aria-hidden="true" tabindex="-1"></a>L_target  <span class="op">=</span> <span class="fl">0.5</span>    <span class="co"># m deployed length</span></span>
-<span id="cb10-77"><a href="#cb10-77" aria-hidden="true" tabindex="-1"></a>rho_target <span class="op">=</span> <span class="fl">0.15</span>  <span class="co"># collapse to 15% of deployed width</span></span>
-<span id="cb10-78"><a href="#cb10-78" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-79"><a href="#cb10-79" aria-hidden="true" tabindex="-1"></a>m, n <span class="op">=</span> <span class="dv">6</span>, <span class="dv">4</span>   <span class="co"># 6 columns, 4 rows of unit cells</span></span>
-<span id="cb10-80"><a href="#cb10-80" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-81"><a href="#cb10-81" aria-hidden="true" tabindex="-1"></a>alpha, a, b, fwd <span class="op">=</span> solve_miura_inverse_fixed_grid(W_target, L_target, rho_target, m, n)</span>
-<span id="cb10-82"><a href="#cb10-82" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"=== Inverse Design Result ==="</span>)</span>
-<span id="cb10-83"><a href="#cb10-83" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Target:   W_dep=</span><span class="sc">{</span>W_target<span class="sc">}</span><span class="ss">m  L_dep=</span><span class="sc">{</span>L_target<span class="sc">}</span><span class="ss">m  rho=</span><span class="sc">{</span>rho_target<span class="sc">}</span><span class="ss">"</span>)</span>
-<span id="cb10-84"><a href="#cb10-84" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Solution: α = </span><span class="sc">{</span>np<span class="sc">.</span>degrees(alpha)<span class="sc">:.3f}</span><span class="ss">°  a = </span><span class="sc">{</span>a<span class="op">*</span><span class="dv">1000</span><span class="sc">:.2f}</span><span class="ss">mm  b = </span><span class="sc">{</span>b<span class="op">*</span><span class="dv">1000</span><span class="sc">:.2f}</span><span class="ss">mm"</span>)</span>
-<span id="cb10-85"><a href="#cb10-85" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Verify:   W_dep=</span><span class="sc">{</span>fwd[<span class="st">'W_dep'</span>]<span class="sc">:.4f}</span><span class="ss">m  L_dep=</span><span class="sc">{</span>fwd[<span class="st">'L_dep'</span>]<span class="sc">:.4f}</span><span class="ss">m  rho=</span><span class="sc">{</span>fwd[<span class="st">'rho'</span>]<span class="sc">:.4f}</span><span class="ss">"</span>)</span>
-<span id="cb10-86"><a href="#cb10-86" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb10-87"><a href="#cb10-87" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-88"><a href="#cb10-88" aria-hidden="true" tabindex="-1"></a><span class="fu">## When the Grid is Also a Variable</span></span>
-<span id="cb10-89"><a href="#cb10-89" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-90"><a href="#cb10-90" aria-hidden="true" tabindex="-1"></a>If we allow $m$ and $n$ to vary (they are integers), the problem becomes a mixed-integer nonlinear program. For small ranges, we can sweep all feasible grid combinations and pick the best.</span>
-<span id="cb10-91"><a href="#cb10-91" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-94"><a href="#cb10-94" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
-<span id="cb10-95"><a href="#cb10-95" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> panel_aspect_ratio(alpha, m, n, W_target, L_target):</span>
-<span id="cb10-96"><a href="#cb10-96" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Return aspect ratio a/b for given grid and targets."""</span></span>
-<span id="cb10-97"><a href="#cb10-97" aria-hidden="true" tabindex="-1"></a>    a <span class="op">=</span> W_target <span class="op">/</span> (<span class="dv">2</span> <span class="op">*</span> m <span class="op">*</span> np.cos(alpha))</span>
-<span id="cb10-98"><a href="#cb10-98" aria-hidden="true" tabindex="-1"></a>    b <span class="op">=</span> L_target <span class="op">/</span> n</span>
-<span id="cb10-99"><a href="#cb10-99" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> a <span class="op">/</span> b</span>
-<span id="cb10-100"><a href="#cb10-100" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-101"><a href="#cb10-101" aria-hidden="true" tabindex="-1"></a><span class="co"># Grid sweep: find all (m,n) combinations within panel aspect ratio bounds</span></span>
-<span id="cb10-102"><a href="#cb10-102" aria-hidden="true" tabindex="-1"></a>W_target, L_target, rho_target <span class="op">=</span> <span class="fl">2.0</span>, <span class="fl">0.5</span>, <span class="fl">0.15</span></span>
-<span id="cb10-103"><a href="#cb10-103" aria-hidden="true" tabindex="-1"></a>alpha_fixed <span class="op">=</span> np.arcsin(rho_target)</span>
-<span id="cb10-104"><a href="#cb10-104" aria-hidden="true" tabindex="-1"></a>ar_min, ar_max <span class="op">=</span> <span class="fl">0.5</span>, <span class="fl">2.0</span>   <span class="co"># acceptable panel aspect ratios</span></span>
-<span id="cb10-105"><a href="#cb10-105" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-106"><a href="#cb10-106" aria-hidden="true" tabindex="-1"></a>results <span class="op">=</span> []</span>
-<span id="cb10-107"><a href="#cb10-107" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> m <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">2</span>, <span class="dv">20</span>):</span>
-<span id="cb10-108"><a href="#cb10-108" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> n <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">2</span>, <span class="dv">12</span>):</span>
-<span id="cb10-109"><a href="#cb10-109" aria-hidden="true" tabindex="-1"></a>        ar <span class="op">=</span> panel_aspect_ratio(alpha_fixed, m, n, W_target, L_target)</span>
-<span id="cb10-110"><a href="#cb10-110" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> ar_min <span class="op">&lt;=</span> ar <span class="op">&lt;=</span> ar_max:</span>
-<span id="cb10-111"><a href="#cb10-111" aria-hidden="true" tabindex="-1"></a>            a <span class="op">=</span> W_target <span class="op">/</span> (<span class="dv">2</span> <span class="op">*</span> m <span class="op">*</span> np.cos(alpha_fixed))</span>
-<span id="cb10-112"><a href="#cb10-112" aria-hidden="true" tabindex="-1"></a>            b <span class="op">=</span> L_target <span class="op">/</span> n</span>
-<span id="cb10-113"><a href="#cb10-113" aria-hidden="true" tabindex="-1"></a>            results.append({<span class="st">'m'</span>: m, <span class="st">'n'</span>: n, <span class="st">'a'</span>: a<span class="op">*</span><span class="dv">1000</span>, <span class="st">'b'</span>: b<span class="op">*</span><span class="dv">1000</span>,</span>
-<span id="cb10-114"><a href="#cb10-114" aria-hidden="true" tabindex="-1"></a>                             <span class="st">'aspect'</span>: ar, <span class="st">'n_panels'</span>: m <span class="op">*</span> n})</span>
-<span id="cb10-115"><a href="#cb10-115" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-116"><a href="#cb10-116" aria-hidden="true" tabindex="-1"></a>results.sort(key<span class="op">=</span><span class="kw">lambda</span> x: <span class="bu">abs</span>(x[<span class="st">'aspect'</span>] <span class="op">-</span> <span class="fl">1.0</span>))   <span class="co"># prefer square panels</span></span>
-<span id="cb10-117"><a href="#cb10-117" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-118"><a href="#cb10-118" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"</span><span class="sc">{</span><span class="st">'m'</span><span class="sc">:&gt;4}</span><span class="ss"> </span><span class="sc">{</span><span class="st">'n'</span><span class="sc">:&gt;4}</span><span class="ss"> </span><span class="sc">{</span><span class="st">'a(mm)'</span><span class="sc">:&gt;8}</span><span class="ss"> </span><span class="sc">{</span><span class="st">'b(mm)'</span><span class="sc">:&gt;8}</span><span class="ss"> </span><span class="sc">{</span><span class="st">'aspect'</span><span class="sc">:&gt;8}</span><span class="ss"> </span><span class="sc">{</span><span class="st">'panels'</span><span class="sc">:&gt;7}</span><span class="ss">"</span>)</span>
-<span id="cb10-119"><a href="#cb10-119" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"-"</span> <span class="op">*</span> <span class="dv">45</span>)</span>
-<span id="cb10-120"><a href="#cb10-120" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> r <span class="kw">in</span> results[:<span class="dv">10</span>]:</span>
-<span id="cb10-121"><a href="#cb10-121" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"</span><span class="sc">{</span>r[<span class="st">'m'</span>]<span class="sc">:&gt;4}</span><span class="ss"> </span><span class="sc">{</span>r[<span class="st">'n'</span>]<span class="sc">:&gt;4}</span><span class="ss"> </span><span class="sc">{</span>r[<span class="st">'a'</span>]<span class="sc">:&gt;8.2f}</span><span class="ss"> </span><span class="sc">{</span>r[<span class="st">'b'</span>]<span class="sc">:&gt;8.2f}</span><span class="ss"> </span><span class="sc">{</span>r[<span class="st">'aspect'</span>]<span class="sc">:&gt;8.4f}</span><span class="ss"> </span><span class="sc">{</span>r[<span class="st">'n_panels'</span>]<span class="sc">:&gt;7}</span><span class="ss">"</span>)</span>
-<span id="cb10-122"><a href="#cb10-122" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb10-123"><a href="#cb10-123" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-124"><a href="#cb10-124" aria-hidden="true" tabindex="-1"></a><span class="fu">## Multi-Objective Inverse Design</span></span>
-<span id="cb10-125"><a href="#cb10-125" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-126"><a href="#cb10-126" aria-hidden="true" tabindex="-1"></a>Real requirements conflict. You want:</span>
-<span id="cb10-127"><a href="#cb10-127" aria-hidden="true" tabindex="-1"></a><span class="ss">1. </span>Small compaction ratio $\rho$ (good — collapses well)</span>
-<span id="cb10-128"><a href="#cb10-128" aria-hidden="true" tabindex="-1"></a><span class="ss">2. </span>Near-square panels (good — easier to manufacture and less buckling risk)</span>
-<span id="cb10-129"><a href="#cb10-129" aria-hidden="true" tabindex="-1"></a><span class="ss">3. </span>Few panels (good — lower mass, fewer hinges)</span>
-<span id="cb10-130"><a href="#cb10-130" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-131"><a href="#cb10-131" aria-hidden="true" tabindex="-1"></a>No single design satisfies all three simultaneously. The Pareto front shows the trade-off.</span>
-<span id="cb10-132"><a href="#cb10-132" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-135"><a href="#cb10-135" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
-<span id="cb10-136"><a href="#cb10-136" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> pareto_sweep(W_target, L_target, m, n):</span>
-<span id="cb10-137"><a href="#cb10-137" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""</span></span>
-<span id="cb10-138"><a href="#cb10-138" aria-hidden="true" tabindex="-1"></a><span class="co">    Sweep alpha over feasible range, compute objectives for each.</span></span>
-<span id="cb10-139"><a href="#cb10-139" aria-hidden="true" tabindex="-1"></a><span class="co">    Returns arrays of (rho, aspect_deviation, n_panels).</span></span>
-<span id="cb10-140"><a href="#cb10-140" aria-hidden="true" tabindex="-1"></a><span class="co">    """</span></span>
-<span id="cb10-141"><a href="#cb10-141" aria-hidden="true" tabindex="-1"></a>    alphas <span class="op">=</span> np.linspace(<span class="fl">0.05</span>, np.pi<span class="op">/</span><span class="dv">2</span> <span class="op">-</span> <span class="fl">0.05</span>, <span class="dv">300</span>)</span>
-<span id="cb10-142"><a href="#cb10-142" aria-hidden="true" tabindex="-1"></a>    rhos, aspect_devs <span class="op">=</span> [], []</span>
-<span id="cb10-143"><a href="#cb10-143" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-144"><a href="#cb10-144" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> alpha <span class="kw">in</span> alphas:</span>
-<span id="cb10-145"><a href="#cb10-145" aria-hidden="true" tabindex="-1"></a>        a <span class="op">=</span> W_target <span class="op">/</span> (<span class="dv">2</span> <span class="op">*</span> m <span class="op">*</span> np.cos(alpha))</span>
-<span id="cb10-146"><a href="#cb10-146" aria-hidden="true" tabindex="-1"></a>        b <span class="op">=</span> L_target <span class="op">/</span> n</span>
-<span id="cb10-147"><a href="#cb10-147" aria-hidden="true" tabindex="-1"></a>        ar <span class="op">=</span> a <span class="op">/</span> b</span>
-<span id="cb10-148"><a href="#cb10-148" aria-hidden="true" tabindex="-1"></a>        rhos.append(np.sin(alpha))</span>
-<span id="cb10-149"><a href="#cb10-149" aria-hidden="true" tabindex="-1"></a>        aspect_devs.append(<span class="bu">abs</span>(ar <span class="op">-</span> <span class="fl">1.0</span>))  <span class="co"># deviation from square</span></span>
-<span id="cb10-150"><a href="#cb10-150" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-151"><a href="#cb10-151" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> np.array(rhos), np.array(aspect_devs)</span>
-<span id="cb10-152"><a href="#cb10-152" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-153"><a href="#cb10-153" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-154"><a href="#cb10-154" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">7</span>, <span class="dv">5</span>))</span>
-<span id="cb10-155"><a href="#cb10-155" aria-hidden="true" tabindex="-1"></a>colors <span class="op">=</span> plt.cm.viridis(np.linspace(<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">5</span>))</span>
-<span id="cb10-156"><a href="#cb10-156" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-157"><a href="#cb10-157" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i, (m, n) <span class="kw">in</span> <span class="bu">enumerate</span>([(<span class="dv">4</span>,<span class="dv">3</span>), (<span class="dv">6</span>,<span class="dv">4</span>), (<span class="dv">8</span>,<span class="dv">5</span>), (<span class="dv">10</span>,<span class="dv">6</span>), (<span class="dv">12</span>,<span class="dv">8</span>)]):</span>
-<span id="cb10-158"><a href="#cb10-158" aria-hidden="true" tabindex="-1"></a>    rhos, asp_devs <span class="op">=</span> pareto_sweep(<span class="fl">2.0</span>, <span class="fl">0.5</span>, m, n)</span>
-<span id="cb10-159"><a href="#cb10-159" aria-hidden="true" tabindex="-1"></a>    ax.scatter(rhos, asp_devs, s<span class="op">=</span><span class="dv">4</span>, color<span class="op">=</span>colors[i], label<span class="op">=</span><span class="ss">f'</span><span class="sc">{</span>m<span class="sc">}</span><span class="ss">×</span><span class="sc">{</span>n<span class="sc">}</span><span class="ss"> = </span><span class="sc">{</span>m<span class="op">*</span>n<span class="sc">}</span><span class="ss"> panels'</span>, alpha<span class="op">=</span><span class="fl">0.7</span>)</span>
-<span id="cb10-160"><a href="#cb10-160" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-161"><a href="#cb10-161" aria-hidden="true" tabindex="-1"></a>ax.set_xlabel(<span class="st">'Compaction ratio ρ (lower = better collapse)'</span>)</span>
-<span id="cb10-162"><a href="#cb10-162" aria-hidden="true" tabindex="-1"></a>ax.set_ylabel(<span class="st">'Panel aspect ratio deviation |a/b − 1| (lower = more square)'</span>)</span>
-<span id="cb10-163"><a href="#cb10-163" aria-hidden="true" tabindex="-1"></a>ax.set_title(<span class="st">'Pareto front: compaction vs panel squareness</span><span class="ch">\n</span><span class="st">(each curve = one grid choice)'</span>)</span>
-<span id="cb10-164"><a href="#cb10-164" aria-hidden="true" tabindex="-1"></a>ax.legend(fontsize<span class="op">=</span><span class="dv">8</span>, markerscale<span class="op">=</span><span class="dv">3</span>)</span>
-<span id="cb10-165"><a href="#cb10-165" aria-hidden="true" tabindex="-1"></a>ax.grid(<span class="va">True</span>, linewidth<span class="op">=</span><span class="fl">0.5</span>, alpha<span class="op">=</span><span class="fl">0.5</span>)</span>
-<span id="cb10-166"><a href="#cb10-166" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
-<span id="cb10-167"><a href="#cb10-167" aria-hidden="true" tabindex="-1"></a>plt.show()</span>
-<span id="cb10-168"><a href="#cb10-168" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb10-169"><a href="#cb10-169" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-170"><a href="#cb10-170" aria-hidden="true" tabindex="-1"></a><span class="fu">## Numerical Inverse Design with scipy</span></span>
-<span id="cb10-171"><a href="#cb10-171" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-172"><a href="#cb10-172" aria-hidden="true" tabindex="-1"></a>When the forward model is more complex (non-analytic, simulated), we solve the inverse problem numerically using a nonlinear least-squares formulation.</span>
-<span id="cb10-173"><a href="#cb10-173" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-176"><a href="#cb10-176" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
-<span id="cb10-177"><a href="#cb10-177" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> scipy.optimize <span class="im">import</span> least_squares</span>
-<span id="cb10-178"><a href="#cb10-178" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-179"><a href="#cb10-179" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> residuals(params, W_target, L_target, rho_target, m, n):</span>
-<span id="cb10-180"><a href="#cb10-180" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""</span></span>
-<span id="cb10-181"><a href="#cb10-181" aria-hidden="true" tabindex="-1"></a><span class="co">    Residuals for inverse design: [W_error, L_error, rho_error].</span></span>
-<span id="cb10-182"><a href="#cb10-182" aria-hidden="true" tabindex="-1"></a><span class="co">    params = [alpha, log_a, log_b]  (log-parameterize to enforce positivity)</span></span>
-<span id="cb10-183"><a href="#cb10-183" aria-hidden="true" tabindex="-1"></a><span class="co">    """</span></span>
-<span id="cb10-184"><a href="#cb10-184" aria-hidden="true" tabindex="-1"></a>    alpha <span class="op">=</span> params[<span class="dv">0</span>]</span>
-<span id="cb10-185"><a href="#cb10-185" aria-hidden="true" tabindex="-1"></a>    a <span class="op">=</span> np.exp(params[<span class="dv">1</span>])</span>
-<span id="cb10-186"><a href="#cb10-186" aria-hidden="true" tabindex="-1"></a>    b <span class="op">=</span> np.exp(params[<span class="dv">2</span>])</span>
-<span id="cb10-187"><a href="#cb10-187" aria-hidden="true" tabindex="-1"></a>    fwd <span class="op">=</span> miura_forward(alpha, m, n, a, b)</span>
-<span id="cb10-188"><a href="#cb10-188" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> np.array([</span>
-<span id="cb10-189"><a href="#cb10-189" aria-hidden="true" tabindex="-1"></a>        (fwd[<span class="st">'W_dep'</span>] <span class="op">-</span> W_target) <span class="op">/</span> W_target,</span>
-<span id="cb10-190"><a href="#cb10-190" aria-hidden="true" tabindex="-1"></a>        (fwd[<span class="st">'L_dep'</span>] <span class="op">-</span> L_target) <span class="op">/</span> L_target,</span>
-<span id="cb10-191"><a href="#cb10-191" aria-hidden="true" tabindex="-1"></a>        (fwd[<span class="st">'rho'</span>]   <span class="op">-</span> rho_target) <span class="op">/</span> rho_target,</span>
-<span id="cb10-192"><a href="#cb10-192" aria-hidden="true" tabindex="-1"></a>    ])</span>
-<span id="cb10-193"><a href="#cb10-193" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-194"><a href="#cb10-194" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-195"><a href="#cb10-195" aria-hidden="true" tabindex="-1"></a><span class="co"># Solve numerically (should recover same result as analytic solution)</span></span>
-<span id="cb10-196"><a href="#cb10-196" aria-hidden="true" tabindex="-1"></a>m, n <span class="op">=</span> <span class="dv">6</span>, <span class="dv">4</span></span>
-<span id="cb10-197"><a href="#cb10-197" aria-hidden="true" tabindex="-1"></a>x0 <span class="op">=</span> np.array([<span class="fl">0.3</span>, np.log(<span class="fl">0.1</span>), np.log(<span class="fl">0.05</span>)])  <span class="co"># initial guess</span></span>
-<span id="cb10-198"><a href="#cb10-198" aria-hidden="true" tabindex="-1"></a>result <span class="op">=</span> least_squares(</span>
-<span id="cb10-199"><a href="#cb10-199" aria-hidden="true" tabindex="-1"></a>    residuals, x0,</span>
-<span id="cb10-200"><a href="#cb10-200" aria-hidden="true" tabindex="-1"></a>    args<span class="op">=</span>(W_target, L_target, rho_target, m, n),</span>
-<span id="cb10-201"><a href="#cb10-201" aria-hidden="true" tabindex="-1"></a>    method<span class="op">=</span><span class="st">'lm'</span>,</span>
-<span id="cb10-202"><a href="#cb10-202" aria-hidden="true" tabindex="-1"></a>    ftol<span class="op">=</span><span class="fl">1e-12</span>, xtol<span class="op">=</span><span class="fl">1e-12</span></span>
-<span id="cb10-203"><a href="#cb10-203" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb10-204"><a href="#cb10-204" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-205"><a href="#cb10-205" aria-hidden="true" tabindex="-1"></a>alpha_num <span class="op">=</span> result.x[<span class="dv">0</span>]</span>
-<span id="cb10-206"><a href="#cb10-206" aria-hidden="true" tabindex="-1"></a>a_num <span class="op">=</span> np.exp(result.x[<span class="dv">1</span>])</span>
-<span id="cb10-207"><a href="#cb10-207" aria-hidden="true" tabindex="-1"></a>b_num <span class="op">=</span> np.exp(result.x[<span class="dv">2</span>])</span>
-<span id="cb10-208"><a href="#cb10-208" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-209"><a href="#cb10-209" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"=== Numerical Inverse Design ==="</span>)</span>
-<span id="cb10-210"><a href="#cb10-210" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"α = </span><span class="sc">{</span>np<span class="sc">.</span>degrees(alpha_num)<span class="sc">:.4f}</span><span class="ss">°  (analytic: </span><span class="sc">{</span>np<span class="sc">.</span>degrees(alpha)<span class="sc">:.4f}</span><span class="ss">°)"</span>)</span>
-<span id="cb10-211"><a href="#cb10-211" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"a = </span><span class="sc">{</span>a_num<span class="op">*</span><span class="dv">1000</span><span class="sc">:.4f}</span><span class="ss">mm  (analytic: </span><span class="sc">{</span>a<span class="op">*</span><span class="dv">1000</span><span class="sc">:.4f}</span><span class="ss">mm)"</span>)</span>
-<span id="cb10-212"><a href="#cb10-212" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"b = </span><span class="sc">{</span>b_num<span class="op">*</span><span class="dv">1000</span><span class="sc">:.4f}</span><span class="ss">mm  (analytic: </span><span class="sc">{</span>b<span class="op">*</span><span class="dv">1000</span><span class="sc">:.4f}</span><span class="ss">mm)"</span>)</span>
-<span id="cb10-213"><a href="#cb10-213" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Residual norm: </span><span class="sc">{</span>np<span class="sc">.</span>linalg<span class="sc">.</span>norm(result.fun)<span class="sc">:.2e}</span><span class="ss">"</span>)</span>
-<span id="cb10-214"><a href="#cb10-214" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb10-215"><a href="#cb10-215" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-216"><a href="#cb10-216" aria-hidden="true" tabindex="-1"></a><span class="fu">## Ill-Posedness and Regularization</span></span>
-<span id="cb10-217"><a href="#cb10-217" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-218"><a href="#cb10-218" aria-hidden="true" tabindex="-1"></a>The inverse problem is ill-posed when there are fewer constraints than parameters, or when multiple solutions produce nearly the same forward output. A common remedy is Tikhonov regularization: add a penalty term that prefers solutions near a nominal design $\boldsymbol{\theta}_0$:</span>
-<span id="cb10-219"><a href="#cb10-219" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-220"><a href="#cb10-220" aria-hidden="true" tabindex="-1"></a>$$\min_{\boldsymbol{\theta}} \quad <span class="sc">\|</span>\mathbf{r}(\boldsymbol{\theta})<span class="sc">\|</span>^2 + \lambda <span class="sc">\|</span>\boldsymbol{\theta} - \boldsymbol{\theta}_0<span class="sc">\|</span>^2$$ {#eq-tikhonov}</span>
-<span id="cb10-221"><a href="#cb10-221" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-224"><a href="#cb10-224" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
-<span id="cb10-225"><a href="#cb10-225" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> regularized_residuals(params, W_target, L_target, rho_target, m, n, theta0, lam):</span>
-<span id="cb10-226"><a href="#cb10-226" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Residuals including Tikhonov regularization."""</span></span>
-<span id="cb10-227"><a href="#cb10-227" aria-hidden="true" tabindex="-1"></a>    physics <span class="op">=</span> residuals(params, W_target, L_target, rho_target, m, n)</span>
-<span id="cb10-228"><a href="#cb10-228" aria-hidden="true" tabindex="-1"></a>    reg <span class="op">=</span> np.sqrt(lam) <span class="op">*</span> (params <span class="op">-</span> theta0)</span>
-<span id="cb10-229"><a href="#cb10-229" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> np.concatenate([physics, reg])</span>
-<span id="cb10-230"><a href="#cb10-230" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-231"><a href="#cb10-231" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-232"><a href="#cb10-232" aria-hidden="true" tabindex="-1"></a>theta0 <span class="op">=</span> np.array([np.pi<span class="op">/</span><span class="dv">4</span>, np.log(<span class="fl">0.15</span>), np.log(<span class="fl">0.06</span>)])  <span class="co"># nominal design</span></span>
-<span id="cb10-233"><a href="#cb10-233" aria-hidden="true" tabindex="-1"></a>lambdas <span class="op">=</span> [<span class="fl">0.0</span>, <span class="fl">0.01</span>, <span class="fl">0.1</span>, <span class="fl">1.0</span>]</span>
-<span id="cb10-234"><a href="#cb10-234" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-235"><a href="#cb10-235" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"</span><span class="sc">{</span><span class="st">'λ'</span><span class="sc">:&gt;8}</span><span class="ss"> </span><span class="sc">{</span><span class="st">'α (°)'</span><span class="sc">:&gt;10}</span><span class="ss"> </span><span class="sc">{</span><span class="st">'a (mm)'</span><span class="sc">:&gt;10}</span><span class="ss"> </span><span class="sc">{</span><span class="st">'b (mm)'</span><span class="sc">:&gt;10}</span><span class="ss"> </span><span class="sc">{</span><span class="st">'||r||'</span><span class="sc">:&gt;12}</span><span class="ss">"</span>)</span>
-<span id="cb10-236"><a href="#cb10-236" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"-"</span> <span class="op">*</span> <span class="dv">55</span>)</span>
-<span id="cb10-237"><a href="#cb10-237" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> lam <span class="kw">in</span> lambdas:</span>
-<span id="cb10-238"><a href="#cb10-238" aria-hidden="true" tabindex="-1"></a>    res <span class="op">=</span> least_squares(</span>
-<span id="cb10-239"><a href="#cb10-239" aria-hidden="true" tabindex="-1"></a>        regularized_residuals, theta0.copy(),</span>
-<span id="cb10-240"><a href="#cb10-240" aria-hidden="true" tabindex="-1"></a>        args<span class="op">=</span>(W_target, L_target, rho_target, m, n, theta0, lam),</span>
-<span id="cb10-241"><a href="#cb10-241" aria-hidden="true" tabindex="-1"></a>        method<span class="op">=</span><span class="st">'lm'</span>, ftol<span class="op">=</span><span class="fl">1e-12</span></span>
-<span id="cb10-242"><a href="#cb10-242" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb10-243"><a href="#cb10-243" aria-hidden="true" tabindex="-1"></a>    a_r <span class="op">=</span> np.exp(res.x[<span class="dv">1</span>])</span>
-<span id="cb10-244"><a href="#cb10-244" aria-hidden="true" tabindex="-1"></a>    b_r <span class="op">=</span> np.exp(res.x[<span class="dv">2</span>])</span>
-<span id="cb10-245"><a href="#cb10-245" aria-hidden="true" tabindex="-1"></a>    phys_resid <span class="op">=</span> residuals(res.x, W_target, L_target, rho_target, m, n)</span>
-<span id="cb10-246"><a href="#cb10-246" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"</span><span class="sc">{</span>lam<span class="sc">:&gt;8.2f}</span><span class="ss"> </span><span class="sc">{</span>np<span class="sc">.</span>degrees(res.x[<span class="dv">0</span>])<span class="sc">:&gt;10.3f}</span><span class="ss"> </span><span class="sc">{</span>a_r<span class="op">*</span><span class="dv">1000</span><span class="sc">:&gt;10.3f}</span><span class="ss"> </span><span class="sc">{</span>b_r<span class="op">*</span><span class="dv">1000</span><span class="sc">:&gt;10.3f}</span><span class="ss"> </span><span class="sc">{</span>np<span class="sc">.</span>linalg<span class="sc">.</span>norm(phys_resid)<span class="sc">:&gt;12.2e}</span><span class="ss">"</span>)</span>
-<span id="cb10-247"><a href="#cb10-247" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb10-248"><a href="#cb10-248" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-249"><a href="#cb10-249" aria-hidden="true" tabindex="-1"></a><span class="fu">## Summary</span></span>
-<span id="cb10-250"><a href="#cb10-250" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-251"><a href="#cb10-251" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>The inverse design problem: given target deployed shape and compaction ratio, recover crease parameters.</span>
-<span id="cb10-252"><a href="#cb10-252" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>For fixed grid $(m, n)$, the Miura-ori inverse problem has an analytic solution.</span>
-<span id="cb10-253"><a href="#cb10-253" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>When the grid is variable, sweep feasible $(m, n)$ pairs and select by secondary criteria (aspect ratio, panel count).</span>
-<span id="cb10-254"><a href="#cb10-254" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Multiple objectives conflict — compaction vs. panel squareness — and the Pareto front shows the trade-off space.</span>
-<span id="cb10-255"><a href="#cb10-255" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Numerical formulation via least-squares enables inverse design when no analytic solution exists; Tikhonov regularization manages ill-posedness.</span>
-<span id="cb10-256"><a href="#cb10-256" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-257"><a href="#cb10-257" aria-hidden="true" tabindex="-1"></a><span class="fu">## Further Reading</span></span>
-<span id="cb10-258"><a href="#cb10-258" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-259"><a href="#cb10-259" aria-hidden="true" tabindex="-1"></a>@dudte2016programming solves inverse design for curved origami tessellations using gradient-based optimization. @lang2011origami (Chapter 14) discusses the degrees of freedom in base design and how constraints determine feasibility.</span>
-<span id="cb10-260"><a href="#cb10-260" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-261"><a href="#cb10-261" aria-hidden="true" tabindex="-1"></a><span class="fu">## Exercises</span></span>
-<span id="cb10-262"><a href="#cb10-262" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-263"><a href="#cb10-263" aria-hidden="true" tabindex="-1"></a><span class="ss">1. </span>**Sensitivity analysis.** Using the numerical inverse design setup, compute the Jacobian $\partial \mathbf{r}/\partial \boldsymbol{\theta}$ at the solution using <span class="in">`least_squares`</span> output (it returns <span class="in">`jac`</span>). What is the condition number? What does this tell you about the inverse problem's sensitivity to measurement noise in the target dimensions?</span>
-<span id="cb10-264"><a href="#cb10-264" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-265"><a href="#cb10-265" aria-hidden="true" tabindex="-1"></a><span class="ss">2. </span>**Underdetermined case.** Add a fourth parameter (e.g., vary both $a$ and $b$ independently while also varying $\alpha$ and the aspect ratio target). The system now has four unknowns and three equations. How many solutions exist? Use <span class="in">`differential_evolution`</span> to find two distinct solutions.</span>
-<span id="cb10-266"><a href="#cb10-266" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-267"><a href="#cb10-267" aria-hidden="true" tabindex="-1"></a><span class="ss">3. </span>**Noisy targets.** Add Gaussian noise with $\sigma = 0.01$ to $W^*, L^*, \rho^*$ and solve the inverse problem 100 times. Plot the distribution of recovered $\alpha$ values. What is the standard deviation of $\alpha$ for $\sigma = 0.01$?</span>
-<span id="cb10-268"><a href="#cb10-268" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-269"><a href="#cb10-269" aria-hidden="true" tabindex="-1"></a><span class="ss">4. </span>**Pareto-optimal grid selection.** For the grid sweep in this chapter, implement a proper Pareto dominance filter that retains only non-dominated $(m, n)$ pairs when considering three objectives simultaneously: $\rho$, aspect deviation, and total panel count. Plot the Pareto front in 3D.</span>
-<span id="cb10-270"><a href="#cb10-270" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-271"><a href="#cb10-271" aria-hidden="true" tabindex="-1"></a><span class="ss">5. </span>**Curved crease inverse problem.** (Advanced) Instead of straight creases, consider a crease pattern where the crease angle $\alpha$ varies linearly from $\alpha_1$ at one end to $\alpha_2$ at the other. The deployed shape is then a curved surface. Formulate the inverse problem of finding $(\alpha_1, \alpha_2)$ to hit a target curvature, and solve it numerically.</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu"># Inverse Design</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>::: {.callout-note}</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="fu">## Learning Objectives</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Formulate the inverse origami design problem as a nonlinear program</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Recover Miura-ori parameters from target deployed dimensions</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Explore the Pareto front when multiple objectives conflict</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Understand when the inverse problem is ill-posed and how to regularize it</span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>Everything up to this point has been *forward*: given a crease pattern, find the deployed shape, the compaction ratio, the equilibrium configuration. Engineers rarely work forward. They start with requirements — a solar panel that deploys to exactly 2m × 0.5m and collapses to 200mm diameter — and work backward to find the crease pattern.</span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>This is the inverse problem. It is harder, more interesting, and usually under-determined: many crease patterns may satisfy the same set of requirements.</span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a><span class="fu">## The Inverse Miura-ori Problem</span></span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a>For the Miura-ori with $m \times n$ unit cells and panel dimensions $a \times b$ (width × length), the deployed and collapsed dimensions are functions of $\alpha$, $\gamma$, $m$, $n$, $a$, $b$.</span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a>From Chapter 3, in the fully deployed state ($\gamma = \pi/2$):</span>
+<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a>$$W_\text{deployed} = 2m \cdot a \cos\alpha$$ {#eq-Wdep}</span>
+<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a>$$L_\text{deployed} = n \cdot b$$ {#eq-Ldep}</span>
+<span id="cb6-24"><a href="#cb6-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-25"><a href="#cb6-25" aria-hidden="true" tabindex="-1"></a>In the fully collapsed state ($\gamma \to 0$):</span>
+<span id="cb6-26"><a href="#cb6-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-27"><a href="#cb6-27" aria-hidden="true" tabindex="-1"></a>$$W_\text{collapsed} = 2m \cdot a \sin\alpha \cos\alpha$$ {#eq-Wcol}</span>
+<span id="cb6-28"><a href="#cb6-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-29"><a href="#cb6-29" aria-hidden="true" tabindex="-1"></a>The compaction ratio is $\rho = W_\text{collapsed}/W_\text{deployed} = \sin\alpha$.</span>
+<span id="cb6-30"><a href="#cb6-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-31"><a href="#cb6-31" aria-hidden="true" tabindex="-1"></a>**Inverse problem:** Given target $W_\text{deployed}^*$, $L_\text{deployed}^*$, and $\rho^* = W_\text{collapsed}^*/W_\text{deployed}^*$, find $(\alpha, m, n, a, b)$.</span>
+<span id="cb6-32"><a href="#cb6-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-33"><a href="#cb6-33" aria-hidden="true" tabindex="-1"></a>For fixed grid $m, n$, the continuous parameters $(\alpha, a, b)$ are determined by three equations:</span>
+<span id="cb6-34"><a href="#cb6-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-35"><a href="#cb6-35" aria-hidden="true" tabindex="-1"></a>$$2m \cdot a \cos\alpha = W^* \quad \Rightarrow \quad a = \frac{W^*}{2m\cos\alpha}$$ {#eq-a-from-W}</span>
+<span id="cb6-36"><a href="#cb6-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-37"><a href="#cb6-37" aria-hidden="true" tabindex="-1"></a>$$n \cdot b = L^* \quad \Rightarrow \quad b = \frac{L^*}{n}$$ {#eq-b-from-L}</span>
+<span id="cb6-38"><a href="#cb6-38" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-39"><a href="#cb6-39" aria-hidden="true" tabindex="-1"></a>$$\sin\alpha = \rho^*$$ {#eq-alpha-from-rho}</span>
+<span id="cb6-40"><a href="#cb6-40" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-41"><a href="#cb6-41" aria-hidden="true" tabindex="-1"></a>The last equation gives $\alpha = \arcsin(\rho^*)$ directly. The system is exactly determined for fixed $m, n$.</span>
+<span id="cb6-42"><a href="#cb6-42" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-45"><a href="#cb6-45" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb6-46"><a href="#cb6-46" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb6-47"><a href="#cb6-47" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> scipy.optimize <span class="im">import</span> minimize, differential_evolution</span>
+<span id="cb6-48"><a href="#cb6-48" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb6-49"><a href="#cb6-49" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-50"><a href="#cb6-50" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> miura_forward(alpha, m, n, a, b, gamma<span class="op">=</span>np.pi<span class="op">/</span><span class="dv">2</span>):</span>
+<span id="cb6-51"><a href="#cb6-51" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Compute deployed and collapsed dimensions for given Miura-ori parameters."""</span></span>
+<span id="cb6-52"><a href="#cb6-52" aria-hidden="true" tabindex="-1"></a>    sa, ca <span class="op">=</span> np.sin(alpha), np.cos(alpha)</span>
+<span id="cb6-53"><a href="#cb6-53" aria-hidden="true" tabindex="-1"></a>    sg, cg <span class="op">=</span> np.sin(gamma), np.cos(gamma)</span>
+<span id="cb6-54"><a href="#cb6-54" aria-hidden="true" tabindex="-1"></a>    W_deployed  <span class="op">=</span> <span class="dv">2</span> <span class="op">*</span> m <span class="op">*</span> a <span class="op">*</span> ca</span>
+<span id="cb6-55"><a href="#cb6-55" aria-hidden="true" tabindex="-1"></a>    L_deployed  <span class="op">=</span> n <span class="op">*</span> b</span>
+<span id="cb6-56"><a href="#cb6-56" aria-hidden="true" tabindex="-1"></a>    W_collapsed <span class="op">=</span> <span class="dv">2</span> <span class="op">*</span> m <span class="op">*</span> a <span class="op">*</span> sa <span class="op">*</span> ca   <span class="co"># approximate (exact only at γ→0)</span></span>
+<span id="cb6-57"><a href="#cb6-57" aria-hidden="true" tabindex="-1"></a>    rho <span class="op">=</span> sa</span>
+<span id="cb6-58"><a href="#cb6-58" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> {<span class="st">'W_dep'</span>: W_deployed, <span class="st">'L_dep'</span>: L_deployed,</span>
+<span id="cb6-59"><a href="#cb6-59" aria-hidden="true" tabindex="-1"></a>            <span class="st">'W_col'</span>: W_collapsed, <span class="st">'rho'</span>: rho, <span class="st">'alpha'</span>: alpha, <span class="st">'a'</span>: a, <span class="st">'b'</span>: b}</span>
+<span id="cb6-60"><a href="#cb6-60" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-61"><a href="#cb6-61" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-62"><a href="#cb6-62" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> solve_miura_inverse_fixed_grid(W_target, L_target, rho_target, m, n):</span>
+<span id="cb6-63"><a href="#cb6-63" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""</span></span>
+<span id="cb6-64"><a href="#cb6-64" aria-hidden="true" tabindex="-1"></a><span class="co">    Given target deployed dimensions and compaction ratio,</span></span>
+<span id="cb6-65"><a href="#cb6-65" aria-hidden="true" tabindex="-1"></a><span class="co">    recover (alpha, a, b) analytically for fixed grid m x n.</span></span>
+<span id="cb6-66"><a href="#cb6-66" aria-hidden="true" tabindex="-1"></a><span class="co">    """</span></span>
+<span id="cb6-67"><a href="#cb6-67" aria-hidden="true" tabindex="-1"></a>    alpha <span class="op">=</span> np.arcsin(rho_target)</span>
+<span id="cb6-68"><a href="#cb6-68" aria-hidden="true" tabindex="-1"></a>    a <span class="op">=</span> W_target <span class="op">/</span> (<span class="dv">2</span> <span class="op">*</span> m <span class="op">*</span> np.cos(alpha))</span>
+<span id="cb6-69"><a href="#cb6-69" aria-hidden="true" tabindex="-1"></a>    b <span class="op">=</span> L_target <span class="op">/</span> n</span>
+<span id="cb6-70"><a href="#cb6-70" aria-hidden="true" tabindex="-1"></a>    result <span class="op">=</span> miura_forward(alpha, m, n, a, b)</span>
+<span id="cb6-71"><a href="#cb6-71" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> alpha, a, b, result</span>
+<span id="cb6-72"><a href="#cb6-72" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-73"><a href="#cb6-73" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-74"><a href="#cb6-74" aria-hidden="true" tabindex="-1"></a><span class="co"># Example: solar panel requirements</span></span>
+<span id="cb6-75"><a href="#cb6-75" aria-hidden="true" tabindex="-1"></a>W_target  <span class="op">=</span> <span class="fl">2.0</span>    <span class="co"># m deployed width</span></span>
+<span id="cb6-76"><a href="#cb6-76" aria-hidden="true" tabindex="-1"></a>L_target  <span class="op">=</span> <span class="fl">0.5</span>    <span class="co"># m deployed length</span></span>
+<span id="cb6-77"><a href="#cb6-77" aria-hidden="true" tabindex="-1"></a>rho_target <span class="op">=</span> <span class="fl">0.15</span>  <span class="co"># collapse to 15% of deployed width</span></span>
+<span id="cb6-78"><a href="#cb6-78" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-79"><a href="#cb6-79" aria-hidden="true" tabindex="-1"></a>m, n <span class="op">=</span> <span class="dv">6</span>, <span class="dv">4</span>   <span class="co"># 6 columns, 4 rows of unit cells</span></span>
+<span id="cb6-80"><a href="#cb6-80" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-81"><a href="#cb6-81" aria-hidden="true" tabindex="-1"></a>alpha, a, b, fwd <span class="op">=</span> solve_miura_inverse_fixed_grid(W_target, L_target, rho_target, m, n)</span>
+<span id="cb6-82"><a href="#cb6-82" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"=== Inverse Design Result ==="</span>)</span>
+<span id="cb6-83"><a href="#cb6-83" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Target:   W_dep=</span><span class="sc">{</span>W_target<span class="sc">}</span><span class="ss">m  L_dep=</span><span class="sc">{</span>L_target<span class="sc">}</span><span class="ss">m  rho=</span><span class="sc">{</span>rho_target<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb6-84"><a href="#cb6-84" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Solution: α = </span><span class="sc">{</span>np<span class="sc">.</span>degrees(alpha)<span class="sc">:.3f}</span><span class="ss">°  a = </span><span class="sc">{</span>a<span class="op">*</span><span class="dv">1000</span><span class="sc">:.2f}</span><span class="ss">mm  b = </span><span class="sc">{</span>b<span class="op">*</span><span class="dv">1000</span><span class="sc">:.2f}</span><span class="ss">mm"</span>)</span>
+<span id="cb6-85"><a href="#cb6-85" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Verify:   W_dep=</span><span class="sc">{</span>fwd[<span class="st">'W_dep'</span>]<span class="sc">:.4f}</span><span class="ss">m  L_dep=</span><span class="sc">{</span>fwd[<span class="st">'L_dep'</span>]<span class="sc">:.4f}</span><span class="ss">m  rho=</span><span class="sc">{</span>fwd[<span class="st">'rho'</span>]<span class="sc">:.4f}</span><span class="ss">"</span>)</span>
+<span id="cb6-86"><a href="#cb6-86" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb6-87"><a href="#cb6-87" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-88"><a href="#cb6-88" aria-hidden="true" tabindex="-1"></a><span class="fu">## When the Grid is Also a Variable</span></span>
+<span id="cb6-89"><a href="#cb6-89" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-90"><a href="#cb6-90" aria-hidden="true" tabindex="-1"></a>If we allow $m$ and $n$ to vary (they are integers), the problem becomes a mixed-integer nonlinear program. For small ranges, we can sweep all feasible grid combinations and pick the best.</span>
+<span id="cb6-91"><a href="#cb6-91" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-94"><a href="#cb6-94" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb6-95"><a href="#cb6-95" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> panel_aspect_ratio(alpha, m, n, W_target, L_target):</span>
+<span id="cb6-96"><a href="#cb6-96" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Return aspect ratio a/b for given grid and targets."""</span></span>
+<span id="cb6-97"><a href="#cb6-97" aria-hidden="true" tabindex="-1"></a>    a <span class="op">=</span> W_target <span class="op">/</span> (<span class="dv">2</span> <span class="op">*</span> m <span class="op">*</span> np.cos(alpha))</span>
+<span id="cb6-98"><a href="#cb6-98" aria-hidden="true" tabindex="-1"></a>    b <span class="op">=</span> L_target <span class="op">/</span> n</span>
+<span id="cb6-99"><a href="#cb6-99" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> a <span class="op">/</span> b</span>
+<span id="cb6-100"><a href="#cb6-100" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-101"><a href="#cb6-101" aria-hidden="true" tabindex="-1"></a><span class="co"># Grid sweep: find all (m,n) combinations within panel aspect ratio bounds</span></span>
+<span id="cb6-102"><a href="#cb6-102" aria-hidden="true" tabindex="-1"></a>W_target, L_target, rho_target <span class="op">=</span> <span class="fl">2.0</span>, <span class="fl">0.5</span>, <span class="fl">0.15</span></span>
+<span id="cb6-103"><a href="#cb6-103" aria-hidden="true" tabindex="-1"></a>alpha_fixed <span class="op">=</span> np.arcsin(rho_target)</span>
+<span id="cb6-104"><a href="#cb6-104" aria-hidden="true" tabindex="-1"></a>ar_min, ar_max <span class="op">=</span> <span class="fl">0.5</span>, <span class="fl">2.0</span>   <span class="co"># acceptable panel aspect ratios</span></span>
+<span id="cb6-105"><a href="#cb6-105" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-106"><a href="#cb6-106" aria-hidden="true" tabindex="-1"></a>results <span class="op">=</span> []</span>
+<span id="cb6-107"><a href="#cb6-107" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> m <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">2</span>, <span class="dv">20</span>):</span>
+<span id="cb6-108"><a href="#cb6-108" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> n <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">2</span>, <span class="dv">12</span>):</span>
+<span id="cb6-109"><a href="#cb6-109" aria-hidden="true" tabindex="-1"></a>        ar <span class="op">=</span> panel_aspect_ratio(alpha_fixed, m, n, W_target, L_target)</span>
+<span id="cb6-110"><a href="#cb6-110" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> ar_min <span class="op">&lt;=</span> ar <span class="op">&lt;=</span> ar_max:</span>
+<span id="cb6-111"><a href="#cb6-111" aria-hidden="true" tabindex="-1"></a>            a <span class="op">=</span> W_target <span class="op">/</span> (<span class="dv">2</span> <span class="op">*</span> m <span class="op">*</span> np.cos(alpha_fixed))</span>
+<span id="cb6-112"><a href="#cb6-112" aria-hidden="true" tabindex="-1"></a>            b <span class="op">=</span> L_target <span class="op">/</span> n</span>
+<span id="cb6-113"><a href="#cb6-113" aria-hidden="true" tabindex="-1"></a>            results.append({<span class="st">'m'</span>: m, <span class="st">'n'</span>: n, <span class="st">'a'</span>: a<span class="op">*</span><span class="dv">1000</span>, <span class="st">'b'</span>: b<span class="op">*</span><span class="dv">1000</span>,</span>
+<span id="cb6-114"><a href="#cb6-114" aria-hidden="true" tabindex="-1"></a>                             <span class="st">'aspect'</span>: ar, <span class="st">'n_panels'</span>: m <span class="op">*</span> n})</span>
+<span id="cb6-115"><a href="#cb6-115" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-116"><a href="#cb6-116" aria-hidden="true" tabindex="-1"></a>results.sort(key<span class="op">=</span><span class="kw">lambda</span> x: <span class="bu">abs</span>(x[<span class="st">'aspect'</span>] <span class="op">-</span> <span class="fl">1.0</span>))   <span class="co"># prefer square panels</span></span>
+<span id="cb6-117"><a href="#cb6-117" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-118"><a href="#cb6-118" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"</span><span class="sc">{</span><span class="st">'m'</span><span class="sc">:&gt;4}</span><span class="ss"> </span><span class="sc">{</span><span class="st">'n'</span><span class="sc">:&gt;4}</span><span class="ss"> </span><span class="sc">{</span><span class="st">'a(mm)'</span><span class="sc">:&gt;8}</span><span class="ss"> </span><span class="sc">{</span><span class="st">'b(mm)'</span><span class="sc">:&gt;8}</span><span class="ss"> </span><span class="sc">{</span><span class="st">'aspect'</span><span class="sc">:&gt;8}</span><span class="ss"> </span><span class="sc">{</span><span class="st">'panels'</span><span class="sc">:&gt;7}</span><span class="ss">"</span>)</span>
+<span id="cb6-119"><a href="#cb6-119" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"-"</span> <span class="op">*</span> <span class="dv">45</span>)</span>
+<span id="cb6-120"><a href="#cb6-120" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> r <span class="kw">in</span> results[:<span class="dv">10</span>]:</span>
+<span id="cb6-121"><a href="#cb6-121" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"</span><span class="sc">{</span>r[<span class="st">'m'</span>]<span class="sc">:&gt;4}</span><span class="ss"> </span><span class="sc">{</span>r[<span class="st">'n'</span>]<span class="sc">:&gt;4}</span><span class="ss"> </span><span class="sc">{</span>r[<span class="st">'a'</span>]<span class="sc">:&gt;8.2f}</span><span class="ss"> </span><span class="sc">{</span>r[<span class="st">'b'</span>]<span class="sc">:&gt;8.2f}</span><span class="ss"> </span><span class="sc">{</span>r[<span class="st">'aspect'</span>]<span class="sc">:&gt;8.4f}</span><span class="ss"> </span><span class="sc">{</span>r[<span class="st">'n_panels'</span>]<span class="sc">:&gt;7}</span><span class="ss">"</span>)</span>
+<span id="cb6-122"><a href="#cb6-122" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb6-123"><a href="#cb6-123" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-124"><a href="#cb6-124" aria-hidden="true" tabindex="-1"></a><span class="fu">## Multi-Objective Inverse Design</span></span>
+<span id="cb6-125"><a href="#cb6-125" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-126"><a href="#cb6-126" aria-hidden="true" tabindex="-1"></a>Real requirements conflict. You want:</span>
+<span id="cb6-127"><a href="#cb6-127" aria-hidden="true" tabindex="-1"></a><span class="ss">1. </span>Small compaction ratio $\rho$ (good — collapses well)</span>
+<span id="cb6-128"><a href="#cb6-128" aria-hidden="true" tabindex="-1"></a><span class="ss">2. </span>Near-square panels (good — easier to manufacture and less buckling risk)</span>
+<span id="cb6-129"><a href="#cb6-129" aria-hidden="true" tabindex="-1"></a><span class="ss">3. </span>Few panels (good — lower mass, fewer hinges)</span>
+<span id="cb6-130"><a href="#cb6-130" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-131"><a href="#cb6-131" aria-hidden="true" tabindex="-1"></a>No single design satisfies all three simultaneously. The Pareto front shows the trade-off.</span>
+<span id="cb6-132"><a href="#cb6-132" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-135"><a href="#cb6-135" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb6-136"><a href="#cb6-136" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> pareto_sweep(W_target, L_target, m, n):</span>
+<span id="cb6-137"><a href="#cb6-137" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""</span></span>
+<span id="cb6-138"><a href="#cb6-138" aria-hidden="true" tabindex="-1"></a><span class="co">    Sweep alpha over feasible range, compute objectives for each.</span></span>
+<span id="cb6-139"><a href="#cb6-139" aria-hidden="true" tabindex="-1"></a><span class="co">    Returns arrays of (rho, aspect_deviation, n_panels).</span></span>
+<span id="cb6-140"><a href="#cb6-140" aria-hidden="true" tabindex="-1"></a><span class="co">    """</span></span>
+<span id="cb6-141"><a href="#cb6-141" aria-hidden="true" tabindex="-1"></a>    alphas <span class="op">=</span> np.linspace(<span class="fl">0.05</span>, np.pi<span class="op">/</span><span class="dv">2</span> <span class="op">-</span> <span class="fl">0.05</span>, <span class="dv">300</span>)</span>
+<span id="cb6-142"><a href="#cb6-142" aria-hidden="true" tabindex="-1"></a>    rhos, aspect_devs <span class="op">=</span> [], []</span>
+<span id="cb6-143"><a href="#cb6-143" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-144"><a href="#cb6-144" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> alpha <span class="kw">in</span> alphas:</span>
+<span id="cb6-145"><a href="#cb6-145" aria-hidden="true" tabindex="-1"></a>        a <span class="op">=</span> W_target <span class="op">/</span> (<span class="dv">2</span> <span class="op">*</span> m <span class="op">*</span> np.cos(alpha))</span>
+<span id="cb6-146"><a href="#cb6-146" aria-hidden="true" tabindex="-1"></a>        b <span class="op">=</span> L_target <span class="op">/</span> n</span>
+<span id="cb6-147"><a href="#cb6-147" aria-hidden="true" tabindex="-1"></a>        ar <span class="op">=</span> a <span class="op">/</span> b</span>
+<span id="cb6-148"><a href="#cb6-148" aria-hidden="true" tabindex="-1"></a>        rhos.append(np.sin(alpha))</span>
+<span id="cb6-149"><a href="#cb6-149" aria-hidden="true" tabindex="-1"></a>        aspect_devs.append(<span class="bu">abs</span>(ar <span class="op">-</span> <span class="fl">1.0</span>))  <span class="co"># deviation from square</span></span>
+<span id="cb6-150"><a href="#cb6-150" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-151"><a href="#cb6-151" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> np.array(rhos), np.array(aspect_devs)</span>
+<span id="cb6-152"><a href="#cb6-152" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-153"><a href="#cb6-153" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-154"><a href="#cb6-154" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">7</span>, <span class="dv">5</span>))</span>
+<span id="cb6-155"><a href="#cb6-155" aria-hidden="true" tabindex="-1"></a>colors <span class="op">=</span> plt.cm.viridis(np.linspace(<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">5</span>))</span>
+<span id="cb6-156"><a href="#cb6-156" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-157"><a href="#cb6-157" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i, (m, n) <span class="kw">in</span> <span class="bu">enumerate</span>([(<span class="dv">4</span>,<span class="dv">3</span>), (<span class="dv">6</span>,<span class="dv">4</span>), (<span class="dv">8</span>,<span class="dv">5</span>), (<span class="dv">10</span>,<span class="dv">6</span>), (<span class="dv">12</span>,<span class="dv">8</span>)]):</span>
+<span id="cb6-158"><a href="#cb6-158" aria-hidden="true" tabindex="-1"></a>    rhos, asp_devs <span class="op">=</span> pareto_sweep(<span class="fl">2.0</span>, <span class="fl">0.5</span>, m, n)</span>
+<span id="cb6-159"><a href="#cb6-159" aria-hidden="true" tabindex="-1"></a>    ax.scatter(rhos, asp_devs, s<span class="op">=</span><span class="dv">4</span>, color<span class="op">=</span>colors[i], label<span class="op">=</span><span class="ss">f'</span><span class="sc">{</span>m<span class="sc">}</span><span class="ss">×</span><span class="sc">{</span>n<span class="sc">}</span><span class="ss"> = </span><span class="sc">{</span>m<span class="op">*</span>n<span class="sc">}</span><span class="ss"> panels'</span>, alpha<span class="op">=</span><span class="fl">0.7</span>)</span>
+<span id="cb6-160"><a href="#cb6-160" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-161"><a href="#cb6-161" aria-hidden="true" tabindex="-1"></a>ax.set_xlabel(<span class="st">'Compaction ratio ρ (lower = better collapse)'</span>)</span>
+<span id="cb6-162"><a href="#cb6-162" aria-hidden="true" tabindex="-1"></a>ax.set_ylabel(<span class="st">'Panel aspect ratio deviation |a/b − 1| (lower = more square)'</span>)</span>
+<span id="cb6-163"><a href="#cb6-163" aria-hidden="true" tabindex="-1"></a>ax.set_title(<span class="st">'Pareto front: compaction vs panel squareness</span><span class="ch">\n</span><span class="st">(each curve = one grid choice)'</span>)</span>
+<span id="cb6-164"><a href="#cb6-164" aria-hidden="true" tabindex="-1"></a>ax.legend(fontsize<span class="op">=</span><span class="dv">8</span>, markerscale<span class="op">=</span><span class="dv">3</span>)</span>
+<span id="cb6-165"><a href="#cb6-165" aria-hidden="true" tabindex="-1"></a>ax.grid(<span class="va">True</span>, linewidth<span class="op">=</span><span class="fl">0.5</span>, alpha<span class="op">=</span><span class="fl">0.5</span>)</span>
+<span id="cb6-166"><a href="#cb6-166" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
+<span id="cb6-167"><a href="#cb6-167" aria-hidden="true" tabindex="-1"></a>plt.show()</span>
+<span id="cb6-168"><a href="#cb6-168" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb6-169"><a href="#cb6-169" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-170"><a href="#cb6-170" aria-hidden="true" tabindex="-1"></a><span class="fu">## Numerical Inverse Design with scipy</span></span>
+<span id="cb6-171"><a href="#cb6-171" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-172"><a href="#cb6-172" aria-hidden="true" tabindex="-1"></a>When the forward model is more complex (non-analytic, simulated), we solve the inverse problem numerically using a nonlinear least-squares formulation.</span>
+<span id="cb6-173"><a href="#cb6-173" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-176"><a href="#cb6-176" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb6-177"><a href="#cb6-177" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> scipy.optimize <span class="im">import</span> least_squares</span>
+<span id="cb6-178"><a href="#cb6-178" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-179"><a href="#cb6-179" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> residuals(params, W_target, L_target, rho_target, m, n):</span>
+<span id="cb6-180"><a href="#cb6-180" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""</span></span>
+<span id="cb6-181"><a href="#cb6-181" aria-hidden="true" tabindex="-1"></a><span class="co">    Residuals for inverse design: [W_error, L_error, rho_error].</span></span>
+<span id="cb6-182"><a href="#cb6-182" aria-hidden="true" tabindex="-1"></a><span class="co">    params = [alpha, log_a, log_b]  (log-parameterize to enforce positivity)</span></span>
+<span id="cb6-183"><a href="#cb6-183" aria-hidden="true" tabindex="-1"></a><span class="co">    """</span></span>
+<span id="cb6-184"><a href="#cb6-184" aria-hidden="true" tabindex="-1"></a>    alpha <span class="op">=</span> params[<span class="dv">0</span>]</span>
+<span id="cb6-185"><a href="#cb6-185" aria-hidden="true" tabindex="-1"></a>    a <span class="op">=</span> np.exp(params[<span class="dv">1</span>])</span>
+<span id="cb6-186"><a href="#cb6-186" aria-hidden="true" tabindex="-1"></a>    b <span class="op">=</span> np.exp(params[<span class="dv">2</span>])</span>
+<span id="cb6-187"><a href="#cb6-187" aria-hidden="true" tabindex="-1"></a>    fwd <span class="op">=</span> miura_forward(alpha, m, n, a, b)</span>
+<span id="cb6-188"><a href="#cb6-188" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> np.array([</span>
+<span id="cb6-189"><a href="#cb6-189" aria-hidden="true" tabindex="-1"></a>        (fwd[<span class="st">'W_dep'</span>] <span class="op">-</span> W_target) <span class="op">/</span> W_target,</span>
+<span id="cb6-190"><a href="#cb6-190" aria-hidden="true" tabindex="-1"></a>        (fwd[<span class="st">'L_dep'</span>] <span class="op">-</span> L_target) <span class="op">/</span> L_target,</span>
+<span id="cb6-191"><a href="#cb6-191" aria-hidden="true" tabindex="-1"></a>        (fwd[<span class="st">'rho'</span>]   <span class="op">-</span> rho_target) <span class="op">/</span> rho_target,</span>
+<span id="cb6-192"><a href="#cb6-192" aria-hidden="true" tabindex="-1"></a>    ])</span>
+<span id="cb6-193"><a href="#cb6-193" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-194"><a href="#cb6-194" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-195"><a href="#cb6-195" aria-hidden="true" tabindex="-1"></a><span class="co"># Solve numerically (should recover same result as analytic solution)</span></span>
+<span id="cb6-196"><a href="#cb6-196" aria-hidden="true" tabindex="-1"></a>m, n <span class="op">=</span> <span class="dv">6</span>, <span class="dv">4</span></span>
+<span id="cb6-197"><a href="#cb6-197" aria-hidden="true" tabindex="-1"></a>x0 <span class="op">=</span> np.array([<span class="fl">0.3</span>, np.log(<span class="fl">0.1</span>), np.log(<span class="fl">0.05</span>)])  <span class="co"># initial guess</span></span>
+<span id="cb6-198"><a href="#cb6-198" aria-hidden="true" tabindex="-1"></a>result <span class="op">=</span> least_squares(</span>
+<span id="cb6-199"><a href="#cb6-199" aria-hidden="true" tabindex="-1"></a>    residuals, x0,</span>
+<span id="cb6-200"><a href="#cb6-200" aria-hidden="true" tabindex="-1"></a>    args<span class="op">=</span>(W_target, L_target, rho_target, m, n),</span>
+<span id="cb6-201"><a href="#cb6-201" aria-hidden="true" tabindex="-1"></a>    method<span class="op">=</span><span class="st">'lm'</span>,</span>
+<span id="cb6-202"><a href="#cb6-202" aria-hidden="true" tabindex="-1"></a>    ftol<span class="op">=</span><span class="fl">1e-12</span>, xtol<span class="op">=</span><span class="fl">1e-12</span></span>
+<span id="cb6-203"><a href="#cb6-203" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb6-204"><a href="#cb6-204" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-205"><a href="#cb6-205" aria-hidden="true" tabindex="-1"></a>alpha_num <span class="op">=</span> result.x[<span class="dv">0</span>]</span>
+<span id="cb6-206"><a href="#cb6-206" aria-hidden="true" tabindex="-1"></a>a_num <span class="op">=</span> np.exp(result.x[<span class="dv">1</span>])</span>
+<span id="cb6-207"><a href="#cb6-207" aria-hidden="true" tabindex="-1"></a>b_num <span class="op">=</span> np.exp(result.x[<span class="dv">2</span>])</span>
+<span id="cb6-208"><a href="#cb6-208" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-209"><a href="#cb6-209" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"=== Numerical Inverse Design ==="</span>)</span>
+<span id="cb6-210"><a href="#cb6-210" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"α = </span><span class="sc">{</span>np<span class="sc">.</span>degrees(alpha_num)<span class="sc">:.4f}</span><span class="ss">°  (analytic: </span><span class="sc">{</span>np<span class="sc">.</span>degrees(alpha)<span class="sc">:.4f}</span><span class="ss">°)"</span>)</span>
+<span id="cb6-211"><a href="#cb6-211" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"a = </span><span class="sc">{</span>a_num<span class="op">*</span><span class="dv">1000</span><span class="sc">:.4f}</span><span class="ss">mm  (analytic: </span><span class="sc">{</span>a<span class="op">*</span><span class="dv">1000</span><span class="sc">:.4f}</span><span class="ss">mm)"</span>)</span>
+<span id="cb6-212"><a href="#cb6-212" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"b = </span><span class="sc">{</span>b_num<span class="op">*</span><span class="dv">1000</span><span class="sc">:.4f}</span><span class="ss">mm  (analytic: </span><span class="sc">{</span>b<span class="op">*</span><span class="dv">1000</span><span class="sc">:.4f}</span><span class="ss">mm)"</span>)</span>
+<span id="cb6-213"><a href="#cb6-213" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Residual norm: </span><span class="sc">{</span>np<span class="sc">.</span>linalg<span class="sc">.</span>norm(result.fun)<span class="sc">:.2e}</span><span class="ss">"</span>)</span>
+<span id="cb6-214"><a href="#cb6-214" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb6-215"><a href="#cb6-215" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-216"><a href="#cb6-216" aria-hidden="true" tabindex="-1"></a><span class="fu">## Ill-Posedness and Regularization</span></span>
+<span id="cb6-217"><a href="#cb6-217" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-218"><a href="#cb6-218" aria-hidden="true" tabindex="-1"></a>The inverse problem is ill-posed when there are fewer constraints than parameters, or when multiple solutions produce nearly the same forward output. A common remedy is Tikhonov regularization: add a penalty term that prefers solutions near a nominal design $\boldsymbol{\theta}_0$:</span>
+<span id="cb6-219"><a href="#cb6-219" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-220"><a href="#cb6-220" aria-hidden="true" tabindex="-1"></a>$$\min_{\boldsymbol{\theta}} \quad <span class="sc">\|</span>\mathbf{r}(\boldsymbol{\theta})<span class="sc">\|</span>^2 + \lambda <span class="sc">\|</span>\boldsymbol{\theta} - \boldsymbol{\theta}_0<span class="sc">\|</span>^2$$ {#eq-tikhonov}</span>
+<span id="cb6-221"><a href="#cb6-221" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-224"><a href="#cb6-224" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb6-225"><a href="#cb6-225" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> regularized_residuals(params, W_target, L_target, rho_target, m, n, theta0, lam):</span>
+<span id="cb6-226"><a href="#cb6-226" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Residuals including Tikhonov regularization."""</span></span>
+<span id="cb6-227"><a href="#cb6-227" aria-hidden="true" tabindex="-1"></a>    physics <span class="op">=</span> residuals(params, W_target, L_target, rho_target, m, n)</span>
+<span id="cb6-228"><a href="#cb6-228" aria-hidden="true" tabindex="-1"></a>    reg <span class="op">=</span> np.sqrt(lam) <span class="op">*</span> (params <span class="op">-</span> theta0)</span>
+<span id="cb6-229"><a href="#cb6-229" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> np.concatenate([physics, reg])</span>
+<span id="cb6-230"><a href="#cb6-230" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-231"><a href="#cb6-231" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-232"><a href="#cb6-232" aria-hidden="true" tabindex="-1"></a>theta0 <span class="op">=</span> np.array([np.pi<span class="op">/</span><span class="dv">4</span>, np.log(<span class="fl">0.15</span>), np.log(<span class="fl">0.06</span>)])  <span class="co"># nominal design</span></span>
+<span id="cb6-233"><a href="#cb6-233" aria-hidden="true" tabindex="-1"></a>lambdas <span class="op">=</span> [<span class="fl">0.0</span>, <span class="fl">0.01</span>, <span class="fl">0.1</span>, <span class="fl">1.0</span>]</span>
+<span id="cb6-234"><a href="#cb6-234" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-235"><a href="#cb6-235" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"</span><span class="sc">{</span><span class="st">'λ'</span><span class="sc">:&gt;8}</span><span class="ss"> </span><span class="sc">{</span><span class="st">'α (°)'</span><span class="sc">:&gt;10}</span><span class="ss"> </span><span class="sc">{</span><span class="st">'a (mm)'</span><span class="sc">:&gt;10}</span><span class="ss"> </span><span class="sc">{</span><span class="st">'b (mm)'</span><span class="sc">:&gt;10}</span><span class="ss"> </span><span class="sc">{</span><span class="st">'||r||'</span><span class="sc">:&gt;12}</span><span class="ss">"</span>)</span>
+<span id="cb6-236"><a href="#cb6-236" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"-"</span> <span class="op">*</span> <span class="dv">55</span>)</span>
+<span id="cb6-237"><a href="#cb6-237" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> lam <span class="kw">in</span> lambdas:</span>
+<span id="cb6-238"><a href="#cb6-238" aria-hidden="true" tabindex="-1"></a>    res <span class="op">=</span> least_squares(</span>
+<span id="cb6-239"><a href="#cb6-239" aria-hidden="true" tabindex="-1"></a>        regularized_residuals, theta0.copy(),</span>
+<span id="cb6-240"><a href="#cb6-240" aria-hidden="true" tabindex="-1"></a>        args<span class="op">=</span>(W_target, L_target, rho_target, m, n, theta0, lam),</span>
+<span id="cb6-241"><a href="#cb6-241" aria-hidden="true" tabindex="-1"></a>        method<span class="op">=</span><span class="st">'lm'</span>, ftol<span class="op">=</span><span class="fl">1e-12</span></span>
+<span id="cb6-242"><a href="#cb6-242" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb6-243"><a href="#cb6-243" aria-hidden="true" tabindex="-1"></a>    a_r <span class="op">=</span> np.exp(res.x[<span class="dv">1</span>])</span>
+<span id="cb6-244"><a href="#cb6-244" aria-hidden="true" tabindex="-1"></a>    b_r <span class="op">=</span> np.exp(res.x[<span class="dv">2</span>])</span>
+<span id="cb6-245"><a href="#cb6-245" aria-hidden="true" tabindex="-1"></a>    phys_resid <span class="op">=</span> residuals(res.x, W_target, L_target, rho_target, m, n)</span>
+<span id="cb6-246"><a href="#cb6-246" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"</span><span class="sc">{</span>lam<span class="sc">:&gt;8.2f}</span><span class="ss"> </span><span class="sc">{</span>np<span class="sc">.</span>degrees(res.x[<span class="dv">0</span>])<span class="sc">:&gt;10.3f}</span><span class="ss"> </span><span class="sc">{</span>a_r<span class="op">*</span><span class="dv">1000</span><span class="sc">:&gt;10.3f}</span><span class="ss"> </span><span class="sc">{</span>b_r<span class="op">*</span><span class="dv">1000</span><span class="sc">:&gt;10.3f}</span><span class="ss"> </span><span class="sc">{</span>np<span class="sc">.</span>linalg<span class="sc">.</span>norm(phys_resid)<span class="sc">:&gt;12.2e}</span><span class="ss">"</span>)</span>
+<span id="cb6-247"><a href="#cb6-247" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb6-248"><a href="#cb6-248" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-249"><a href="#cb6-249" aria-hidden="true" tabindex="-1"></a><span class="fu">## Summary</span></span>
+<span id="cb6-250"><a href="#cb6-250" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-251"><a href="#cb6-251" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>The inverse design problem: given target deployed shape and compaction ratio, recover crease parameters.</span>
+<span id="cb6-252"><a href="#cb6-252" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>For fixed grid $(m, n)$, the Miura-ori inverse problem has an analytic solution.</span>
+<span id="cb6-253"><a href="#cb6-253" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>When the grid is variable, sweep feasible $(m, n)$ pairs and select by secondary criteria (aspect ratio, panel count).</span>
+<span id="cb6-254"><a href="#cb6-254" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Multiple objectives conflict — compaction vs. panel squareness — and the Pareto front shows the trade-off space.</span>
+<span id="cb6-255"><a href="#cb6-255" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Numerical formulation via least-squares enables inverse design when no analytic solution exists; Tikhonov regularization manages ill-posedness.</span>
+<span id="cb6-256"><a href="#cb6-256" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-257"><a href="#cb6-257" aria-hidden="true" tabindex="-1"></a><span class="fu">## Further Reading</span></span>
+<span id="cb6-258"><a href="#cb6-258" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-259"><a href="#cb6-259" aria-hidden="true" tabindex="-1"></a>@dudte2016programming solves inverse design for curved origami tessellations using gradient-based optimization. @lang2011origami (Chapter 14) discusses the degrees of freedom in base design and how constraints determine feasibility.</span>
+<span id="cb6-260"><a href="#cb6-260" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-261"><a href="#cb6-261" aria-hidden="true" tabindex="-1"></a><span class="fu">## Exercises</span></span>
+<span id="cb6-262"><a href="#cb6-262" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-263"><a href="#cb6-263" aria-hidden="true" tabindex="-1"></a><span class="ss">1. </span>**Sensitivity analysis.** Using the numerical inverse design setup, compute the Jacobian $\partial \mathbf{r}/\partial \boldsymbol{\theta}$ at the solution using <span class="in">`least_squares`</span> output (it returns <span class="in">`jac`</span>). What is the condition number? What does this tell you about the inverse problem's sensitivity to measurement noise in the target dimensions?</span>
+<span id="cb6-264"><a href="#cb6-264" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-265"><a href="#cb6-265" aria-hidden="true" tabindex="-1"></a><span class="ss">2. </span>**Underdetermined case.** Add a fourth parameter (e.g., vary both $a$ and $b$ independently while also varying $\alpha$ and the aspect ratio target). The system now has four unknowns and three equations. How many solutions exist? Use <span class="in">`differential_evolution`</span> to find two distinct solutions.</span>
+<span id="cb6-266"><a href="#cb6-266" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-267"><a href="#cb6-267" aria-hidden="true" tabindex="-1"></a><span class="ss">3. </span>**Noisy targets.** Add Gaussian noise with $\sigma = 0.01$ to $W^*, L^*, \rho^*$ and solve the inverse problem 100 times. Plot the distribution of recovered $\alpha$ values. What is the standard deviation of $\alpha$ for $\sigma = 0.01$?</span>
+<span id="cb6-268"><a href="#cb6-268" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-269"><a href="#cb6-269" aria-hidden="true" tabindex="-1"></a><span class="ss">4. </span>**Pareto-optimal grid selection.** For the grid sweep in this chapter, implement a proper Pareto dominance filter that retains only non-dominated $(m, n)$ pairs when considering three objectives simultaneously: $\rho$, aspect deviation, and total panel count. Plot the Pareto front in 3D.</span>
+<span id="cb6-270"><a href="#cb6-270" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-271"><a href="#cb6-271" aria-hidden="true" tabindex="-1"></a><span class="ss">5. </span>**Curved crease inverse problem.** (Advanced) Instead of straight creases, consider a crease pattern where the crease angle $\alpha$ varies linearly from $\alpha_1$ at one end to $\alpha_2$ at the other. The deployed shape is then a curved surface. Formulate the inverse problem of finding $(\alpha_1, \alpha_2)$ to hit a target curvature, and solve it numerically.</span>
 </code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
 </div></div></div></div></div>
 </div> <!-- /content -->

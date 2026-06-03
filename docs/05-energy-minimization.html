@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>5&nbsp; Energy Minimization and Equilibrium Folds – The Mathematics of Folding</title>
+<title>5&nbsp; Energy Minimization and Equilibrium Folds – The Engineering of Folding</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -183,7 +183,7 @@ window.Quarto = {
   <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
     <div class="pt-lg-2 mt-2 text-left sidebar-header">
     <div class="sidebar-title mb-0 py-0">
-      <a href="./">The Mathematics of Folding</a> 
+      <a href="./">The Engineering of Folding</a> 
         <div class="sidebar-tools-main">
     <a href="https://github.com/altustd/origami-optimization-ebook" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
 </div>
@@ -333,7 +333,7 @@ window.Quarto = {
 <p>This is a constrained nonlinear program:</p>
 <p><span id="eq-energy-opt"><span class="math display">\[\min_{\boldsymbol{\phi}} \quad E_\text{total}(\boldsymbol{\phi}) \quad \text{subject to} \quad g_j(\boldsymbol{\phi}) = 0 \quad j = 1, \ldots, M \tag{5.3}\]</span></span></p>
 <p>where the <span class="math inline">\(g_j\)</span> are the Kawasaki constraints (or more generally, the geometric closure conditions at each vertex).</p>
-<div id="5899a8f3" class="cell" data-execution_count="1">
+<div id="46eda252" class="cell">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
@@ -354,7 +354,7 @@ window.Quarto = {
 <h2 data-number="5.2" class="anchored" data-anchor-id="example-four-crease-vertex-under-load"><span class="header-section-number">5.2</span> Example: Four-Crease Vertex Under Load</h2>
 <p>Consider a single four-crease vertex (the Miura-ori unit vertex) with sector angles <span class="math inline">\(\alpha\)</span> and <span class="math inline">\(\pi - \alpha\)</span>. The vertex has four fold angles <span class="math inline">\(\phi_1, \phi_2, \phi_3, \phi_4\)</span> subject to the Kawasaki closure condition.</p>
 <p>We will minimize the elastic energy over the feasible set — the manifold of fold-angle vectors satisfying Kawasaki — and trace how the equilibrium configuration depends on the stiffness distribution.</p>
-<div id="7346e52b" class="cell" data-execution_count="2">
+<div id="c04f5918" class="cell">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> kawasaki_residual(phi, alpha):</span>
@@ -442,19 +442,12 @@ window.Quarto = {
 <span id="cb2-83"><a href="#cb2-83" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
 <span id="cb2-84"><a href="#cb2-84" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
-<div class="cell-output cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="05-energy-minimization_files/figure-html/cell-3-output-1.png" width="661" height="372" class="figure-img"></p>
-</figure>
-</div>
-</div>
 </div>
 </section>
 <section id="comparing-optimizers" class="level2" data-number="5.3">
 <h2 data-number="5.3" class="anchored" data-anchor-id="comparing-optimizers"><span class="header-section-number">5.3</span> Comparing Optimizers</h2>
 <p>The energy minimization problem <a href="#eq-energy-opt" class="quarto-xref">Equation&nbsp;<span>5.3</span></a> is smooth and has analytic gradients. Different optimizers make different trade-offs between convergence speed, memory, and constraint-handling capability.</p>
-<div id="0d0cd5db" class="cell" data-execution_count="3">
+<div id="2ba626fe" class="cell">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> time</span>
@@ -544,54 +537,36 @@ window.Quarto = {
 <span id="cb3-85"><a href="#cb3-85" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
 <span id="cb3-86"><a href="#cb3-86" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
-<div class="cell-output cell-output-stdout">
-<pre><code>SLSQP       converged=True  φ*=[ 81.92116192 120.49366499]°  E*=2.876609  t=3.19ms
-L-BFGS-B    converged=True  φ*=[68.75493513 34.37746742]°  E*=0.000000  t=1.19ms</code></pre>
-</div>
-<div class="cell-output cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="05-energy-minimization_files/figure-html/cell-4-output-2.png" width="948" height="372" class="figure-img"></p>
-</figure>
-</div>
-</div>
 </div>
 </section>
 <section id="non-uniform-stiffness-and-multiple-equilibria" class="level2" data-number="5.4">
 <h2 data-number="5.4" class="anchored" data-anchor-id="non-uniform-stiffness-and-multiple-equilibria"><span class="header-section-number">5.4</span> Non-Uniform Stiffness and Multiple Equilibria</h2>
 <p>Real origami structures often have creases with different stiffnesses — due to material variation, different crease depths, or deliberate design. When stiffness is non-uniform, the energy landscape can develop multiple local minima.</p>
-<div id="27577aaa" class="cell" data-execution_count="4">
+<div id="818d6a13" class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Sweep stiffness ratio k2/k1 and track equilibrium</span></span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>alpha <span class="op">=</span> np.radians(<span class="dv">45</span>)</span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>phi0 <span class="op">=</span> np.array([<span class="fl">1.0</span>, <span class="fl">1.0</span>, <span class="fl">1.0</span>, <span class="fl">1.0</span>])</span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>k_ratios <span class="op">=</span> np.logspace(<span class="op">-</span><span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">30</span>)</span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>phi1_eq_list <span class="op">=</span> []</span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> ratio <span class="kw">in</span> k_ratios:</span>
-<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>    k <span class="op">=</span> np.array([<span class="fl">1.0</span>, ratio, <span class="fl">1.0</span>, ratio])</span>
-<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>    phi_eq, _, _ <span class="op">=</span> vertex_energy_constrained(alpha, phi0, k, phi_init<span class="op">=</span>[<span class="fl">0.6</span>, <span class="fl">0.5</span>])</span>
-<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>    phi1_eq_list.append(np.degrees(phi_eq[<span class="dv">0</span>]))</span>
-<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">6</span>, <span class="dv">4</span>))</span>
-<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>ax.semilogx(k_ratios, phi1_eq_list, <span class="st">'o-'</span>, color<span class="op">=</span><span class="st">'steelblue'</span>, markersize<span class="op">=</span><span class="dv">4</span>)</span>
-<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>ax.axhline(np.degrees(phi0[<span class="dv">0</span>]), color<span class="op">=</span><span class="st">'gray'</span>, linestyle<span class="op">=</span><span class="st">'--'</span>, linewidth<span class="op">=</span><span class="fl">0.8</span>, label<span class="op">=</span><span class="st">'Rest angle'</span>)</span>
-<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>ax.set_xlabel(<span class="st">'Stiffness ratio k₂/k₁'</span>)</span>
-<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>ax.set_ylabel(<span class="st">'Equilibrium φ₁* (°)'</span>)</span>
-<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>ax.set_title(<span class="st">'Equilibrium fold angle vs stiffness ratio (α=45°)'</span>)</span>
-<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a>ax.legend()</span>
-<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a>ax.grid(<span class="va">True</span>, linewidth<span class="op">=</span><span class="fl">0.5</span>, alpha<span class="op">=</span><span class="fl">0.5</span>)</span>
-<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
-<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Sweep stiffness ratio k2/k1 and track equilibrium</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>alpha <span class="op">=</span> np.radians(<span class="dv">45</span>)</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>phi0 <span class="op">=</span> np.array([<span class="fl">1.0</span>, <span class="fl">1.0</span>, <span class="fl">1.0</span>, <span class="fl">1.0</span>])</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>k_ratios <span class="op">=</span> np.logspace(<span class="op">-</span><span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">30</span>)</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>phi1_eq_list <span class="op">=</span> []</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> ratio <span class="kw">in</span> k_ratios:</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>    k <span class="op">=</span> np.array([<span class="fl">1.0</span>, ratio, <span class="fl">1.0</span>, ratio])</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>    phi_eq, _, _ <span class="op">=</span> vertex_energy_constrained(alpha, phi0, k, phi_init<span class="op">=</span>[<span class="fl">0.6</span>, <span class="fl">0.5</span>])</span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>    phi1_eq_list.append(np.degrees(phi_eq[<span class="dv">0</span>]))</span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">6</span>, <span class="dv">4</span>))</span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>ax.semilogx(k_ratios, phi1_eq_list, <span class="st">'o-'</span>, color<span class="op">=</span><span class="st">'steelblue'</span>, markersize<span class="op">=</span><span class="dv">4</span>)</span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>ax.axhline(np.degrees(phi0[<span class="dv">0</span>]), color<span class="op">=</span><span class="st">'gray'</span>, linestyle<span class="op">=</span><span class="st">'--'</span>, linewidth<span class="op">=</span><span class="fl">0.8</span>, label<span class="op">=</span><span class="st">'Rest angle'</span>)</span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>ax.set_xlabel(<span class="st">'Stiffness ratio k₂/k₁'</span>)</span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>ax.set_ylabel(<span class="st">'Equilibrium φ₁* (°)'</span>)</span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>ax.set_title(<span class="st">'Equilibrium fold angle vs stiffness ratio (α=45°)'</span>)</span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>ax.legend()</span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>ax.grid(<span class="va">True</span>, linewidth<span class="op">=</span><span class="fl">0.5</span>, alpha<span class="op">=</span><span class="fl">0.5</span>)</span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
+<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
-<div class="cell-output cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="05-energy-minimization_files/figure-html/cell-5-output-1.png" width="565" height="371" class="figure-img"></p>
-</figure>
-</div>
-</div>
 </div>
 </section>
 <section id="summary" class="level2" data-number="5.5">
@@ -1095,289 +1070,289 @@ Schenk, Mark, and Simon D Guest. 2013. <span>“Geometry of Miura-Folded Metamat
       </a>
   </div>
 </nav><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu"># Energy Minimization and Equilibrium Folds</span></span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>::: {.callout-note}</span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="fu">## Learning Objectives</span></span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Model elastic fold energy as a sum of torsional spring potentials</span>
-<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Formulate the equilibrium-finding problem as unconstrained and constrained minimization</span>
-<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Compare gradient descent, L-BFGS-B, and SLSQP on the same problem</span>
-<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Interpret convergence behavior and identify ill-conditioning</span>
-<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>:::</span>
-<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>Not every fold pattern has a single, clean, analytically-determined configuration. The Miura-ori folds along a one-parameter path because its geometry enforces it. But most real structures — partially folded panels, curved crease patterns, origami with elastic materials — settle into an equilibrium that balances the external loading against the elastic energy stored in the creases.</span>
-<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>Finding that equilibrium is an energy minimization problem.</span>
-<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a><span class="fu">## The Elastic Fold Energy Model</span></span>
-<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a>Model each crease as a torsional spring: it has a natural (rest) fold angle $\phi_0$ and resists deformation with stiffness $k$. The elastic energy stored in crease $i$ when its fold angle is $\phi_i$ is:</span>
-<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a>$$E_i = \frac{k_i}{2}(\phi_i - \phi_{0,i})^2$$ {#eq-spring-energy}</span>
-<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a>The total energy of the structure is:</span>
-<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a>$$E_\text{total} = \sum_{i=1}^{N} \frac{k_i}{2}(\phi_i - \phi_{0,i})^2$$ {#eq-total-energy}</span>
-<span id="cb6-24"><a href="#cb6-24" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-25"><a href="#cb6-25" aria-hidden="true" tabindex="-1"></a>At equilibrium, $E_\text{total}$ is minimized subject to the geometric constraints from Chapter 2 — specifically, the Kawasaki closure conditions at each vertex.</span>
-<span id="cb6-26"><a href="#cb6-26" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-27"><a href="#cb6-27" aria-hidden="true" tabindex="-1"></a>This is a constrained nonlinear program:</span>
-<span id="cb6-28"><a href="#cb6-28" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-29"><a href="#cb6-29" aria-hidden="true" tabindex="-1"></a>$$\min_{\boldsymbol{\phi}} \quad E_\text{total}(\boldsymbol{\phi}) \quad \text{subject to} \quad g_j(\boldsymbol{\phi}) = 0 \quad j = 1, \ldots, M$$ {#eq-energy-opt}</span>
-<span id="cb6-30"><a href="#cb6-30" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-31"><a href="#cb6-31" aria-hidden="true" tabindex="-1"></a>where the $g_j$ are the Kawasaki constraints (or more generally, the geometric closure conditions at each vertex).</span>
-<span id="cb6-32"><a href="#cb6-32" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-35"><a href="#cb6-35" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
-<span id="cb6-36"><a href="#cb6-36" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
-<span id="cb6-37"><a href="#cb6-37" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
-<span id="cb6-38"><a href="#cb6-38" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> scipy.optimize <span class="im">import</span> minimize</span>
-<span id="cb6-39"><a href="#cb6-39" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-40"><a href="#cb6-40" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> total_energy(phi, phi0, k):</span>
-<span id="cb6-41"><a href="#cb6-41" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Total elastic energy of a crease pattern."""</span></span>
-<span id="cb6-42"><a href="#cb6-42" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="fl">0.5</span> <span class="op">*</span> np.<span class="bu">sum</span>(k <span class="op">*</span> (phi <span class="op">-</span> phi0)<span class="op">**</span><span class="dv">2</span>)</span>
-<span id="cb6-43"><a href="#cb6-43" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-44"><a href="#cb6-44" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> energy_gradient(phi, phi0, k):</span>
-<span id="cb6-45"><a href="#cb6-45" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Analytic gradient of total energy."""</span></span>
-<span id="cb6-46"><a href="#cb6-46" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> k <span class="op">*</span> (phi <span class="op">-</span> phi0)</span>
-<span id="cb6-47"><a href="#cb6-47" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb6-48"><a href="#cb6-48" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-49"><a href="#cb6-49" aria-hidden="true" tabindex="-1"></a><span class="fu">## Example: Four-Crease Vertex Under Load</span></span>
-<span id="cb6-50"><a href="#cb6-50" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-51"><a href="#cb6-51" aria-hidden="true" tabindex="-1"></a>Consider a single four-crease vertex (the Miura-ori unit vertex) with sector angles $\alpha$ and $\pi - \alpha$. The vertex has four fold angles $\phi_1, \phi_2, \phi_3, \phi_4$ subject to the Kawasaki closure condition.</span>
-<span id="cb6-52"><a href="#cb6-52" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-53"><a href="#cb6-53" aria-hidden="true" tabindex="-1"></a>We will minimize the elastic energy over the feasible set — the manifold of fold-angle vectors satisfying Kawasaki — and trace how the equilibrium configuration depends on the stiffness distribution.</span>
-<span id="cb6-54"><a href="#cb6-54" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-57"><a href="#cb6-57" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
-<span id="cb6-58"><a href="#cb6-58" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> kawasaki_residual(phi, alpha):</span>
-<span id="cb6-59"><a href="#cb6-59" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""</span></span>
-<span id="cb6-60"><a href="#cb6-60" aria-hidden="true" tabindex="-1"></a><span class="co">    Kawasaki closure condition for a 4-crease Miura vertex.</span></span>
-<span id="cb6-61"><a href="#cb6-61" aria-hidden="true" tabindex="-1"></a><span class="co">    Returns scalar: should be 0 at valid configurations.</span></span>
-<span id="cb6-62"><a href="#cb6-62" aria-hidden="true" tabindex="-1"></a><span class="co">    This is the product-of-rotations closure, linearized near flat.</span></span>
-<span id="cb6-63"><a href="#cb6-63" aria-hidden="true" tabindex="-1"></a><span class="co">    Approximation: use the alternating sum condition for small angles.</span></span>
-<span id="cb6-64"><a href="#cb6-64" aria-hidden="true" tabindex="-1"></a><span class="co">    """</span></span>
-<span id="cb6-65"><a href="#cb6-65" aria-hidden="true" tabindex="-1"></a>    phi1, phi2, phi3, phi4 <span class="op">=</span> phi</span>
-<span id="cb6-66"><a href="#cb6-66" aria-hidden="true" tabindex="-1"></a>    ca <span class="op">=</span> np.cos(alpha)</span>
-<span id="cb6-67"><a href="#cb6-67" aria-hidden="true" tabindex="-1"></a>    sa <span class="op">=</span> np.sin(alpha)</span>
-<span id="cb6-68"><a href="#cb6-68" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Exact closure from Schenk &amp; Guest (2013): relates phi_major and phi_minor</span></span>
-<span id="cb6-69"><a href="#cb6-69" aria-hidden="true" tabindex="-1"></a>    <span class="co"># cos(phi2) = (ca^2 * sin^2(phi1) - sa^2) / (ca^2 * sin^2(phi1) + sa^2)</span></span>
-<span id="cb6-70"><a href="#cb6-70" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Residual for phi2 given phi1:</span></span>
-<span id="cb6-71"><a href="#cb6-71" aria-hidden="true" tabindex="-1"></a>    sg1 <span class="op">=</span> np.sin(phi1)</span>
-<span id="cb6-72"><a href="#cb6-72" aria-hidden="true" tabindex="-1"></a>    denom <span class="op">=</span> ca<span class="op">**</span><span class="dv">2</span> <span class="op">*</span> sg1<span class="op">**</span><span class="dv">2</span> <span class="op">+</span> sa<span class="op">**</span><span class="dv">2</span></span>
-<span id="cb6-73"><a href="#cb6-73" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="bu">abs</span>(denom) <span class="op">&lt;</span> <span class="fl">1e-12</span>:</span>
-<span id="cb6-74"><a href="#cb6-74" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="fl">0.0</span></span>
-<span id="cb6-75"><a href="#cb6-75" aria-hidden="true" tabindex="-1"></a>    cos_phi2_required <span class="op">=</span> (ca<span class="op">**</span><span class="dv">2</span> <span class="op">*</span> sg1<span class="op">**</span><span class="dv">2</span> <span class="op">-</span> sa<span class="op">**</span><span class="dv">2</span>) <span class="op">/</span> denom</span>
-<span id="cb6-76"><a href="#cb6-76" aria-hidden="true" tabindex="-1"></a>    cos_phi2_required <span class="op">=</span> np.clip(cos_phi2_required, <span class="op">-</span><span class="dv">1</span>, <span class="dv">1</span>)</span>
-<span id="cb6-77"><a href="#cb6-77" aria-hidden="true" tabindex="-1"></a>    phi2_required <span class="op">=</span> np.arccos(cos_phi2_required)</span>
-<span id="cb6-78"><a href="#cb6-78" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Constraint: phi2 - phi2_required = 0; phi3 = phi1; phi4 = phi2</span></span>
-<span id="cb6-79"><a href="#cb6-79" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> phi2 <span class="op">-</span> phi2_required</span>
-<span id="cb6-80"><a href="#cb6-80" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-81"><a href="#cb6-81" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-82"><a href="#cb6-82" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> vertex_energy_constrained(alpha, phi0, k, phi_init<span class="op">=</span><span class="va">None</span>):</span>
-<span id="cb6-83"><a href="#cb6-83" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""</span></span>
-<span id="cb6-84"><a href="#cb6-84" aria-hidden="true" tabindex="-1"></a><span class="co">    Minimize elastic energy of a 4-crease vertex subject to Kawasaki closure.</span></span>
-<span id="cb6-85"><a href="#cb6-85" aria-hidden="true" tabindex="-1"></a><span class="co">    Decision variables: [phi1, phi2] — phi3=phi1, phi4=phi2 by symmetry.</span></span>
-<span id="cb6-86"><a href="#cb6-86" aria-hidden="true" tabindex="-1"></a><span class="co">    """</span></span>
-<span id="cb6-87"><a href="#cb6-87" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> phi_init <span class="kw">is</span> <span class="va">None</span>:</span>
-<span id="cb6-88"><a href="#cb6-88" aria-hidden="true" tabindex="-1"></a>        phi_init <span class="op">=</span> np.array([<span class="fl">0.5</span>, <span class="fl">0.3</span>])</span>
-<span id="cb6-89"><a href="#cb6-89" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-90"><a href="#cb6-90" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> energy_2d(pq):</span>
-<span id="cb6-91"><a href="#cb6-91" aria-hidden="true" tabindex="-1"></a>        phi1, phi2 <span class="op">=</span> pq</span>
-<span id="cb6-92"><a href="#cb6-92" aria-hidden="true" tabindex="-1"></a>        phi <span class="op">=</span> np.array([phi1, phi2, phi1, phi2])</span>
-<span id="cb6-93"><a href="#cb6-93" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> total_energy(phi, phi0, k)</span>
-<span id="cb6-94"><a href="#cb6-94" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-95"><a href="#cb6-95" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> kawasaki_2d(pq):</span>
-<span id="cb6-96"><a href="#cb6-96" aria-hidden="true" tabindex="-1"></a>        phi1, phi2 <span class="op">=</span> pq</span>
-<span id="cb6-97"><a href="#cb6-97" aria-hidden="true" tabindex="-1"></a>        sg1 <span class="op">=</span> np.sin(phi1)</span>
-<span id="cb6-98"><a href="#cb6-98" aria-hidden="true" tabindex="-1"></a>        ca <span class="op">=</span> np.cos(alpha)</span>
-<span id="cb6-99"><a href="#cb6-99" aria-hidden="true" tabindex="-1"></a>        sa <span class="op">=</span> np.sin(alpha)</span>
-<span id="cb6-100"><a href="#cb6-100" aria-hidden="true" tabindex="-1"></a>        denom <span class="op">=</span> ca<span class="op">**</span><span class="dv">2</span> <span class="op">*</span> sg1<span class="op">**</span><span class="dv">2</span> <span class="op">+</span> sa<span class="op">**</span><span class="dv">2</span></span>
-<span id="cb6-101"><a href="#cb6-101" aria-hidden="true" tabindex="-1"></a>        cos_phi2_req <span class="op">=</span> (ca<span class="op">**</span><span class="dv">2</span> <span class="op">*</span> sg1<span class="op">**</span><span class="dv">2</span> <span class="op">-</span> sa<span class="op">**</span><span class="dv">2</span>) <span class="op">/</span> (<span class="bu">max</span>(denom, <span class="fl">1e-12</span>))</span>
-<span id="cb6-102"><a href="#cb6-102" aria-hidden="true" tabindex="-1"></a>        cos_phi2_req <span class="op">=</span> np.clip(cos_phi2_req, <span class="op">-</span><span class="dv">1</span>, <span class="dv">1</span>)</span>
-<span id="cb6-103"><a href="#cb6-103" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> phi2 <span class="op">-</span> np.arccos(cos_phi2_req)</span>
-<span id="cb6-104"><a href="#cb6-104" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-105"><a href="#cb6-105" aria-hidden="true" tabindex="-1"></a>    result <span class="op">=</span> minimize(</span>
-<span id="cb6-106"><a href="#cb6-106" aria-hidden="true" tabindex="-1"></a>        energy_2d,</span>
-<span id="cb6-107"><a href="#cb6-107" aria-hidden="true" tabindex="-1"></a>        phi_init,</span>
-<span id="cb6-108"><a href="#cb6-108" aria-hidden="true" tabindex="-1"></a>        method<span class="op">=</span><span class="st">'SLSQP'</span>,</span>
-<span id="cb6-109"><a href="#cb6-109" aria-hidden="true" tabindex="-1"></a>        bounds<span class="op">=</span>[(<span class="fl">0.01</span>, np.pi <span class="op">-</span> <span class="fl">0.01</span>)] <span class="op">*</span> <span class="dv">2</span>,</span>
-<span id="cb6-110"><a href="#cb6-110" aria-hidden="true" tabindex="-1"></a>        constraints<span class="op">=</span>{<span class="st">'type'</span>: <span class="st">'eq'</span>, <span class="st">'fun'</span>: kawasaki_2d},</span>
-<span id="cb6-111"><a href="#cb6-111" aria-hidden="true" tabindex="-1"></a>        options<span class="op">=</span>{<span class="st">'ftol'</span>: <span class="fl">1e-10</span>, <span class="st">'maxiter'</span>: <span class="dv">500</span>}</span>
-<span id="cb6-112"><a href="#cb6-112" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb6-113"><a href="#cb6-113" aria-hidden="true" tabindex="-1"></a>    phi1_eq, phi2_eq <span class="op">=</span> result.x</span>
-<span id="cb6-114"><a href="#cb6-114" aria-hidden="true" tabindex="-1"></a>    phi_eq <span class="op">=</span> np.array([phi1_eq, phi2_eq, phi1_eq, phi2_eq])</span>
-<span id="cb6-115"><a href="#cb6-115" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> phi_eq, result.fun, result.success</span>
-<span id="cb6-116"><a href="#cb6-116" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-117"><a href="#cb6-117" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-118"><a href="#cb6-118" aria-hidden="true" tabindex="-1"></a><span class="co"># Study: how does equilibrium change with rest angle phi0?</span></span>
-<span id="cb6-119"><a href="#cb6-119" aria-hidden="true" tabindex="-1"></a>alpha <span class="op">=</span> np.radians(<span class="dv">45</span>)</span>
-<span id="cb6-120"><a href="#cb6-120" aria-hidden="true" tabindex="-1"></a>phi0_sweep <span class="op">=</span> np.linspace(<span class="fl">0.1</span>, np.pi <span class="op">*</span> <span class="fl">0.9</span>, <span class="dv">20</span>)</span>
-<span id="cb6-121"><a href="#cb6-121" aria-hidden="true" tabindex="-1"></a>k_uniform <span class="op">=</span> np.ones(<span class="dv">4</span>)</span>
-<span id="cb6-122"><a href="#cb6-122" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-123"><a href="#cb6-123" aria-hidden="true" tabindex="-1"></a>phi1_eq_vals, phi2_eq_vals <span class="op">=</span> [], []</span>
-<span id="cb6-124"><a href="#cb6-124" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> phi0_val <span class="kw">in</span> phi0_sweep:</span>
-<span id="cb6-125"><a href="#cb6-125" aria-hidden="true" tabindex="-1"></a>    phi0 <span class="op">=</span> np.full(<span class="dv">4</span>, phi0_val)</span>
-<span id="cb6-126"><a href="#cb6-126" aria-hidden="true" tabindex="-1"></a>    phi_eq, E_eq, _ <span class="op">=</span> vertex_energy_constrained(alpha, phi0, k_uniform,</span>
-<span id="cb6-127"><a href="#cb6-127" aria-hidden="true" tabindex="-1"></a>                                                  phi_init<span class="op">=</span>[phi0_val <span class="op">*</span> <span class="fl">0.8</span>, phi0_val <span class="op">*</span> <span class="fl">0.5</span>])</span>
-<span id="cb6-128"><a href="#cb6-128" aria-hidden="true" tabindex="-1"></a>    phi1_eq_vals.append(np.degrees(phi_eq[<span class="dv">0</span>]))</span>
-<span id="cb6-129"><a href="#cb6-129" aria-hidden="true" tabindex="-1"></a>    phi2_eq_vals.append(np.degrees(phi_eq[<span class="dv">1</span>]))</span>
-<span id="cb6-130"><a href="#cb6-130" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-131"><a href="#cb6-131" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">7</span>, <span class="dv">4</span>))</span>
-<span id="cb6-132"><a href="#cb6-132" aria-hidden="true" tabindex="-1"></a>ax.plot(np.degrees(phi0_sweep), phi1_eq_vals, <span class="st">'o-'</span>, color<span class="op">=</span><span class="st">'steelblue'</span>, label<span class="op">=</span><span class="st">'φ₁ (major fold)'</span>, markersize<span class="op">=</span><span class="dv">4</span>)</span>
-<span id="cb6-133"><a href="#cb6-133" aria-hidden="true" tabindex="-1"></a>ax.plot(np.degrees(phi0_sweep), phi2_eq_vals, <span class="st">'s-'</span>, color<span class="op">=</span><span class="st">'coral'</span>, label<span class="op">=</span><span class="st">'φ₂ (minor fold)'</span>, markersize<span class="op">=</span><span class="dv">4</span>)</span>
-<span id="cb6-134"><a href="#cb6-134" aria-hidden="true" tabindex="-1"></a>ax.plot(np.degrees(phi0_sweep), np.degrees(phi0_sweep), <span class="st">'k--'</span>, linewidth<span class="op">=</span><span class="fl">0.8</span>, label<span class="op">=</span><span class="st">'φ₀ (rest angle)'</span>)</span>
-<span id="cb6-135"><a href="#cb6-135" aria-hidden="true" tabindex="-1"></a>ax.set_xlabel(<span class="st">'Rest angle φ₀ (°)'</span>)</span>
-<span id="cb6-136"><a href="#cb6-136" aria-hidden="true" tabindex="-1"></a>ax.set_ylabel(<span class="st">'Equilibrium fold angle (°)'</span>)</span>
-<span id="cb6-137"><a href="#cb6-137" aria-hidden="true" tabindex="-1"></a>ax.set_title(<span class="ss">f'Miura-ori vertex equilibrium (α = 45°, uniform stiffness)'</span>)</span>
-<span id="cb6-138"><a href="#cb6-138" aria-hidden="true" tabindex="-1"></a>ax.legend()</span>
-<span id="cb6-139"><a href="#cb6-139" aria-hidden="true" tabindex="-1"></a>ax.grid(<span class="va">True</span>, linewidth<span class="op">=</span><span class="fl">0.5</span>, alpha<span class="op">=</span><span class="fl">0.5</span>)</span>
-<span id="cb6-140"><a href="#cb6-140" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
-<span id="cb6-141"><a href="#cb6-141" aria-hidden="true" tabindex="-1"></a>plt.show()</span>
-<span id="cb6-142"><a href="#cb6-142" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb6-143"><a href="#cb6-143" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-144"><a href="#cb6-144" aria-hidden="true" tabindex="-1"></a><span class="fu">## Comparing Optimizers</span></span>
-<span id="cb6-145"><a href="#cb6-145" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-146"><a href="#cb6-146" aria-hidden="true" tabindex="-1"></a>The energy minimization problem @eq-energy-opt is smooth and has analytic gradients. Different optimizers make different trade-offs between convergence speed, memory, and constraint-handling capability.</span>
-<span id="cb6-147"><a href="#cb6-147" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-150"><a href="#cb6-150" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
-<span id="cb6-151"><a href="#cb6-151" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> time</span>
-<span id="cb6-152"><a href="#cb6-152" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-153"><a href="#cb6-153" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> run_optimizer(method, phi0, k, alpha, phi_init):</span>
-<span id="cb6-154"><a href="#cb6-154" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""</span></span>
-<span id="cb6-155"><a href="#cb6-155" aria-hidden="true" tabindex="-1"></a><span class="co">    Run one optimizer and return (solution, n_iter, wall_time, success).</span></span>
-<span id="cb6-156"><a href="#cb6-156" aria-hidden="true" tabindex="-1"></a><span class="co">    """</span></span>
-<span id="cb6-157"><a href="#cb6-157" aria-hidden="true" tabindex="-1"></a>    history <span class="op">=</span> {<span class="st">'phi'</span>: [], <span class="st">'E'</span>: []}</span>
-<span id="cb6-158"><a href="#cb6-158" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-159"><a href="#cb6-159" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> energy_with_log(pq):</span>
-<span id="cb6-160"><a href="#cb6-160" aria-hidden="true" tabindex="-1"></a>        phi <span class="op">=</span> np.array([pq[<span class="dv">0</span>], pq[<span class="dv">1</span>], pq[<span class="dv">0</span>], pq[<span class="dv">1</span>]])</span>
-<span id="cb6-161"><a href="#cb6-161" aria-hidden="true" tabindex="-1"></a>        E <span class="op">=</span> total_energy(phi, phi0, k)</span>
-<span id="cb6-162"><a href="#cb6-162" aria-hidden="true" tabindex="-1"></a>        history[<span class="st">'phi'</span>].append(pq.copy())</span>
-<span id="cb6-163"><a href="#cb6-163" aria-hidden="true" tabindex="-1"></a>        history[<span class="st">'E'</span>].append(E)</span>
-<span id="cb6-164"><a href="#cb6-164" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> E</span>
-<span id="cb6-165"><a href="#cb6-165" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-166"><a href="#cb6-166" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> kawasaki_2d(pq):</span>
-<span id="cb6-167"><a href="#cb6-167" aria-hidden="true" tabindex="-1"></a>        phi1, phi2 <span class="op">=</span> pq</span>
-<span id="cb6-168"><a href="#cb6-168" aria-hidden="true" tabindex="-1"></a>        sg1 <span class="op">=</span> np.sin(phi1)</span>
-<span id="cb6-169"><a href="#cb6-169" aria-hidden="true" tabindex="-1"></a>        ca <span class="op">=</span> np.cos(alpha)</span>
-<span id="cb6-170"><a href="#cb6-170" aria-hidden="true" tabindex="-1"></a>        sa <span class="op">=</span> np.sin(alpha)</span>
-<span id="cb6-171"><a href="#cb6-171" aria-hidden="true" tabindex="-1"></a>        denom <span class="op">=</span> ca<span class="op">**</span><span class="dv">2</span> <span class="op">*</span> sg1<span class="op">**</span><span class="dv">2</span> <span class="op">+</span> sa<span class="op">**</span><span class="dv">2</span></span>
-<span id="cb6-172"><a href="#cb6-172" aria-hidden="true" tabindex="-1"></a>        cos_phi2_req <span class="op">=</span> np.clip((ca<span class="op">**</span><span class="dv">2</span> <span class="op">*</span> sg1<span class="op">**</span><span class="dv">2</span> <span class="op">-</span> sa<span class="op">**</span><span class="dv">2</span>) <span class="op">/</span> <span class="bu">max</span>(denom, <span class="fl">1e-12</span>), <span class="op">-</span><span class="dv">1</span>, <span class="dv">1</span>)</span>
-<span id="cb6-173"><a href="#cb6-173" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> phi2 <span class="op">-</span> np.arccos(cos_phi2_req)</span>
-<span id="cb6-174"><a href="#cb6-174" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-175"><a href="#cb6-175" aria-hidden="true" tabindex="-1"></a>    kwargs <span class="op">=</span> <span class="bu">dict</span>(</span>
-<span id="cb6-176"><a href="#cb6-176" aria-hidden="true" tabindex="-1"></a>        fun<span class="op">=</span>energy_with_log,</span>
-<span id="cb6-177"><a href="#cb6-177" aria-hidden="true" tabindex="-1"></a>        x0<span class="op">=</span>phi_init,</span>
-<span id="cb6-178"><a href="#cb6-178" aria-hidden="true" tabindex="-1"></a>        bounds<span class="op">=</span>[(<span class="fl">0.01</span>, np.pi <span class="op">-</span> <span class="fl">0.01</span>)] <span class="op">*</span> <span class="dv">2</span>,</span>
-<span id="cb6-179"><a href="#cb6-179" aria-hidden="true" tabindex="-1"></a>        options<span class="op">=</span>{<span class="st">'maxiter'</span>: <span class="dv">2000</span>}</span>
-<span id="cb6-180"><a href="#cb6-180" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb6-181"><a href="#cb6-181" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-182"><a href="#cb6-182" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> method <span class="op">==</span> <span class="st">'SLSQP'</span>:</span>
-<span id="cb6-183"><a href="#cb6-183" aria-hidden="true" tabindex="-1"></a>        kwargs[<span class="st">'method'</span>] <span class="op">=</span> <span class="st">'SLSQP'</span></span>
-<span id="cb6-184"><a href="#cb6-184" aria-hidden="true" tabindex="-1"></a>        kwargs[<span class="st">'constraints'</span>] <span class="op">=</span> {<span class="st">'type'</span>: <span class="st">'eq'</span>, <span class="st">'fun'</span>: kawasaki_2d}</span>
-<span id="cb6-185"><a href="#cb6-185" aria-hidden="true" tabindex="-1"></a>        kwargs[<span class="st">'options'</span>][<span class="st">'ftol'</span>] <span class="op">=</span> <span class="fl">1e-10</span></span>
-<span id="cb6-186"><a href="#cb6-186" aria-hidden="true" tabindex="-1"></a>    <span class="cf">elif</span> method <span class="op">==</span> <span class="st">'L-BFGS-B'</span>:</span>
-<span id="cb6-187"><a href="#cb6-187" aria-hidden="true" tabindex="-1"></a>        kwargs[<span class="st">'method'</span>] <span class="op">=</span> <span class="st">'L-BFGS-B'</span></span>
-<span id="cb6-188"><a href="#cb6-188" aria-hidden="true" tabindex="-1"></a>        kwargs[<span class="st">'options'</span>][<span class="st">'ftol'</span>] <span class="op">=</span> <span class="fl">1e-12</span></span>
-<span id="cb6-189"><a href="#cb6-189" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-190"><a href="#cb6-190" aria-hidden="true" tabindex="-1"></a>    t0 <span class="op">=</span> time.perf_counter()</span>
-<span id="cb6-191"><a href="#cb6-191" aria-hidden="true" tabindex="-1"></a>    result <span class="op">=</span> minimize(<span class="op">**</span>kwargs)</span>
-<span id="cb6-192"><a href="#cb6-192" aria-hidden="true" tabindex="-1"></a>    dt <span class="op">=</span> time.perf_counter() <span class="op">-</span> t0</span>
-<span id="cb6-193"><a href="#cb6-193" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-194"><a href="#cb6-194" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> result.x, history[<span class="st">'E'</span>], dt, result.success</span>
-<span id="cb6-195"><a href="#cb6-195" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-196"><a href="#cb6-196" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-197"><a href="#cb6-197" aria-hidden="true" tabindex="-1"></a>alpha <span class="op">=</span> np.radians(<span class="dv">60</span>)</span>
-<span id="cb6-198"><a href="#cb6-198" aria-hidden="true" tabindex="-1"></a>phi0 <span class="op">=</span> np.array([<span class="fl">1.2</span>, <span class="fl">0.6</span>, <span class="fl">1.2</span>, <span class="fl">0.6</span>])</span>
-<span id="cb6-199"><a href="#cb6-199" aria-hidden="true" tabindex="-1"></a>k <span class="op">=</span> np.array([<span class="fl">1.0</span>, <span class="fl">2.0</span>, <span class="fl">1.0</span>, <span class="fl">0.5</span>])</span>
-<span id="cb6-200"><a href="#cb6-200" aria-hidden="true" tabindex="-1"></a>phi_init <span class="op">=</span> np.array([<span class="fl">0.8</span>, <span class="fl">0.4</span>])</span>
-<span id="cb6-201"><a href="#cb6-201" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-202"><a href="#cb6-202" aria-hidden="true" tabindex="-1"></a>fig, axes <span class="op">=</span> plt.subplots(<span class="dv">1</span>, <span class="dv">2</span>, figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">4</span>))</span>
-<span id="cb6-203"><a href="#cb6-203" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-204"><a href="#cb6-204" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> method, color <span class="kw">in</span> [(<span class="st">'SLSQP'</span>, <span class="st">'steelblue'</span>), (<span class="st">'L-BFGS-B'</span>, <span class="st">'coral'</span>)]:</span>
-<span id="cb6-205"><a href="#cb6-205" aria-hidden="true" tabindex="-1"></a>    sol, E_hist, dt, ok <span class="op">=</span> run_optimizer(method, phi0, k, alpha, phi_init.copy())</span>
-<span id="cb6-206"><a href="#cb6-206" aria-hidden="true" tabindex="-1"></a>    axes[<span class="dv">0</span>].semilogy(E_hist, color<span class="op">=</span>color, label<span class="op">=</span><span class="ss">f'</span><span class="sc">{</span>method<span class="sc">}</span><span class="ss"> (</span><span class="sc">{</span><span class="bu">len</span>(E_hist)<span class="sc">}</span><span class="ss"> evals, </span><span class="sc">{</span>dt<span class="op">*</span><span class="dv">1000</span><span class="sc">:.1f}</span><span class="ss">ms)'</span>)</span>
-<span id="cb6-207"><a href="#cb6-207" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"</span><span class="sc">{</span>method<span class="sc">:10s}</span><span class="ss">  converged=</span><span class="sc">{</span>ok<span class="sc">}</span><span class="ss">  φ*=</span><span class="sc">{</span>np<span class="sc">.</span>degrees(sol)<span class="sc">}</span><span class="ss">°  E*=</span><span class="sc">{</span>E_hist[<span class="op">-</span><span class="dv">1</span>]<span class="sc">:.6f}</span><span class="ss">  t=</span><span class="sc">{</span>dt<span class="op">*</span><span class="fl">1e3</span><span class="sc">:.2f}</span><span class="ss">ms"</span>)</span>
-<span id="cb6-208"><a href="#cb6-208" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-209"><a href="#cb6-209" aria-hidden="true" tabindex="-1"></a>axes[<span class="dv">0</span>].set_xlabel(<span class="st">'Function evaluations'</span>)</span>
-<span id="cb6-210"><a href="#cb6-210" aria-hidden="true" tabindex="-1"></a>axes[<span class="dv">0</span>].set_ylabel(<span class="st">'Elastic energy E'</span>)</span>
-<span id="cb6-211"><a href="#cb6-211" aria-hidden="true" tabindex="-1"></a>axes[<span class="dv">0</span>].set_title(<span class="st">'Convergence comparison'</span>)</span>
-<span id="cb6-212"><a href="#cb6-212" aria-hidden="true" tabindex="-1"></a>axes[<span class="dv">0</span>].legend(fontsize<span class="op">=</span><span class="dv">8</span>)</span>
-<span id="cb6-213"><a href="#cb6-213" aria-hidden="true" tabindex="-1"></a>axes[<span class="dv">0</span>].grid(<span class="va">True</span>, linewidth<span class="op">=</span><span class="fl">0.5</span>, alpha<span class="op">=</span><span class="fl">0.5</span>)</span>
-<span id="cb6-214"><a href="#cb6-214" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-215"><a href="#cb6-215" aria-hidden="true" tabindex="-1"></a><span class="co"># Energy landscape for SLSQP solution</span></span>
-<span id="cb6-216"><a href="#cb6-216" aria-hidden="true" tabindex="-1"></a>phi1_vals <span class="op">=</span> np.linspace(<span class="fl">0.1</span>, np.pi <span class="op">-</span> <span class="fl">0.1</span>, <span class="dv">80</span>)</span>
-<span id="cb6-217"><a href="#cb6-217" aria-hidden="true" tabindex="-1"></a>E_landscape <span class="op">=</span> []</span>
-<span id="cb6-218"><a href="#cb6-218" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> p1 <span class="kw">in</span> phi1_vals:</span>
-<span id="cb6-219"><a href="#cb6-219" aria-hidden="true" tabindex="-1"></a>    sg1 <span class="op">=</span> np.sin(p1)</span>
-<span id="cb6-220"><a href="#cb6-220" aria-hidden="true" tabindex="-1"></a>    ca, sa <span class="op">=</span> np.cos(alpha), np.sin(alpha)</span>
-<span id="cb6-221"><a href="#cb6-221" aria-hidden="true" tabindex="-1"></a>    denom <span class="op">=</span> ca<span class="op">**</span><span class="dv">2</span> <span class="op">*</span> sg1<span class="op">**</span><span class="dv">2</span> <span class="op">+</span> sa<span class="op">**</span><span class="dv">2</span></span>
-<span id="cb6-222"><a href="#cb6-222" aria-hidden="true" tabindex="-1"></a>    cos_p2 <span class="op">=</span> np.clip((ca<span class="op">**</span><span class="dv">2</span> <span class="op">*</span> sg1<span class="op">**</span><span class="dv">2</span> <span class="op">-</span> sa<span class="op">**</span><span class="dv">2</span>) <span class="op">/</span> <span class="bu">max</span>(denom, <span class="fl">1e-12</span>), <span class="op">-</span><span class="dv">1</span>, <span class="dv">1</span>)</span>
-<span id="cb6-223"><a href="#cb6-223" aria-hidden="true" tabindex="-1"></a>    p2 <span class="op">=</span> np.arccos(cos_p2)</span>
-<span id="cb6-224"><a href="#cb6-224" aria-hidden="true" tabindex="-1"></a>    phi <span class="op">=</span> np.array([p1, p2, p1, p2])</span>
-<span id="cb6-225"><a href="#cb6-225" aria-hidden="true" tabindex="-1"></a>    E_landscape.append(total_energy(phi, phi0, k))</span>
-<span id="cb6-226"><a href="#cb6-226" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-227"><a href="#cb6-227" aria-hidden="true" tabindex="-1"></a>axes[<span class="dv">1</span>].plot(np.degrees(phi1_vals), E_landscape, color<span class="op">=</span><span class="st">'steelblue'</span>, linewidth<span class="op">=</span><span class="dv">2</span>)</span>
-<span id="cb6-228"><a href="#cb6-228" aria-hidden="true" tabindex="-1"></a>axes[<span class="dv">1</span>].set_xlabel(<span class="st">'Primary fold angle φ₁ (°)'</span>)</span>
-<span id="cb6-229"><a href="#cb6-229" aria-hidden="true" tabindex="-1"></a>axes[<span class="dv">1</span>].set_ylabel(<span class="st">'Elastic energy E (on Kawasaki manifold)'</span>)</span>
-<span id="cb6-230"><a href="#cb6-230" aria-hidden="true" tabindex="-1"></a>axes[<span class="dv">1</span>].set_title(<span class="st">'Energy along the constraint manifold'</span>)</span>
-<span id="cb6-231"><a href="#cb6-231" aria-hidden="true" tabindex="-1"></a>axes[<span class="dv">1</span>].axvline(np.degrees(sol[<span class="dv">0</span>]), color<span class="op">=</span><span class="st">'coral'</span>, linestyle<span class="op">=</span><span class="st">'--'</span>, label<span class="op">=</span><span class="ss">f'Optimum φ₁*=</span><span class="sc">{</span>np<span class="sc">.</span>degrees(sol[<span class="dv">0</span>])<span class="sc">:.1f}</span><span class="ss">°'</span>)</span>
-<span id="cb6-232"><a href="#cb6-232" aria-hidden="true" tabindex="-1"></a>axes[<span class="dv">1</span>].legend()</span>
-<span id="cb6-233"><a href="#cb6-233" aria-hidden="true" tabindex="-1"></a>axes[<span class="dv">1</span>].grid(<span class="va">True</span>, linewidth<span class="op">=</span><span class="fl">0.5</span>, alpha<span class="op">=</span><span class="fl">0.5</span>)</span>
-<span id="cb6-234"><a href="#cb6-234" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-235"><a href="#cb6-235" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
-<span id="cb6-236"><a href="#cb6-236" aria-hidden="true" tabindex="-1"></a>plt.show()</span>
-<span id="cb6-237"><a href="#cb6-237" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb6-238"><a href="#cb6-238" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-239"><a href="#cb6-239" aria-hidden="true" tabindex="-1"></a><span class="fu">## Non-Uniform Stiffness and Multiple Equilibria</span></span>
-<span id="cb6-240"><a href="#cb6-240" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-241"><a href="#cb6-241" aria-hidden="true" tabindex="-1"></a>Real origami structures often have creases with different stiffnesses — due to material variation, different crease depths, or deliberate design. When stiffness is non-uniform, the energy landscape can develop multiple local minima.</span>
-<span id="cb6-242"><a href="#cb6-242" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-245"><a href="#cb6-245" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
-<span id="cb6-246"><a href="#cb6-246" aria-hidden="true" tabindex="-1"></a><span class="co"># Sweep stiffness ratio k2/k1 and track equilibrium</span></span>
-<span id="cb6-247"><a href="#cb6-247" aria-hidden="true" tabindex="-1"></a>alpha <span class="op">=</span> np.radians(<span class="dv">45</span>)</span>
-<span id="cb6-248"><a href="#cb6-248" aria-hidden="true" tabindex="-1"></a>phi0 <span class="op">=</span> np.array([<span class="fl">1.0</span>, <span class="fl">1.0</span>, <span class="fl">1.0</span>, <span class="fl">1.0</span>])</span>
-<span id="cb6-249"><a href="#cb6-249" aria-hidden="true" tabindex="-1"></a>k_ratios <span class="op">=</span> np.logspace(<span class="op">-</span><span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">30</span>)</span>
-<span id="cb6-250"><a href="#cb6-250" aria-hidden="true" tabindex="-1"></a>phi1_eq_list <span class="op">=</span> []</span>
-<span id="cb6-251"><a href="#cb6-251" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-252"><a href="#cb6-252" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> ratio <span class="kw">in</span> k_ratios:</span>
-<span id="cb6-253"><a href="#cb6-253" aria-hidden="true" tabindex="-1"></a>    k <span class="op">=</span> np.array([<span class="fl">1.0</span>, ratio, <span class="fl">1.0</span>, ratio])</span>
-<span id="cb6-254"><a href="#cb6-254" aria-hidden="true" tabindex="-1"></a>    phi_eq, _, _ <span class="op">=</span> vertex_energy_constrained(alpha, phi0, k, phi_init<span class="op">=</span>[<span class="fl">0.6</span>, <span class="fl">0.5</span>])</span>
-<span id="cb6-255"><a href="#cb6-255" aria-hidden="true" tabindex="-1"></a>    phi1_eq_list.append(np.degrees(phi_eq[<span class="dv">0</span>]))</span>
-<span id="cb6-256"><a href="#cb6-256" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-257"><a href="#cb6-257" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">6</span>, <span class="dv">4</span>))</span>
-<span id="cb6-258"><a href="#cb6-258" aria-hidden="true" tabindex="-1"></a>ax.semilogx(k_ratios, phi1_eq_list, <span class="st">'o-'</span>, color<span class="op">=</span><span class="st">'steelblue'</span>, markersize<span class="op">=</span><span class="dv">4</span>)</span>
-<span id="cb6-259"><a href="#cb6-259" aria-hidden="true" tabindex="-1"></a>ax.axhline(np.degrees(phi0[<span class="dv">0</span>]), color<span class="op">=</span><span class="st">'gray'</span>, linestyle<span class="op">=</span><span class="st">'--'</span>, linewidth<span class="op">=</span><span class="fl">0.8</span>, label<span class="op">=</span><span class="st">'Rest angle'</span>)</span>
-<span id="cb6-260"><a href="#cb6-260" aria-hidden="true" tabindex="-1"></a>ax.set_xlabel(<span class="st">'Stiffness ratio k₂/k₁'</span>)</span>
-<span id="cb6-261"><a href="#cb6-261" aria-hidden="true" tabindex="-1"></a>ax.set_ylabel(<span class="st">'Equilibrium φ₁* (°)'</span>)</span>
-<span id="cb6-262"><a href="#cb6-262" aria-hidden="true" tabindex="-1"></a>ax.set_title(<span class="st">'Equilibrium fold angle vs stiffness ratio (α=45°)'</span>)</span>
-<span id="cb6-263"><a href="#cb6-263" aria-hidden="true" tabindex="-1"></a>ax.legend()</span>
-<span id="cb6-264"><a href="#cb6-264" aria-hidden="true" tabindex="-1"></a>ax.grid(<span class="va">True</span>, linewidth<span class="op">=</span><span class="fl">0.5</span>, alpha<span class="op">=</span><span class="fl">0.5</span>)</span>
-<span id="cb6-265"><a href="#cb6-265" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
-<span id="cb6-266"><a href="#cb6-266" aria-hidden="true" tabindex="-1"></a>plt.show()</span>
-<span id="cb6-267"><a href="#cb6-267" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb6-268"><a href="#cb6-268" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-269"><a href="#cb6-269" aria-hidden="true" tabindex="-1"></a><span class="fu">## Summary</span></span>
-<span id="cb6-270"><a href="#cb6-270" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-271"><a href="#cb6-271" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Elastic fold energy is a sum of torsional spring potentials: $E = \frac{1}{2}\sum k_i(\phi_i - \phi_{0,i})^2$.</span>
-<span id="cb6-272"><a href="#cb6-272" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Equilibrium configurations minimize total energy subject to geometric closure constraints.</span>
-<span id="cb6-273"><a href="#cb6-273" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>SLSQP handles equality constraints directly; L-BFGS-B is faster for unconstrained problems.</span>
-<span id="cb6-274"><a href="#cb6-274" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Non-uniform stiffness shifts the equilibrium and can introduce multiple local minima.</span>
-<span id="cb6-275"><a href="#cb6-275" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>The energy landscape along the Kawasaki constraint manifold is typically unimodal for a single vertex.</span>
-<span id="cb6-276"><a href="#cb6-276" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-277"><a href="#cb6-277" aria-hidden="true" tabindex="-1"></a><span class="fu">## Further Reading</span></span>
-<span id="cb6-278"><a href="#cb6-278" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-279"><a href="#cb6-279" aria-hidden="true" tabindex="-1"></a>@schenk2013geometry analyzes the elastic behavior of the Miura-ori under in-plane loads. @dudte2016programming uses energy minimization to program curvature into origami tessellations.</span>
-<span id="cb6-280"><a href="#cb6-280" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-281"><a href="#cb6-281" aria-hidden="true" tabindex="-1"></a><span class="fu">## Exercises</span></span>
-<span id="cb6-282"><a href="#cb6-282" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-283"><a href="#cb6-283" aria-hidden="true" tabindex="-1"></a><span class="ss">1. </span>**Analytic gradient check.** For the 2D energy function over $(φ_1, φ_2)$, compute the analytic gradient $\nabla E$ and verify it against <span class="in">`scipy.optimize.check_grad`</span>. Report the maximum absolute error.</span>
-<span id="cb6-284"><a href="#cb6-284" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-285"><a href="#cb6-285" aria-hidden="true" tabindex="-1"></a><span class="ss">2. </span>**Newton's method.** The energy has an analytic Hessian (it is constant — why?). Implement one step of Newton's method from a given starting point and verify it converges in one iteration for the unconstrained problem.</span>
-<span id="cb6-286"><a href="#cb6-286" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-287"><a href="#cb6-287" aria-hidden="true" tabindex="-1"></a><span class="ss">3. </span>**Multiple restarts.** Generate 100 random starting points for the constrained vertex problem and solve from each. Plot the distribution of converged energy values. Are there multiple local minima, or does SLSQP always find the same solution?</span>
-<span id="cb6-288"><a href="#cb6-288" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-289"><a href="#cb6-289" aria-hidden="true" tabindex="-1"></a><span class="ss">4. </span>**Temperature analogy.** In statistical mechanics, systems sample configurations with probability $p \propto e^{-E/T}$ at temperature $T$. Write a simple Metropolis sampler that samples fold angles from this distribution on the Kawasaki constraint manifold (project each MCMC step back onto the manifold). Plot the sampled fold angle distribution for $T = 0.01, 0.1, 1.0$.</span>
-<span id="cb6-290"><a href="#cb6-290" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-291"><a href="#cb6-291" aria-hidden="true" tabindex="-1"></a><span class="ss">5. </span>**Stiffness design.** Find the stiffness vector $\mathbf{k}$ (with $<span class="sc">\|</span>\mathbf{k}<span class="sc">\|</span>=1$) that places the energy minimum closest to a target fold angle $\phi^* = <span class="co">[</span><span class="ot">\pi/3, \pi/4, \pi/3, \pi/4</span><span class="co">]</span>$. (Hint: this is itself an optimization problem over $\mathbf{k}$.)</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu"># Energy Minimization and Equilibrium Folds</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>::: {.callout-note}</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="fu">## Learning Objectives</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Model elastic fold energy as a sum of torsional spring potentials</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Formulate the equilibrium-finding problem as unconstrained and constrained minimization</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Compare gradient descent, L-BFGS-B, and SLSQP on the same problem</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Interpret convergence behavior and identify ill-conditioning</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>Not every fold pattern has a single, clean, analytically-determined configuration. The Miura-ori folds along a one-parameter path because its geometry enforces it. But most real structures — partially folded panels, curved crease patterns, origami with elastic materials — settle into an equilibrium that balances the external loading against the elastic energy stored in the creases.</span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>Finding that equilibrium is an energy minimization problem.</span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a><span class="fu">## The Elastic Fold Energy Model</span></span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>Model each crease as a torsional spring: it has a natural (rest) fold angle $\phi_0$ and resists deformation with stiffness $k$. The elastic energy stored in crease $i$ when its fold angle is $\phi_i$ is:</span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a>$$E_i = \frac{k_i}{2}(\phi_i - \phi_{0,i})^2$$ {#eq-spring-energy}</span>
+<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a>The total energy of the structure is:</span>
+<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a>$$E_\text{total} = \sum_{i=1}^{N} \frac{k_i}{2}(\phi_i - \phi_{0,i})^2$$ {#eq-total-energy}</span>
+<span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-25"><a href="#cb5-25" aria-hidden="true" tabindex="-1"></a>At equilibrium, $E_\text{total}$ is minimized subject to the geometric constraints from Chapter 2 — specifically, the Kawasaki closure conditions at each vertex.</span>
+<span id="cb5-26"><a href="#cb5-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-27"><a href="#cb5-27" aria-hidden="true" tabindex="-1"></a>This is a constrained nonlinear program:</span>
+<span id="cb5-28"><a href="#cb5-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-29"><a href="#cb5-29" aria-hidden="true" tabindex="-1"></a>$$\min_{\boldsymbol{\phi}} \quad E_\text{total}(\boldsymbol{\phi}) \quad \text{subject to} \quad g_j(\boldsymbol{\phi}) = 0 \quad j = 1, \ldots, M$$ {#eq-energy-opt}</span>
+<span id="cb5-30"><a href="#cb5-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-31"><a href="#cb5-31" aria-hidden="true" tabindex="-1"></a>where the $g_j$ are the Kawasaki constraints (or more generally, the geometric closure conditions at each vertex).</span>
+<span id="cb5-32"><a href="#cb5-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-35"><a href="#cb5-35" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb5-36"><a href="#cb5-36" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb5-37"><a href="#cb5-37" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb5-38"><a href="#cb5-38" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> scipy.optimize <span class="im">import</span> minimize</span>
+<span id="cb5-39"><a href="#cb5-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-40"><a href="#cb5-40" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> total_energy(phi, phi0, k):</span>
+<span id="cb5-41"><a href="#cb5-41" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Total elastic energy of a crease pattern."""</span></span>
+<span id="cb5-42"><a href="#cb5-42" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="fl">0.5</span> <span class="op">*</span> np.<span class="bu">sum</span>(k <span class="op">*</span> (phi <span class="op">-</span> phi0)<span class="op">**</span><span class="dv">2</span>)</span>
+<span id="cb5-43"><a href="#cb5-43" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-44"><a href="#cb5-44" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> energy_gradient(phi, phi0, k):</span>
+<span id="cb5-45"><a href="#cb5-45" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Analytic gradient of total energy."""</span></span>
+<span id="cb5-46"><a href="#cb5-46" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> k <span class="op">*</span> (phi <span class="op">-</span> phi0)</span>
+<span id="cb5-47"><a href="#cb5-47" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb5-48"><a href="#cb5-48" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-49"><a href="#cb5-49" aria-hidden="true" tabindex="-1"></a><span class="fu">## Example: Four-Crease Vertex Under Load</span></span>
+<span id="cb5-50"><a href="#cb5-50" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-51"><a href="#cb5-51" aria-hidden="true" tabindex="-1"></a>Consider a single four-crease vertex (the Miura-ori unit vertex) with sector angles $\alpha$ and $\pi - \alpha$. The vertex has four fold angles $\phi_1, \phi_2, \phi_3, \phi_4$ subject to the Kawasaki closure condition.</span>
+<span id="cb5-52"><a href="#cb5-52" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-53"><a href="#cb5-53" aria-hidden="true" tabindex="-1"></a>We will minimize the elastic energy over the feasible set — the manifold of fold-angle vectors satisfying Kawasaki — and trace how the equilibrium configuration depends on the stiffness distribution.</span>
+<span id="cb5-54"><a href="#cb5-54" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-57"><a href="#cb5-57" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb5-58"><a href="#cb5-58" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> kawasaki_residual(phi, alpha):</span>
+<span id="cb5-59"><a href="#cb5-59" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""</span></span>
+<span id="cb5-60"><a href="#cb5-60" aria-hidden="true" tabindex="-1"></a><span class="co">    Kawasaki closure condition for a 4-crease Miura vertex.</span></span>
+<span id="cb5-61"><a href="#cb5-61" aria-hidden="true" tabindex="-1"></a><span class="co">    Returns scalar: should be 0 at valid configurations.</span></span>
+<span id="cb5-62"><a href="#cb5-62" aria-hidden="true" tabindex="-1"></a><span class="co">    This is the product-of-rotations closure, linearized near flat.</span></span>
+<span id="cb5-63"><a href="#cb5-63" aria-hidden="true" tabindex="-1"></a><span class="co">    Approximation: use the alternating sum condition for small angles.</span></span>
+<span id="cb5-64"><a href="#cb5-64" aria-hidden="true" tabindex="-1"></a><span class="co">    """</span></span>
+<span id="cb5-65"><a href="#cb5-65" aria-hidden="true" tabindex="-1"></a>    phi1, phi2, phi3, phi4 <span class="op">=</span> phi</span>
+<span id="cb5-66"><a href="#cb5-66" aria-hidden="true" tabindex="-1"></a>    ca <span class="op">=</span> np.cos(alpha)</span>
+<span id="cb5-67"><a href="#cb5-67" aria-hidden="true" tabindex="-1"></a>    sa <span class="op">=</span> np.sin(alpha)</span>
+<span id="cb5-68"><a href="#cb5-68" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Exact closure from Schenk &amp; Guest (2013): relates phi_major and phi_minor</span></span>
+<span id="cb5-69"><a href="#cb5-69" aria-hidden="true" tabindex="-1"></a>    <span class="co"># cos(phi2) = (ca^2 * sin^2(phi1) - sa^2) / (ca^2 * sin^2(phi1) + sa^2)</span></span>
+<span id="cb5-70"><a href="#cb5-70" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Residual for phi2 given phi1:</span></span>
+<span id="cb5-71"><a href="#cb5-71" aria-hidden="true" tabindex="-1"></a>    sg1 <span class="op">=</span> np.sin(phi1)</span>
+<span id="cb5-72"><a href="#cb5-72" aria-hidden="true" tabindex="-1"></a>    denom <span class="op">=</span> ca<span class="op">**</span><span class="dv">2</span> <span class="op">*</span> sg1<span class="op">**</span><span class="dv">2</span> <span class="op">+</span> sa<span class="op">**</span><span class="dv">2</span></span>
+<span id="cb5-73"><a href="#cb5-73" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="bu">abs</span>(denom) <span class="op">&lt;</span> <span class="fl">1e-12</span>:</span>
+<span id="cb5-74"><a href="#cb5-74" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="fl">0.0</span></span>
+<span id="cb5-75"><a href="#cb5-75" aria-hidden="true" tabindex="-1"></a>    cos_phi2_required <span class="op">=</span> (ca<span class="op">**</span><span class="dv">2</span> <span class="op">*</span> sg1<span class="op">**</span><span class="dv">2</span> <span class="op">-</span> sa<span class="op">**</span><span class="dv">2</span>) <span class="op">/</span> denom</span>
+<span id="cb5-76"><a href="#cb5-76" aria-hidden="true" tabindex="-1"></a>    cos_phi2_required <span class="op">=</span> np.clip(cos_phi2_required, <span class="op">-</span><span class="dv">1</span>, <span class="dv">1</span>)</span>
+<span id="cb5-77"><a href="#cb5-77" aria-hidden="true" tabindex="-1"></a>    phi2_required <span class="op">=</span> np.arccos(cos_phi2_required)</span>
+<span id="cb5-78"><a href="#cb5-78" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Constraint: phi2 - phi2_required = 0; phi3 = phi1; phi4 = phi2</span></span>
+<span id="cb5-79"><a href="#cb5-79" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> phi2 <span class="op">-</span> phi2_required</span>
+<span id="cb5-80"><a href="#cb5-80" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-81"><a href="#cb5-81" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-82"><a href="#cb5-82" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> vertex_energy_constrained(alpha, phi0, k, phi_init<span class="op">=</span><span class="va">None</span>):</span>
+<span id="cb5-83"><a href="#cb5-83" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""</span></span>
+<span id="cb5-84"><a href="#cb5-84" aria-hidden="true" tabindex="-1"></a><span class="co">    Minimize elastic energy of a 4-crease vertex subject to Kawasaki closure.</span></span>
+<span id="cb5-85"><a href="#cb5-85" aria-hidden="true" tabindex="-1"></a><span class="co">    Decision variables: [phi1, phi2] — phi3=phi1, phi4=phi2 by symmetry.</span></span>
+<span id="cb5-86"><a href="#cb5-86" aria-hidden="true" tabindex="-1"></a><span class="co">    """</span></span>
+<span id="cb5-87"><a href="#cb5-87" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> phi_init <span class="kw">is</span> <span class="va">None</span>:</span>
+<span id="cb5-88"><a href="#cb5-88" aria-hidden="true" tabindex="-1"></a>        phi_init <span class="op">=</span> np.array([<span class="fl">0.5</span>, <span class="fl">0.3</span>])</span>
+<span id="cb5-89"><a href="#cb5-89" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-90"><a href="#cb5-90" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> energy_2d(pq):</span>
+<span id="cb5-91"><a href="#cb5-91" aria-hidden="true" tabindex="-1"></a>        phi1, phi2 <span class="op">=</span> pq</span>
+<span id="cb5-92"><a href="#cb5-92" aria-hidden="true" tabindex="-1"></a>        phi <span class="op">=</span> np.array([phi1, phi2, phi1, phi2])</span>
+<span id="cb5-93"><a href="#cb5-93" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> total_energy(phi, phi0, k)</span>
+<span id="cb5-94"><a href="#cb5-94" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-95"><a href="#cb5-95" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> kawasaki_2d(pq):</span>
+<span id="cb5-96"><a href="#cb5-96" aria-hidden="true" tabindex="-1"></a>        phi1, phi2 <span class="op">=</span> pq</span>
+<span id="cb5-97"><a href="#cb5-97" aria-hidden="true" tabindex="-1"></a>        sg1 <span class="op">=</span> np.sin(phi1)</span>
+<span id="cb5-98"><a href="#cb5-98" aria-hidden="true" tabindex="-1"></a>        ca <span class="op">=</span> np.cos(alpha)</span>
+<span id="cb5-99"><a href="#cb5-99" aria-hidden="true" tabindex="-1"></a>        sa <span class="op">=</span> np.sin(alpha)</span>
+<span id="cb5-100"><a href="#cb5-100" aria-hidden="true" tabindex="-1"></a>        denom <span class="op">=</span> ca<span class="op">**</span><span class="dv">2</span> <span class="op">*</span> sg1<span class="op">**</span><span class="dv">2</span> <span class="op">+</span> sa<span class="op">**</span><span class="dv">2</span></span>
+<span id="cb5-101"><a href="#cb5-101" aria-hidden="true" tabindex="-1"></a>        cos_phi2_req <span class="op">=</span> (ca<span class="op">**</span><span class="dv">2</span> <span class="op">*</span> sg1<span class="op">**</span><span class="dv">2</span> <span class="op">-</span> sa<span class="op">**</span><span class="dv">2</span>) <span class="op">/</span> (<span class="bu">max</span>(denom, <span class="fl">1e-12</span>))</span>
+<span id="cb5-102"><a href="#cb5-102" aria-hidden="true" tabindex="-1"></a>        cos_phi2_req <span class="op">=</span> np.clip(cos_phi2_req, <span class="op">-</span><span class="dv">1</span>, <span class="dv">1</span>)</span>
+<span id="cb5-103"><a href="#cb5-103" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> phi2 <span class="op">-</span> np.arccos(cos_phi2_req)</span>
+<span id="cb5-104"><a href="#cb5-104" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-105"><a href="#cb5-105" aria-hidden="true" tabindex="-1"></a>    result <span class="op">=</span> minimize(</span>
+<span id="cb5-106"><a href="#cb5-106" aria-hidden="true" tabindex="-1"></a>        energy_2d,</span>
+<span id="cb5-107"><a href="#cb5-107" aria-hidden="true" tabindex="-1"></a>        phi_init,</span>
+<span id="cb5-108"><a href="#cb5-108" aria-hidden="true" tabindex="-1"></a>        method<span class="op">=</span><span class="st">'SLSQP'</span>,</span>
+<span id="cb5-109"><a href="#cb5-109" aria-hidden="true" tabindex="-1"></a>        bounds<span class="op">=</span>[(<span class="fl">0.01</span>, np.pi <span class="op">-</span> <span class="fl">0.01</span>)] <span class="op">*</span> <span class="dv">2</span>,</span>
+<span id="cb5-110"><a href="#cb5-110" aria-hidden="true" tabindex="-1"></a>        constraints<span class="op">=</span>{<span class="st">'type'</span>: <span class="st">'eq'</span>, <span class="st">'fun'</span>: kawasaki_2d},</span>
+<span id="cb5-111"><a href="#cb5-111" aria-hidden="true" tabindex="-1"></a>        options<span class="op">=</span>{<span class="st">'ftol'</span>: <span class="fl">1e-10</span>, <span class="st">'maxiter'</span>: <span class="dv">500</span>}</span>
+<span id="cb5-112"><a href="#cb5-112" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb5-113"><a href="#cb5-113" aria-hidden="true" tabindex="-1"></a>    phi1_eq, phi2_eq <span class="op">=</span> result.x</span>
+<span id="cb5-114"><a href="#cb5-114" aria-hidden="true" tabindex="-1"></a>    phi_eq <span class="op">=</span> np.array([phi1_eq, phi2_eq, phi1_eq, phi2_eq])</span>
+<span id="cb5-115"><a href="#cb5-115" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> phi_eq, result.fun, result.success</span>
+<span id="cb5-116"><a href="#cb5-116" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-117"><a href="#cb5-117" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-118"><a href="#cb5-118" aria-hidden="true" tabindex="-1"></a><span class="co"># Study: how does equilibrium change with rest angle phi0?</span></span>
+<span id="cb5-119"><a href="#cb5-119" aria-hidden="true" tabindex="-1"></a>alpha <span class="op">=</span> np.radians(<span class="dv">45</span>)</span>
+<span id="cb5-120"><a href="#cb5-120" aria-hidden="true" tabindex="-1"></a>phi0_sweep <span class="op">=</span> np.linspace(<span class="fl">0.1</span>, np.pi <span class="op">*</span> <span class="fl">0.9</span>, <span class="dv">20</span>)</span>
+<span id="cb5-121"><a href="#cb5-121" aria-hidden="true" tabindex="-1"></a>k_uniform <span class="op">=</span> np.ones(<span class="dv">4</span>)</span>
+<span id="cb5-122"><a href="#cb5-122" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-123"><a href="#cb5-123" aria-hidden="true" tabindex="-1"></a>phi1_eq_vals, phi2_eq_vals <span class="op">=</span> [], []</span>
+<span id="cb5-124"><a href="#cb5-124" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> phi0_val <span class="kw">in</span> phi0_sweep:</span>
+<span id="cb5-125"><a href="#cb5-125" aria-hidden="true" tabindex="-1"></a>    phi0 <span class="op">=</span> np.full(<span class="dv">4</span>, phi0_val)</span>
+<span id="cb5-126"><a href="#cb5-126" aria-hidden="true" tabindex="-1"></a>    phi_eq, E_eq, _ <span class="op">=</span> vertex_energy_constrained(alpha, phi0, k_uniform,</span>
+<span id="cb5-127"><a href="#cb5-127" aria-hidden="true" tabindex="-1"></a>                                                  phi_init<span class="op">=</span>[phi0_val <span class="op">*</span> <span class="fl">0.8</span>, phi0_val <span class="op">*</span> <span class="fl">0.5</span>])</span>
+<span id="cb5-128"><a href="#cb5-128" aria-hidden="true" tabindex="-1"></a>    phi1_eq_vals.append(np.degrees(phi_eq[<span class="dv">0</span>]))</span>
+<span id="cb5-129"><a href="#cb5-129" aria-hidden="true" tabindex="-1"></a>    phi2_eq_vals.append(np.degrees(phi_eq[<span class="dv">1</span>]))</span>
+<span id="cb5-130"><a href="#cb5-130" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-131"><a href="#cb5-131" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">7</span>, <span class="dv">4</span>))</span>
+<span id="cb5-132"><a href="#cb5-132" aria-hidden="true" tabindex="-1"></a>ax.plot(np.degrees(phi0_sweep), phi1_eq_vals, <span class="st">'o-'</span>, color<span class="op">=</span><span class="st">'steelblue'</span>, label<span class="op">=</span><span class="st">'φ₁ (major fold)'</span>, markersize<span class="op">=</span><span class="dv">4</span>)</span>
+<span id="cb5-133"><a href="#cb5-133" aria-hidden="true" tabindex="-1"></a>ax.plot(np.degrees(phi0_sweep), phi2_eq_vals, <span class="st">'s-'</span>, color<span class="op">=</span><span class="st">'coral'</span>, label<span class="op">=</span><span class="st">'φ₂ (minor fold)'</span>, markersize<span class="op">=</span><span class="dv">4</span>)</span>
+<span id="cb5-134"><a href="#cb5-134" aria-hidden="true" tabindex="-1"></a>ax.plot(np.degrees(phi0_sweep), np.degrees(phi0_sweep), <span class="st">'k--'</span>, linewidth<span class="op">=</span><span class="fl">0.8</span>, label<span class="op">=</span><span class="st">'φ₀ (rest angle)'</span>)</span>
+<span id="cb5-135"><a href="#cb5-135" aria-hidden="true" tabindex="-1"></a>ax.set_xlabel(<span class="st">'Rest angle φ₀ (°)'</span>)</span>
+<span id="cb5-136"><a href="#cb5-136" aria-hidden="true" tabindex="-1"></a>ax.set_ylabel(<span class="st">'Equilibrium fold angle (°)'</span>)</span>
+<span id="cb5-137"><a href="#cb5-137" aria-hidden="true" tabindex="-1"></a>ax.set_title(<span class="ss">f'Miura-ori vertex equilibrium (α = 45°, uniform stiffness)'</span>)</span>
+<span id="cb5-138"><a href="#cb5-138" aria-hidden="true" tabindex="-1"></a>ax.legend()</span>
+<span id="cb5-139"><a href="#cb5-139" aria-hidden="true" tabindex="-1"></a>ax.grid(<span class="va">True</span>, linewidth<span class="op">=</span><span class="fl">0.5</span>, alpha<span class="op">=</span><span class="fl">0.5</span>)</span>
+<span id="cb5-140"><a href="#cb5-140" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
+<span id="cb5-141"><a href="#cb5-141" aria-hidden="true" tabindex="-1"></a>plt.show()</span>
+<span id="cb5-142"><a href="#cb5-142" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb5-143"><a href="#cb5-143" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-144"><a href="#cb5-144" aria-hidden="true" tabindex="-1"></a><span class="fu">## Comparing Optimizers</span></span>
+<span id="cb5-145"><a href="#cb5-145" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-146"><a href="#cb5-146" aria-hidden="true" tabindex="-1"></a>The energy minimization problem @eq-energy-opt is smooth and has analytic gradients. Different optimizers make different trade-offs between convergence speed, memory, and constraint-handling capability.</span>
+<span id="cb5-147"><a href="#cb5-147" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-150"><a href="#cb5-150" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb5-151"><a href="#cb5-151" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> time</span>
+<span id="cb5-152"><a href="#cb5-152" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-153"><a href="#cb5-153" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> run_optimizer(method, phi0, k, alpha, phi_init):</span>
+<span id="cb5-154"><a href="#cb5-154" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""</span></span>
+<span id="cb5-155"><a href="#cb5-155" aria-hidden="true" tabindex="-1"></a><span class="co">    Run one optimizer and return (solution, n_iter, wall_time, success).</span></span>
+<span id="cb5-156"><a href="#cb5-156" aria-hidden="true" tabindex="-1"></a><span class="co">    """</span></span>
+<span id="cb5-157"><a href="#cb5-157" aria-hidden="true" tabindex="-1"></a>    history <span class="op">=</span> {<span class="st">'phi'</span>: [], <span class="st">'E'</span>: []}</span>
+<span id="cb5-158"><a href="#cb5-158" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-159"><a href="#cb5-159" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> energy_with_log(pq):</span>
+<span id="cb5-160"><a href="#cb5-160" aria-hidden="true" tabindex="-1"></a>        phi <span class="op">=</span> np.array([pq[<span class="dv">0</span>], pq[<span class="dv">1</span>], pq[<span class="dv">0</span>], pq[<span class="dv">1</span>]])</span>
+<span id="cb5-161"><a href="#cb5-161" aria-hidden="true" tabindex="-1"></a>        E <span class="op">=</span> total_energy(phi, phi0, k)</span>
+<span id="cb5-162"><a href="#cb5-162" aria-hidden="true" tabindex="-1"></a>        history[<span class="st">'phi'</span>].append(pq.copy())</span>
+<span id="cb5-163"><a href="#cb5-163" aria-hidden="true" tabindex="-1"></a>        history[<span class="st">'E'</span>].append(E)</span>
+<span id="cb5-164"><a href="#cb5-164" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> E</span>
+<span id="cb5-165"><a href="#cb5-165" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-166"><a href="#cb5-166" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> kawasaki_2d(pq):</span>
+<span id="cb5-167"><a href="#cb5-167" aria-hidden="true" tabindex="-1"></a>        phi1, phi2 <span class="op">=</span> pq</span>
+<span id="cb5-168"><a href="#cb5-168" aria-hidden="true" tabindex="-1"></a>        sg1 <span class="op">=</span> np.sin(phi1)</span>
+<span id="cb5-169"><a href="#cb5-169" aria-hidden="true" tabindex="-1"></a>        ca <span class="op">=</span> np.cos(alpha)</span>
+<span id="cb5-170"><a href="#cb5-170" aria-hidden="true" tabindex="-1"></a>        sa <span class="op">=</span> np.sin(alpha)</span>
+<span id="cb5-171"><a href="#cb5-171" aria-hidden="true" tabindex="-1"></a>        denom <span class="op">=</span> ca<span class="op">**</span><span class="dv">2</span> <span class="op">*</span> sg1<span class="op">**</span><span class="dv">2</span> <span class="op">+</span> sa<span class="op">**</span><span class="dv">2</span></span>
+<span id="cb5-172"><a href="#cb5-172" aria-hidden="true" tabindex="-1"></a>        cos_phi2_req <span class="op">=</span> np.clip((ca<span class="op">**</span><span class="dv">2</span> <span class="op">*</span> sg1<span class="op">**</span><span class="dv">2</span> <span class="op">-</span> sa<span class="op">**</span><span class="dv">2</span>) <span class="op">/</span> <span class="bu">max</span>(denom, <span class="fl">1e-12</span>), <span class="op">-</span><span class="dv">1</span>, <span class="dv">1</span>)</span>
+<span id="cb5-173"><a href="#cb5-173" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> phi2 <span class="op">-</span> np.arccos(cos_phi2_req)</span>
+<span id="cb5-174"><a href="#cb5-174" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-175"><a href="#cb5-175" aria-hidden="true" tabindex="-1"></a>    kwargs <span class="op">=</span> <span class="bu">dict</span>(</span>
+<span id="cb5-176"><a href="#cb5-176" aria-hidden="true" tabindex="-1"></a>        fun<span class="op">=</span>energy_with_log,</span>
+<span id="cb5-177"><a href="#cb5-177" aria-hidden="true" tabindex="-1"></a>        x0<span class="op">=</span>phi_init,</span>
+<span id="cb5-178"><a href="#cb5-178" aria-hidden="true" tabindex="-1"></a>        bounds<span class="op">=</span>[(<span class="fl">0.01</span>, np.pi <span class="op">-</span> <span class="fl">0.01</span>)] <span class="op">*</span> <span class="dv">2</span>,</span>
+<span id="cb5-179"><a href="#cb5-179" aria-hidden="true" tabindex="-1"></a>        options<span class="op">=</span>{<span class="st">'maxiter'</span>: <span class="dv">2000</span>}</span>
+<span id="cb5-180"><a href="#cb5-180" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb5-181"><a href="#cb5-181" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-182"><a href="#cb5-182" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> method <span class="op">==</span> <span class="st">'SLSQP'</span>:</span>
+<span id="cb5-183"><a href="#cb5-183" aria-hidden="true" tabindex="-1"></a>        kwargs[<span class="st">'method'</span>] <span class="op">=</span> <span class="st">'SLSQP'</span></span>
+<span id="cb5-184"><a href="#cb5-184" aria-hidden="true" tabindex="-1"></a>        kwargs[<span class="st">'constraints'</span>] <span class="op">=</span> {<span class="st">'type'</span>: <span class="st">'eq'</span>, <span class="st">'fun'</span>: kawasaki_2d}</span>
+<span id="cb5-185"><a href="#cb5-185" aria-hidden="true" tabindex="-1"></a>        kwargs[<span class="st">'options'</span>][<span class="st">'ftol'</span>] <span class="op">=</span> <span class="fl">1e-10</span></span>
+<span id="cb5-186"><a href="#cb5-186" aria-hidden="true" tabindex="-1"></a>    <span class="cf">elif</span> method <span class="op">==</span> <span class="st">'L-BFGS-B'</span>:</span>
+<span id="cb5-187"><a href="#cb5-187" aria-hidden="true" tabindex="-1"></a>        kwargs[<span class="st">'method'</span>] <span class="op">=</span> <span class="st">'L-BFGS-B'</span></span>
+<span id="cb5-188"><a href="#cb5-188" aria-hidden="true" tabindex="-1"></a>        kwargs[<span class="st">'options'</span>][<span class="st">'ftol'</span>] <span class="op">=</span> <span class="fl">1e-12</span></span>
+<span id="cb5-189"><a href="#cb5-189" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-190"><a href="#cb5-190" aria-hidden="true" tabindex="-1"></a>    t0 <span class="op">=</span> time.perf_counter()</span>
+<span id="cb5-191"><a href="#cb5-191" aria-hidden="true" tabindex="-1"></a>    result <span class="op">=</span> minimize(<span class="op">**</span>kwargs)</span>
+<span id="cb5-192"><a href="#cb5-192" aria-hidden="true" tabindex="-1"></a>    dt <span class="op">=</span> time.perf_counter() <span class="op">-</span> t0</span>
+<span id="cb5-193"><a href="#cb5-193" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-194"><a href="#cb5-194" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> result.x, history[<span class="st">'E'</span>], dt, result.success</span>
+<span id="cb5-195"><a href="#cb5-195" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-196"><a href="#cb5-196" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-197"><a href="#cb5-197" aria-hidden="true" tabindex="-1"></a>alpha <span class="op">=</span> np.radians(<span class="dv">60</span>)</span>
+<span id="cb5-198"><a href="#cb5-198" aria-hidden="true" tabindex="-1"></a>phi0 <span class="op">=</span> np.array([<span class="fl">1.2</span>, <span class="fl">0.6</span>, <span class="fl">1.2</span>, <span class="fl">0.6</span>])</span>
+<span id="cb5-199"><a href="#cb5-199" aria-hidden="true" tabindex="-1"></a>k <span class="op">=</span> np.array([<span class="fl">1.0</span>, <span class="fl">2.0</span>, <span class="fl">1.0</span>, <span class="fl">0.5</span>])</span>
+<span id="cb5-200"><a href="#cb5-200" aria-hidden="true" tabindex="-1"></a>phi_init <span class="op">=</span> np.array([<span class="fl">0.8</span>, <span class="fl">0.4</span>])</span>
+<span id="cb5-201"><a href="#cb5-201" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-202"><a href="#cb5-202" aria-hidden="true" tabindex="-1"></a>fig, axes <span class="op">=</span> plt.subplots(<span class="dv">1</span>, <span class="dv">2</span>, figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">4</span>))</span>
+<span id="cb5-203"><a href="#cb5-203" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-204"><a href="#cb5-204" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> method, color <span class="kw">in</span> [(<span class="st">'SLSQP'</span>, <span class="st">'steelblue'</span>), (<span class="st">'L-BFGS-B'</span>, <span class="st">'coral'</span>)]:</span>
+<span id="cb5-205"><a href="#cb5-205" aria-hidden="true" tabindex="-1"></a>    sol, E_hist, dt, ok <span class="op">=</span> run_optimizer(method, phi0, k, alpha, phi_init.copy())</span>
+<span id="cb5-206"><a href="#cb5-206" aria-hidden="true" tabindex="-1"></a>    axes[<span class="dv">0</span>].semilogy(E_hist, color<span class="op">=</span>color, label<span class="op">=</span><span class="ss">f'</span><span class="sc">{</span>method<span class="sc">}</span><span class="ss"> (</span><span class="sc">{</span><span class="bu">len</span>(E_hist)<span class="sc">}</span><span class="ss"> evals, </span><span class="sc">{</span>dt<span class="op">*</span><span class="dv">1000</span><span class="sc">:.1f}</span><span class="ss">ms)'</span>)</span>
+<span id="cb5-207"><a href="#cb5-207" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"</span><span class="sc">{</span>method<span class="sc">:10s}</span><span class="ss">  converged=</span><span class="sc">{</span>ok<span class="sc">}</span><span class="ss">  φ*=</span><span class="sc">{</span>np<span class="sc">.</span>degrees(sol)<span class="sc">}</span><span class="ss">°  E*=</span><span class="sc">{</span>E_hist[<span class="op">-</span><span class="dv">1</span>]<span class="sc">:.6f}</span><span class="ss">  t=</span><span class="sc">{</span>dt<span class="op">*</span><span class="fl">1e3</span><span class="sc">:.2f}</span><span class="ss">ms"</span>)</span>
+<span id="cb5-208"><a href="#cb5-208" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-209"><a href="#cb5-209" aria-hidden="true" tabindex="-1"></a>axes[<span class="dv">0</span>].set_xlabel(<span class="st">'Function evaluations'</span>)</span>
+<span id="cb5-210"><a href="#cb5-210" aria-hidden="true" tabindex="-1"></a>axes[<span class="dv">0</span>].set_ylabel(<span class="st">'Elastic energy E'</span>)</span>
+<span id="cb5-211"><a href="#cb5-211" aria-hidden="true" tabindex="-1"></a>axes[<span class="dv">0</span>].set_title(<span class="st">'Convergence comparison'</span>)</span>
+<span id="cb5-212"><a href="#cb5-212" aria-hidden="true" tabindex="-1"></a>axes[<span class="dv">0</span>].legend(fontsize<span class="op">=</span><span class="dv">8</span>)</span>
+<span id="cb5-213"><a href="#cb5-213" aria-hidden="true" tabindex="-1"></a>axes[<span class="dv">0</span>].grid(<span class="va">True</span>, linewidth<span class="op">=</span><span class="fl">0.5</span>, alpha<span class="op">=</span><span class="fl">0.5</span>)</span>
+<span id="cb5-214"><a href="#cb5-214" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-215"><a href="#cb5-215" aria-hidden="true" tabindex="-1"></a><span class="co"># Energy landscape for SLSQP solution</span></span>
+<span id="cb5-216"><a href="#cb5-216" aria-hidden="true" tabindex="-1"></a>phi1_vals <span class="op">=</span> np.linspace(<span class="fl">0.1</span>, np.pi <span class="op">-</span> <span class="fl">0.1</span>, <span class="dv">80</span>)</span>
+<span id="cb5-217"><a href="#cb5-217" aria-hidden="true" tabindex="-1"></a>E_landscape <span class="op">=</span> []</span>
+<span id="cb5-218"><a href="#cb5-218" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> p1 <span class="kw">in</span> phi1_vals:</span>
+<span id="cb5-219"><a href="#cb5-219" aria-hidden="true" tabindex="-1"></a>    sg1 <span class="op">=</span> np.sin(p1)</span>
+<span id="cb5-220"><a href="#cb5-220" aria-hidden="true" tabindex="-1"></a>    ca, sa <span class="op">=</span> np.cos(alpha), np.sin(alpha)</span>
+<span id="cb5-221"><a href="#cb5-221" aria-hidden="true" tabindex="-1"></a>    denom <span class="op">=</span> ca<span class="op">**</span><span class="dv">2</span> <span class="op">*</span> sg1<span class="op">**</span><span class="dv">2</span> <span class="op">+</span> sa<span class="op">**</span><span class="dv">2</span></span>
+<span id="cb5-222"><a href="#cb5-222" aria-hidden="true" tabindex="-1"></a>    cos_p2 <span class="op">=</span> np.clip((ca<span class="op">**</span><span class="dv">2</span> <span class="op">*</span> sg1<span class="op">**</span><span class="dv">2</span> <span class="op">-</span> sa<span class="op">**</span><span class="dv">2</span>) <span class="op">/</span> <span class="bu">max</span>(denom, <span class="fl">1e-12</span>), <span class="op">-</span><span class="dv">1</span>, <span class="dv">1</span>)</span>
+<span id="cb5-223"><a href="#cb5-223" aria-hidden="true" tabindex="-1"></a>    p2 <span class="op">=</span> np.arccos(cos_p2)</span>
+<span id="cb5-224"><a href="#cb5-224" aria-hidden="true" tabindex="-1"></a>    phi <span class="op">=</span> np.array([p1, p2, p1, p2])</span>
+<span id="cb5-225"><a href="#cb5-225" aria-hidden="true" tabindex="-1"></a>    E_landscape.append(total_energy(phi, phi0, k))</span>
+<span id="cb5-226"><a href="#cb5-226" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-227"><a href="#cb5-227" aria-hidden="true" tabindex="-1"></a>axes[<span class="dv">1</span>].plot(np.degrees(phi1_vals), E_landscape, color<span class="op">=</span><span class="st">'steelblue'</span>, linewidth<span class="op">=</span><span class="dv">2</span>)</span>
+<span id="cb5-228"><a href="#cb5-228" aria-hidden="true" tabindex="-1"></a>axes[<span class="dv">1</span>].set_xlabel(<span class="st">'Primary fold angle φ₁ (°)'</span>)</span>
+<span id="cb5-229"><a href="#cb5-229" aria-hidden="true" tabindex="-1"></a>axes[<span class="dv">1</span>].set_ylabel(<span class="st">'Elastic energy E (on Kawasaki manifold)'</span>)</span>
+<span id="cb5-230"><a href="#cb5-230" aria-hidden="true" tabindex="-1"></a>axes[<span class="dv">1</span>].set_title(<span class="st">'Energy along the constraint manifold'</span>)</span>
+<span id="cb5-231"><a href="#cb5-231" aria-hidden="true" tabindex="-1"></a>axes[<span class="dv">1</span>].axvline(np.degrees(sol[<span class="dv">0</span>]), color<span class="op">=</span><span class="st">'coral'</span>, linestyle<span class="op">=</span><span class="st">'--'</span>, label<span class="op">=</span><span class="ss">f'Optimum φ₁*=</span><span class="sc">{</span>np<span class="sc">.</span>degrees(sol[<span class="dv">0</span>])<span class="sc">:.1f}</span><span class="ss">°'</span>)</span>
+<span id="cb5-232"><a href="#cb5-232" aria-hidden="true" tabindex="-1"></a>axes[<span class="dv">1</span>].legend()</span>
+<span id="cb5-233"><a href="#cb5-233" aria-hidden="true" tabindex="-1"></a>axes[<span class="dv">1</span>].grid(<span class="va">True</span>, linewidth<span class="op">=</span><span class="fl">0.5</span>, alpha<span class="op">=</span><span class="fl">0.5</span>)</span>
+<span id="cb5-234"><a href="#cb5-234" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-235"><a href="#cb5-235" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
+<span id="cb5-236"><a href="#cb5-236" aria-hidden="true" tabindex="-1"></a>plt.show()</span>
+<span id="cb5-237"><a href="#cb5-237" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb5-238"><a href="#cb5-238" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-239"><a href="#cb5-239" aria-hidden="true" tabindex="-1"></a><span class="fu">## Non-Uniform Stiffness and Multiple Equilibria</span></span>
+<span id="cb5-240"><a href="#cb5-240" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-241"><a href="#cb5-241" aria-hidden="true" tabindex="-1"></a>Real origami structures often have creases with different stiffnesses — due to material variation, different crease depths, or deliberate design. When stiffness is non-uniform, the energy landscape can develop multiple local minima.</span>
+<span id="cb5-242"><a href="#cb5-242" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-245"><a href="#cb5-245" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb5-246"><a href="#cb5-246" aria-hidden="true" tabindex="-1"></a><span class="co"># Sweep stiffness ratio k2/k1 and track equilibrium</span></span>
+<span id="cb5-247"><a href="#cb5-247" aria-hidden="true" tabindex="-1"></a>alpha <span class="op">=</span> np.radians(<span class="dv">45</span>)</span>
+<span id="cb5-248"><a href="#cb5-248" aria-hidden="true" tabindex="-1"></a>phi0 <span class="op">=</span> np.array([<span class="fl">1.0</span>, <span class="fl">1.0</span>, <span class="fl">1.0</span>, <span class="fl">1.0</span>])</span>
+<span id="cb5-249"><a href="#cb5-249" aria-hidden="true" tabindex="-1"></a>k_ratios <span class="op">=</span> np.logspace(<span class="op">-</span><span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">30</span>)</span>
+<span id="cb5-250"><a href="#cb5-250" aria-hidden="true" tabindex="-1"></a>phi1_eq_list <span class="op">=</span> []</span>
+<span id="cb5-251"><a href="#cb5-251" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-252"><a href="#cb5-252" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> ratio <span class="kw">in</span> k_ratios:</span>
+<span id="cb5-253"><a href="#cb5-253" aria-hidden="true" tabindex="-1"></a>    k <span class="op">=</span> np.array([<span class="fl">1.0</span>, ratio, <span class="fl">1.0</span>, ratio])</span>
+<span id="cb5-254"><a href="#cb5-254" aria-hidden="true" tabindex="-1"></a>    phi_eq, _, _ <span class="op">=</span> vertex_energy_constrained(alpha, phi0, k, phi_init<span class="op">=</span>[<span class="fl">0.6</span>, <span class="fl">0.5</span>])</span>
+<span id="cb5-255"><a href="#cb5-255" aria-hidden="true" tabindex="-1"></a>    phi1_eq_list.append(np.degrees(phi_eq[<span class="dv">0</span>]))</span>
+<span id="cb5-256"><a href="#cb5-256" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-257"><a href="#cb5-257" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">6</span>, <span class="dv">4</span>))</span>
+<span id="cb5-258"><a href="#cb5-258" aria-hidden="true" tabindex="-1"></a>ax.semilogx(k_ratios, phi1_eq_list, <span class="st">'o-'</span>, color<span class="op">=</span><span class="st">'steelblue'</span>, markersize<span class="op">=</span><span class="dv">4</span>)</span>
+<span id="cb5-259"><a href="#cb5-259" aria-hidden="true" tabindex="-1"></a>ax.axhline(np.degrees(phi0[<span class="dv">0</span>]), color<span class="op">=</span><span class="st">'gray'</span>, linestyle<span class="op">=</span><span class="st">'--'</span>, linewidth<span class="op">=</span><span class="fl">0.8</span>, label<span class="op">=</span><span class="st">'Rest angle'</span>)</span>
+<span id="cb5-260"><a href="#cb5-260" aria-hidden="true" tabindex="-1"></a>ax.set_xlabel(<span class="st">'Stiffness ratio k₂/k₁'</span>)</span>
+<span id="cb5-261"><a href="#cb5-261" aria-hidden="true" tabindex="-1"></a>ax.set_ylabel(<span class="st">'Equilibrium φ₁* (°)'</span>)</span>
+<span id="cb5-262"><a href="#cb5-262" aria-hidden="true" tabindex="-1"></a>ax.set_title(<span class="st">'Equilibrium fold angle vs stiffness ratio (α=45°)'</span>)</span>
+<span id="cb5-263"><a href="#cb5-263" aria-hidden="true" tabindex="-1"></a>ax.legend()</span>
+<span id="cb5-264"><a href="#cb5-264" aria-hidden="true" tabindex="-1"></a>ax.grid(<span class="va">True</span>, linewidth<span class="op">=</span><span class="fl">0.5</span>, alpha<span class="op">=</span><span class="fl">0.5</span>)</span>
+<span id="cb5-265"><a href="#cb5-265" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
+<span id="cb5-266"><a href="#cb5-266" aria-hidden="true" tabindex="-1"></a>plt.show()</span>
+<span id="cb5-267"><a href="#cb5-267" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb5-268"><a href="#cb5-268" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-269"><a href="#cb5-269" aria-hidden="true" tabindex="-1"></a><span class="fu">## Summary</span></span>
+<span id="cb5-270"><a href="#cb5-270" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-271"><a href="#cb5-271" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Elastic fold energy is a sum of torsional spring potentials: $E = \frac{1}{2}\sum k_i(\phi_i - \phi_{0,i})^2$.</span>
+<span id="cb5-272"><a href="#cb5-272" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Equilibrium configurations minimize total energy subject to geometric closure constraints.</span>
+<span id="cb5-273"><a href="#cb5-273" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>SLSQP handles equality constraints directly; L-BFGS-B is faster for unconstrained problems.</span>
+<span id="cb5-274"><a href="#cb5-274" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Non-uniform stiffness shifts the equilibrium and can introduce multiple local minima.</span>
+<span id="cb5-275"><a href="#cb5-275" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>The energy landscape along the Kawasaki constraint manifold is typically unimodal for a single vertex.</span>
+<span id="cb5-276"><a href="#cb5-276" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-277"><a href="#cb5-277" aria-hidden="true" tabindex="-1"></a><span class="fu">## Further Reading</span></span>
+<span id="cb5-278"><a href="#cb5-278" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-279"><a href="#cb5-279" aria-hidden="true" tabindex="-1"></a>@schenk2013geometry analyzes the elastic behavior of the Miura-ori under in-plane loads. @dudte2016programming uses energy minimization to program curvature into origami tessellations.</span>
+<span id="cb5-280"><a href="#cb5-280" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-281"><a href="#cb5-281" aria-hidden="true" tabindex="-1"></a><span class="fu">## Exercises</span></span>
+<span id="cb5-282"><a href="#cb5-282" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-283"><a href="#cb5-283" aria-hidden="true" tabindex="-1"></a><span class="ss">1. </span>**Analytic gradient check.** For the 2D energy function over $(φ_1, φ_2)$, compute the analytic gradient $\nabla E$ and verify it against <span class="in">`scipy.optimize.check_grad`</span>. Report the maximum absolute error.</span>
+<span id="cb5-284"><a href="#cb5-284" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-285"><a href="#cb5-285" aria-hidden="true" tabindex="-1"></a><span class="ss">2. </span>**Newton's method.** The energy has an analytic Hessian (it is constant — why?). Implement one step of Newton's method from a given starting point and verify it converges in one iteration for the unconstrained problem.</span>
+<span id="cb5-286"><a href="#cb5-286" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-287"><a href="#cb5-287" aria-hidden="true" tabindex="-1"></a><span class="ss">3. </span>**Multiple restarts.** Generate 100 random starting points for the constrained vertex problem and solve from each. Plot the distribution of converged energy values. Are there multiple local minima, or does SLSQP always find the same solution?</span>
+<span id="cb5-288"><a href="#cb5-288" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-289"><a href="#cb5-289" aria-hidden="true" tabindex="-1"></a><span class="ss">4. </span>**Temperature analogy.** In statistical mechanics, systems sample configurations with probability $p \propto e^{-E/T}$ at temperature $T$. Write a simple Metropolis sampler that samples fold angles from this distribution on the Kawasaki constraint manifold (project each MCMC step back onto the manifold). Plot the sampled fold angle distribution for $T = 0.01, 0.1, 1.0$.</span>
+<span id="cb5-290"><a href="#cb5-290" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-291"><a href="#cb5-291" aria-hidden="true" tabindex="-1"></a><span class="ss">5. </span>**Stiffness design.** Find the stiffness vector $\mathbf{k}$ (with $<span class="sc">\|</span>\mathbf{k}<span class="sc">\|</span>=1$) that places the energy minimum closest to a target fold angle $\phi^* = <span class="co">[</span><span class="ot">\pi/3, \pi/4, \pi/3, \pi/4</span><span class="co">]</span>$. (Hint: this is itself an optimization problem over $\mathbf{k}$.)</span>
 </code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
 </div></div></div></div></div>
 </div> <!-- /content -->
