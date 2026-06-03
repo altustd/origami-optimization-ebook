@@ -1,7 +1,7 @@
 [workspace]
 name = "origami-optimization-ebook"
 version = "0.1.0"
-description = "Numerical optimization through the lens of origami engineering"
+description = "Numerical optimization in origami engineering"
 channels = ["conda-forge"]
 platforms = ["osx-arm64", "win-64"]
 
