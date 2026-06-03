@@ -6,7 +6,7 @@ book:
   title: "The Engineering of Folding"
   subtitle: "Numerical Optimization through Origami"
   author: "Troy Altus"
-  date: "May 2026"
+  date: "June 2026"
   repo-url: https://github.com/altustd/origami-optimization-ebook
   chapters:
     - preface.qmd
